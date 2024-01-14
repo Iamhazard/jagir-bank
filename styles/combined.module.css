@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Mirza&display=swap');
+
+.card {
+    width: 581px;
+    height: 417px;
+    margin: 0 auto;
+    padding: 30px 30px 30px 30px;
+    background-color: #F8FBFE;
+    border: 1px solid rgb(37, 36, 36);
+    border-radius: 8px;
+    z-index: 1;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.tools {
+    font-family: "Neue Montreal";
+    font-size: 32px;
+    padding-bottom: 6px;
+    line-height: 33px;
+
+}
+
+.btn {
+    background-color: rgb(16, 138, 0);
+    justify-content: center;
+    font-weight: 400;
+    max-height: 40px;
+    height: 36px;
+    font-size: 14px;
+    width: 300px;
+    border: 2px solid rgb(16, 138, 0);
+    border-radius: 300px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: white;
+    margin-left: 105px;
+    margin-right: 105px;
+    margin-top: 33px;
+
+}
+
+
+.btn_white {
+    background-color: rgb(250, 250, 250);
+    justify-content: center;
+    font-weight: 400;
+    max-height: 40px;
+    height: 36px;
+    font-size: 14px;
+    width: 300px;
+    border: 2px solid rgb(21, 24, 21);
+    border-radius: 300px;
+    cursor: not-allowed;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: rgb(8, 7, 7);
+    margin-left: 105px;
+    margin-right: 105px;
+    margin-top: 32px;
+    pointer-events: none;
+
+}
+
+.card_login {
+    width: 581px;
+    max-height: 100vh;
+    margin: 0 auto;
+    padding: 30px 30px 30px 30px;
+    background-color: #F8FBFE;
+    border: 1px solid rgb(37, 36, 36);
+    border-radius: 8px;
+    z-index: 1;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 768px) {
+    .card_login {
+        padding: 20px;
+        width: fit-content;
+    }
+}
+
+@media (max-width: 450px) {
+    .card_login {
+        padding: 15px;
+        width: fit-content;
+
+    }
+}
+
+.card_profile {
+    width: 800px;
+    max-height: 150vh;
+    height: 80vh;
+    margin: 0 auto;
+    padding: 30px 30px 30px 30px;
+    background-color: #F8FBFE;
+    border: 1px solid rgb(37, 36, 36);
+    border-radius: 8px;
+    z-index: 1;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 768px) {
+    .card_login {
+        padding: 20px;
+        width: fit-content;
+    }
+}
+
+@media (max-width: 450px) {
+    .card_login {
+        padding: 15px;
+        width: fit-content;
+
+    }
+}

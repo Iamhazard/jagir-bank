@@ -1,0 +1,325 @@
+@import url('https://fonts.googleapis.com/css2?family=Mirza&display=swap');
+
+.triangle {
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 20px solid rgb(107 114 128);
+    ;
+
+    background-color: transparent;
+}
+
+
+
+.heading {
+    color: #14a800;
+    line-height: 130%;
+    font-size: 70px;
+    font-weight: 1000;
+    letter-spacing: -2px;
+    margin-left: auto;
+    margin-bottom: 12px;
+}
+
+@media(max-width:640px) {
+    .heading {
+        font-size: 24px;
+        line-height: 32px;
+    }
+}
+
+@media (max-width: 1680px) {
+    .heading {
+        font-size: 90px;
+        line-height: 100%;
+    }
+}
+
+@media (max-width: 1024px) {
+    .heading {
+        font-size: 60px;
+        line-height: 130%;
+    }
+}
+
+.heading_p {
+    color: #13544e;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    letter-spacing: 0.25px;
+
+}
+
+.heading_cards {
+    color: rgb(19, 84, 78);
+    font-size: 50px;
+    font-weight: 400;
+    letter-spacing: -2px;
+    line-height: 54px;
+    font-style: normal;
+    margin-block-end: 16px;
+    margin-left: 85px;
+
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    width: 180px;
+    height: 180px;
+    margin-bottom: 18px;
+}
+
+.Aicard {
+    width: 300px;
+    height: 220px;
+    background-color: rgb(255, 255, 255);
+    border: #14a800;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 30px;
+    gap: 13px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.062);
+}
+
+.heading_cat {
+    color: black;
+    font-size: 42px;
+    font-style: normal;
+    font-weight: 500;
+    letter-spacing: -1.25px;
+    font-family: "Mirza";
+    line-height: 48px;
+    font-style: normal;
+    text-align: center;
+
+}
+
+.p_category {
+    display: block;
+    color: rgb(94, 109, 85);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0.32px;
+    line-height: 1.4rem;
+    text-align: center;
+    margin-top: 2px;
+    font-style: normal;
+    margin-bottom: 1.75rem;
+
+
+}
+
+.card {
+    box-sizing: border-box;
+    display: block;
+    max-width: 330px;
+    max-height: fit-content;
+    border-radius: 20px;
+    background: #f5f5f5;
+    position: relative;
+    padding: 20px;
+    cursor: pointer;
+    border: 1px solid #c4d2f9;
+    transition: 0.5s ease-out;
+    overflow: visible;
+
+}
+
+@media (max-width: 768px) {
+    .card {
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    .card_button {
+        width: 100%;
+        transform: translate(-50%, 0);
+        bottom: -25px;
+
+    }
+}
+
+.card_details {
+    color: black;
+    height: 100%;
+    gap: 0.5em;
+    display: grid;
+    place-content: center;
+
+}
+
+.card_button {
+    transform: translate(-50%, 125%);
+    width: 50%;
+    border-radius: 1rem;
+    border: none;
+    background-color: #008bf8;
+    color: #f7dede;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    opacity: 0;
+    transition: 0.3s ease-out;
+    margin-bottom: 7px;
+}
+
+.text_body {
+    color: rgb(134, 134, 134);
+    font-size: 16px;
+
+}
+
+/*Text*/
+.text_title {
+    font-size: 20px;
+    font-weight: 500;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 22px;
+    color: #000;
+}
+
+/*Hover*/
+.card:hover {
+    border-color: #008bf8;
+    box-shadow: 0 4px 18px 0 rgba(0, 0, 0, 0.25);
+}
+
+.card:hover .card_button {
+    transform: translate(-50%, 50%);
+    opacity: 1;
+}
+
+.image_container {
+    position: relative;
+    display: inline-block;
+    padding-left: 16px;
+
+    padding-right: 16px;
+
+    margin-top: 20px;
+
+    overflow: hidden;
+}
+
+.image {
+    display: block;
+    max-width: 100%;
+    border-radius: 10px;
+    box-sizing: border-box;
+    height: auto;
+    background: linear-gradient(to bottom, rgba(255, 41, 41, 0), rgba(165, 131, 131, 0.7));
+    filter: blur(3px);
+    filter: drop-shadow(2px);
+}
+
+@media (max-width: 640px) {
+    .image_container {
+        padding-left: 8px;
+        padding-right: 8px;
+        margin-top: 10px;
+    }
+
+    .image {
+        filter: blur(1px);
+
+        filter: drop-shadow(1px);
+
+    }
+}
+
+.image_text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.top_left {
+    position: absolute;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    top: 6%;
+    left: 4%;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 24px;
+    gap: 12px;
+}
+
+.left_h1 {
+    font-family: "Mirza";
+    font-size: 4.5vw;
+    font-weight: 400;
+    letter-spacing: -1px;
+    text-size-adjust: 100%;
+    line-height: 1.5;
+    margin-top: 15vw;
+    margin-left: 6%;
+    color: #f5f5f5;
+    max-width: 80vw;
+
+}
+
+.left_p {
+    font-size: 2vw;
+    font-weight: 500;
+    letter-spacing: 0.6px;
+    line-height: 1.5;
+    max-width: 80vw;
+    margin-top: 2vw;
+    margin-left: 4%;
+
+}
+
+@media (max-width: 768px) {
+    .image_container {
+        padding-left: 16px;
+        padding-right: 16px;
+        margin-top: 30px;
+    }
+
+    .top_left {
+        top: 30px;
+        left: 16px;
+    }
+
+    .left_h1 {
+        font-size: 24px;
+        margin-top: 20px;
+        margin-left: 0;
+    }
+
+    .left_p {
+        font-size: 14px;
+        margin-top: 10px;
+        margin-left: 0;
+    }
+
+
+}
+
+
+
+.left_text_title {
+    font-size: 24px;
+    font-weight: 50px;
+    letter-spacing: -0.048px;
+    line-height: 36px;
+    text-wrap: wrap;
+}
