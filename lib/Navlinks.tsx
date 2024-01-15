@@ -2,7 +2,7 @@ import { IoIosArrowDown } from "react-icons/io";
 export const NAV_LINKS = [
   {
     href: "/",
-    item: "Talent",
+    item: "",
     label: "Find Talent",
     icon: <IoIosArrowDown width={12} height={11} />,
   },

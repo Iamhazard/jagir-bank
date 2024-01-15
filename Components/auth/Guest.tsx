@@ -62,9 +62,9 @@ const GuestLogin = () => {
           <div>
             <button className={styles.btn} onClick={handleClick}>
               {selectedOption === "Client"
-                ? "Login as Client"
+                ? "Sign up as Client"
                 : selectedOption === "Freelancer"
-                ? "Login as Freelancer"
+                ? "Sign up as Freelancer"
                 : "Create Account"}
             </button>
 

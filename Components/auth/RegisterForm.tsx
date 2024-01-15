@@ -16,11 +16,10 @@ import {
 import { RegisterSchema } from "@/Schemas";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-
-//import { register } from "@/actions/registerAction";
 import { FormError } from "./form-error";
 import { FormSuccess } from "./form-success";
 import { useSearchParams } from "next/navigation";
+import { register } from "@/actions/registerAction";
 
 const RegisterForm = () => {
   const [error, setError] = useState<string | undefined>("");
@@ -34,19 +33,20 @@ const RegisterForm = () => {
     defaultValues: {
       email: "",
       password: "",
-      name: "",
+      firstName: "",
+      LastName: "",
     },
   });
 
   const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
-    // setError("");
-    // setSuccess("");
-    // startTransition(() => {
-    //   register(values).then((data) => {
-    //     setError(data.error);
-    //     setSuccess(data.success);
-    //   });
-    // });
+    setError("");
+    setSuccess("");
+    startTransition(() => {
+      register(values).then((data) => {
+        setError(data.error);
+        setSuccess(data.success);
+      });
+    });
   };
   return (
     <CardWrapper
@@ -78,7 +78,7 @@ const RegisterForm = () => {
               <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                 <FormField
                   control={form.control}
-                  name="firstname"
+                  name="firstName"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel> First Name</FormLabel>
@@ -97,7 +97,7 @@ const RegisterForm = () => {
               <div className="w-full md:w-1/2 px-3">
                 <FormField
                   control={form.control}
-                  name="Lastname"
+                  name="LastName"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Last Name</FormLabel>

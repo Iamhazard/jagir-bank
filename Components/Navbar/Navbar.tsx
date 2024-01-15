@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import LoginButton from "../auth/login-button";
 import { Button } from "../ui/button";
 import SearchFrom from "./SearchForm";
+import { NavMenu } from "../auth/Navmenu";
 
 const NavBar = () => {
   const [dropDownMenu, setDropDownMenu] = useState<boolean>(false);
@@ -62,21 +63,7 @@ const NavBar = () => {
 
             {/* desktop*/}
             <div className="hidden lg:block  mx-16 text-gray-800">
-              <ul className="flex space-x-10">
-                {NAV_LINKS.map((link, N) => (
-                  <li
-                    className={`${styles.nav_items} items-center cursor-pointer  transition-none hover:text-green-600 `}
-                    key={N}>
-                    <Link
-                      onMouseEnter={handleNavbarHover}
-                      onMouseLeave={handleMouseLeave}
-                      href={link.href}>
-                      {link.label}
-                    </Link>
-                    {link.icon && <>{link.icon}</>}
-                  </li>
-                ))}
-              </ul>
+              <NavMenu />
             </div>
             {/*Search */}
             <div className="p-12 relative my-auto hidden xl:block">
