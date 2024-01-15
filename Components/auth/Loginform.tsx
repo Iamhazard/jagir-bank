@@ -22,6 +22,7 @@ import { FormSuccess } from "./form-success";
 import { LoginSchema } from "@/Schemas";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { login } from "@/actions/loginAction";
 
 const LoginForm = () => {
   const params = useSearchParams();
@@ -136,7 +137,11 @@ const LoginForm = () => {
 
           <FormError message={error || urlError} />
           <FormSuccess message={success} />
-          <Button disabled={isPending} type="submit" className="w-full">
+          <Button
+            variant="btn_green"
+            disabled={isPending}
+            type="submit"
+            className="w-full">
             {showTwoFactor ? "Confirm" : "Login"}
           </Button>
         </form>

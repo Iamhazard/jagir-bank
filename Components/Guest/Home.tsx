@@ -34,8 +34,8 @@ const Landing = () => {
 
             <div className="flex space-x-4 md:max-w-xs">
               <LoginButton mode="modal" asChild>
-                <Button variant="btn_green" size="lg">
-                  sign up
+                <Button variant="btn_green" size="default">
+                  Get Started
                 </Button>
               </LoginButton>
             </div>

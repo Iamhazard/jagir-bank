@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import GuestLogin from "./Guest";
+import LoginForm from "./Loginform";
+import RegisterForm from "./RegisterForm";
 
 interface LoginButtonProps {
   children: React.ReactNode;
@@ -19,14 +21,14 @@ const LoginButton = ({
   const router = useRouter();
   const Onclick = () => {
     console.log("Button clicked");
-    router.push("/auth/guest");
+    router.push("/auth/register");
   };
   if (mode === "modal") {
     return (
       <Dialog>
         <DialogTrigger asChild={asChild}>{children}</DialogTrigger>
         <DialogContent className="p-0 w-auto bg-transparent border-none">
-          <GuestLogin />
+          <RegisterForm />
         </DialogContent>
       </Dialog>
     );

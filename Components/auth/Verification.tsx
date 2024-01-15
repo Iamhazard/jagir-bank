@@ -5,8 +5,8 @@ import CardWrapper from "./card-wrapper";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { newVerification } from "@/actions/new-verification";
-import { FormError } from "../form-error";
 import { FormSuccess } from "./form-success";
+import { FormError } from "./form-error";
 
 const NewVerificationform = () => {
   const searchParams = useSearchParams();

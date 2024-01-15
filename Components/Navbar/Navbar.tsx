@@ -6,8 +6,6 @@ import styles from "../../styles/styles.module.css";
 import Link from "next/link";
 
 import Image from "next/image";
-
-import { NAV_LINKS } from "@/lib/Navlinks";
 import { useRouter } from "next/navigation";
 import LoginButton from "../auth/login-button";
 import { Button } from "../ui/button";
@@ -74,7 +72,9 @@ const NavBar = () => {
             <div className="flex space-x-4">
               <Link href="/auth/login">
                 {" "}
-                <button>Login</button>
+                <Button variant="btn_blue" size="lg">
+                  Login
+                </Button>
               </Link>
               <LoginButton mode="modal" asChild>
                 <Button variant="btn_green" size="lg">
@@ -101,14 +101,7 @@ const NavBar = () => {
                 <SearchFrom />
               </div>
               <ul className="space-y-8 font-bold p-3 mb-4">
-                {NAV_LINKS.map((link, N) => (
-                  <li
-                    className={`${styles.nav_items} items-center cursor-pointer  transition-none hover:text-green-600 `}
-                    key={N}>
-                    <Link href={link.href}>{link.label}</Link>
-                    {link.icon && <>{link.icon}</>}
-                  </li>
-                ))}
+                <NavMenu />
               </ul>
             </div>
 
