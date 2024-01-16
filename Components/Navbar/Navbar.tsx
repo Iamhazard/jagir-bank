@@ -1,6 +1,6 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 
 import styles from "../../styles/styles.module.css";
 import Link from "next/link";
@@ -11,10 +11,13 @@ import LoginButton from "../auth/login-button";
 import { Button } from "../ui/button";
 import SearchFrom from "./SearchForm";
 import { NavMenu } from "../auth/Navmenu";
+import { UserButton } from "../auth/user-button";
+import { IoIosHelpCircleOutline, IoIosNotifications } from "react-icons/io";
+import { MdOutlineApps } from "react-icons/md";
 
 const NavBar = () => {
   const [dropDownMenu, setDropDownMenu] = useState<boolean>(false);
-  const [isHovered, setIsHovered] = useState<boolean>(false);
+
   const router = useRouter();
   const Onclick = () => {
     console.log("Button clicked");
@@ -25,16 +28,6 @@ const NavBar = () => {
     setDropDownMenu(!dropDownMenu);
   };
 
-  const handleNavbarHover = () => {
-    setIsHovered(true);
-    console.log("hover");
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-  };
-
-  const signUp = () => {};
   return (
     <section className="border-b border-gray-300 mb-3 sticky top-0 bg-white z-50">
       <div className="container">
@@ -67,20 +60,37 @@ const NavBar = () => {
             <div className="p-12 relative my-auto hidden xl:block">
               <SearchFrom />
             </div>
+
+            <div className="gap-2 p-2 inline-flex">
+              <span>
+                <IoIosHelpCircleOutline size={25} />
+              </span>
+              <span>
+                <MdOutlineApps size={25} />
+              </span>
+              <span>
+                <IoIosNotifications size={25} />
+              </span>
+            </div>
           </div>
+
           <div className="hidden lg:block ">
             <div className="flex space-x-4">
-              <Link href="/auth/login">
-                {" "}
-                <Button variant="btn_blue" size="lg">
-                  Login
-                </Button>
-              </Link>
-              <LoginButton mode="modal" asChild>
-                <Button variant="btn_green" size="lg">
-                  sign up
-                </Button>
-              </LoginButton>
+              <UserButton />
+
+              <>
+                <Link href="/auth/login">
+                  {" "}
+                  <Button variant="btn_blue" size="lg">
+                    Login
+                  </Button>
+                </Link>
+                <LoginButton mode="modal" asChild>
+                  <Button variant="btn_green" size="lg">
+                    sign up
+                  </Button>
+                </LoginButton>
+              </>
             </div>
           </div>
           <div className="lg:hidden">

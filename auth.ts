@@ -52,7 +52,7 @@ export const {
     },
 
     async session({ token, session }) {
-      //console.log({ sessionToken: token });
+      // console.log({ sessionToken: token });
       if (token.sub && session.user) {
         session.user.id = token.sub;
       }
@@ -77,9 +77,9 @@ export const {
 
       if (!existingUser) return token;
       const existingAccount = await getAccountByUserId(existingUser.id);
-
       token.isOAuth = !!existingAccount;
       token.name = existingUser.name;
+      token.lastName = existingUser.lastName;
       token.email = existingUser.email;
       token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
       token.role = existingUser.role;
