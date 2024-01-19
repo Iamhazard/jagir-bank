@@ -82,8 +82,6 @@ const Category = () => {
         </div>
         {/*Image text */}
         <div className={styles.image_container}>
-          <img src="/assets/category.jpg" alt="" className={styles.image} />
-
           <div className={styles.top_left}>
             <div>
               <span>For Clients</span>
