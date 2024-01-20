@@ -28,7 +28,7 @@ export const {
   },
   callbacks: {
     async signIn({ user, account }) {
-      console.log(" account form auth", account);
+      //console.log(" account form auth", account);
       //Allow Oauth without email verification
       if (account?.provider !== "credentials") return true;
 
@@ -79,10 +79,9 @@ export const {
       const existingAccount = await getAccountByUserId(existingUser.id);
       token.isOAuth = !!existingAccount;
       token.name = existingUser.name;
-      token.lastName = existingUser.lastName;
       token.email = existingUser.email;
-      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
       token.role = existingUser.role;
+      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
 
       //console.log({token}fan)
       return token;

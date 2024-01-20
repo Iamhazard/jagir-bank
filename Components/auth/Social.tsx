@@ -26,7 +26,7 @@ export const Social = () => {
         <div className="bg-white p-1 rounded-full">
           <FcGoogle />
         </div>
-        <span className="ml-4">Sign Up with Google</span>
+        <span className="ml-4">Sign in with Google</span>
       </Button>
       <Button
         className="w-full font-bold shadow-sm rounded-3xl py-2 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline "
@@ -36,7 +36,7 @@ export const Social = () => {
         <div className="bg-white p-1 rounded-full">
           <AiOutlineApple />
         </div>
-        <span className="ml-4">Sign Up with Apple</span>
+        <span className="ml-4">Sign in with Apple</span>
       </Button>
     </div>
   );

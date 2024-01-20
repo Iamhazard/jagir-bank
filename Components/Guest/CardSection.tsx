@@ -20,7 +20,7 @@ const CardSection = () => {
           <h1 className={styles.heading_cards}>your questions</h1>
           <Link href="/">
             <Image
-              src="../../assets/jb.svg"
+              src="/assets/jb.svg"
               alt=""
               height={100}
               width={100}

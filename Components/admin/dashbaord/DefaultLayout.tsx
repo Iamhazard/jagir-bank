@@ -142,10 +142,10 @@ const DefaultLayout = () => {
                     </div>
                     <div className="ml-3">
                       <div className="text-base font-medium leading-none text-gray-800">
-                        {user.name}
+                        {user?.name}
                       </div>
                       <div className="text-sm font-medium leading-none text-gray-600">
-                        {user.email}
+                        {user?.email}
                       </div>
                     </div>
                     <button

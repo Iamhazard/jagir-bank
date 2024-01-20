@@ -65,8 +65,27 @@ export const FormSchema = z.object({
 });
 
 export const ProfileSchema = z.object({
-  email: z.string().email({ message: "Email is required" }),
-  password: z.string().min(6, { message: "Minium 6 character required" }),
-  name: z.string().min(1, { message: "Name  is required" }),
-  lastName: z.string().min(1, { message: "Last Name  is required" }),
+  address: z.string().min(1, { message: "Street Address is required" }),
+  stateName: z.string().min(1, { message: "State Name  is required" }),
+  cityName: z.string().min(1, { message: "City Name  is required" }),
+  phoneNumber: z.number().min(10, { message: "Phone Number  is required" }),
+  PostalCode: z.number().min(5, { message: "Phone Number  is required" }),
+  date: z.date({
+    required_error: "A date of birth is required.",
+  }),
+  image: z.string().refine((data) => data.startsWith("data:image/"), {
+    message: "Please upload a valid image file.",
+  }),
+});
+
+export const ServicesSchema = z.object({
+  language: z.string({
+    required_error: "Please select a language.",
+  }),
+});
+
+export const RateSchema = z.object({
+  hourlyRate: z.number(),
+  servicesFee: z.number(),
+  estimatedAmount: z.number(),
 });

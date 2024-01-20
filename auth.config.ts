@@ -13,16 +13,19 @@ export default {
     }),
     Credentials({
       async authorize(credentials) {
-        const validFields = await LoginSchema.safeParse(credentials);
-        if (validFields.success) {
-          const { email, password } = validFields.data;
+        const validatedFields = LoginSchema.safeParse(credentials);
+
+        if (validatedFields.success) {
+          const { email, password } = validatedFields.data;
 
           const user = await getUserByEmail(email);
           if (!user || !user.password) return null;
 
-          const passwordMatch = await bcrypt.compare(password, user.password);
-          if (passwordMatch) return user;
+          const passwordsMatch = await bcrypt.compare(password, user.password);
+
+          if (passwordsMatch) return user;
         }
+
         return null;
       },
     }),

@@ -21,14 +21,14 @@ const LoginButton = ({
   const router = useRouter();
   const Onclick = () => {
     console.log("Button clicked");
-    router.push("/auth/register");
+    router.push("/auth/guest");
   };
   if (mode === "modal") {
     return (
       <Dialog>
         <DialogTrigger asChild={asChild}>{children}</DialogTrigger>
         <DialogContent className="p-0 w-auto bg-transparent border-none">
-          <RegisterForm />
+          <GuestLogin />
         </DialogContent>
       </Dialog>
     );

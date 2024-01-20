@@ -1,7 +1,7 @@
 "use server";
 
 import { RegisterSchema } from "@/Schemas";
-import { getUserByEmail } from "@/data/user";
+import { getUserByEmail, getUserById } from "@/data/user";
 import { db } from "@/lib/db";
 import { sendVerificationEmail } from "@/lib/mail";
 
