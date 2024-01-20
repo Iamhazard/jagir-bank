@@ -23,11 +23,13 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { LoginSchema } from "@/Schemas";
+import { BioSchema, LoginSchema } from "@/Schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { Select, SelectTrigger, SelectValue } from "../ui/select";
+import { Input } from "../ui/input";
 
-const services = [
+const languages = [
   { label: "Logo design", value: "en" },
   { label: "Web, Mobile, & Software Development", value: "fr" },
   { label: "WordPress design", value: "de" },
@@ -40,11 +42,12 @@ const services = [
 ] as const;
 
 const ProfileBio = () => {
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+  const form = useForm<z.infer<typeof BioSchema>>({
+    resolver: zodResolver(BioSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      bio: "",
+      language: "",
+      profession: "",
     },
   });
   return (
@@ -80,70 +83,90 @@ const ProfileBio = () => {
           Choose at least one services that best describe the type of work you
           do.
         </p>
-        <div>
-          <Form {...form}>
-            <form className="space-y-6 mt-6">
-              <FormField
-                control={form.control}
-                name="language"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn(
-                              "w-[300px] justify-between",
-                              !field.value && "text-muted-foreground"
-                            )}>
-                            {field.value
-                              ? services.find(
-                                  (service) => service.value === field.value
-                                )?.label
-                              : "search for services"}
-                            <CaretSortIcon className="ml-2 h-4 w-6 shrink-0 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-[200px] p-0">
-                        <Command>
-                          <CommandInput
-                            placeholder="Search more services..."
-                            className="h-9"
-                          />
-                          <CommandEmpty>No framework found.</CommandEmpty>
-                          <CommandGroup>
-                            {services.map((service) => (
-                              <CommandItem
-                                value={service.label}
-                                key={service.value}
-                                onSelect={() => {
-                                  form.setValue("service", service.value);
-                                }}>
-                                {service.label}
-                                <CheckIcon
-                                  className={cn(
-                                    "ml-auto h-4 w-4",
-                                    service.value === field.value
-                                      ? "opacity-100"
-                                      : "opacity-0"
-                                  )}
-                                />
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
+        <div className="mt-3">
+          <FormField
+            control={form.control}
+            name="language"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          "w-[300px] justify-between",
+                          !field.value && "text-muted-foreground"
+                        )}>
+                        {field.value
+                          ? languages.find(
+                              (language) => language.value === field.value
+                            )?.label
+                          : "Select for services"}
+                        <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[300px] p-0">
+                    <Command>
+                      <CommandInput
+                        placeholder="Search more services..."
+                        className="h-9"
+                      />
+                      <CommandEmpty>No services found.</CommandEmpty>
+                      <CommandGroup>
+                        {languages.map((language) => (
+                          <CommandItem
+                            value={language.label}
+                            key={language.value}
+                            onSelect={() => {
+                              form.setValue("language", language.value);
+                            }}>
+                            {language.label}
+                            <CheckIcon
+                              className={cn(
+                                "ml-auto h-4 w-4",
+                                language.value === field.value
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                              )}
+                            />
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
 
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </form>
-          </Form>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="mt-6">
+          <h1 className="text-xl mt-4">Add your Main Profession?</h1>
+          <div className="mt-4">
+            <FormField
+              control={form.control}
+              name="profession"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      className={cn("rounded-full")}
+                      placeholder="Software Engineer |Javascript | OS"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Title must have at least 4 letters
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}></FormField>
+          </div>
         </div>
       </Form>
     </div>

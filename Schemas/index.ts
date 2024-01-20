@@ -89,3 +89,20 @@ export const RateSchema = z.object({
   servicesFee: z.number(),
   estimatedAmount: z.number(),
 });
+
+export const BioSchema = z.object({
+  bio: z
+    .string()
+    .min(10, {
+      message: "Bio must be at least 10 characters.",
+    })
+    .max(160, {
+      message: "Bio must not be longer than 30 characters.",
+    }),
+  language: z.string({
+    required_error: "Please select a language.",
+  }),
+  profession: z.string().min(4, {
+    message: "Bio must be at least 4characters.",
+  }),
+});
