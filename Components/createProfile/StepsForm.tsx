@@ -36,6 +36,7 @@ import Rate from "./Rate";
 import ProfileBio from "./ProfileBio";
 import { Label } from "../ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import Steps from "./Steps";
 
 interface StepperFormProps {}
 
@@ -320,7 +321,7 @@ const StepperForm: React.FC<StepperFormProps> = () => {
 
         {step === 1 && <Rate />}
         {step === 2 && <ProfileBio />}
-        {step === 3 && <div className="mt-16"></div>}
+        {step === 3 && <Steps />}
         {step === 4 && <div className="mt-16"></div>}
 
         <div className="mt-16 flex justify-between">

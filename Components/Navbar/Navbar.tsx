@@ -14,10 +14,12 @@ import { NavMenu } from "../auth/Navmenu";
 import { UserButton } from "../auth/user-button";
 import { IoIosHelpCircleOutline, IoIosNotifications } from "react-icons/io";
 import { MdOutlineApps } from "react-icons/md";
+import { useSession } from "next-auth/react";
 
 const NavBar = () => {
   const [dropDownMenu, setDropDownMenu] = useState<boolean>(false);
-
+  const { data: session } = useSession();
+  console.log(session);
   const router = useRouter();
   const Onclick = () => {
     console.log("Button clicked");
@@ -60,37 +62,42 @@ const NavBar = () => {
             <div className="p-12 relative my-auto hidden xl:block">
               <SearchFrom />
             </div>
-
-            <div className="gap-2 p-2 inline-flex">
-              <span>
-                <IoIosHelpCircleOutline size={25} />
-              </span>
-              <span>
-                <MdOutlineApps size={25} />
-              </span>
-              <span>
-                <IoIosNotifications size={25} />
-              </span>
-            </div>
+            {session?.user ? (
+              <></>
+            ) : (
+              <div className="gap-2 p-2 inline-flex">
+                <span>
+                  <IoIosHelpCircleOutline size={25} />
+                </span>
+                <span>
+                  <MdOutlineApps size={25} />
+                </span>
+                <span>
+                  <IoIosNotifications size={25} />
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="hidden lg:block ">
             <div className="flex space-x-4">
-              <UserButton />
-
-              <>
-                <Link href="/auth/login">
-                  {" "}
-                  <Button variant="btn_blue" size="lg">
-                    Login
-                  </Button>
-                </Link>
-                <LoginButton mode="modal" asChild>
-                  <Button variant="btn_green" size="lg">
-                    sign up
-                  </Button>
-                </LoginButton>
-              </>
+              {session?.user ? (
+                <UserButton />
+              ) : (
+                <>
+                  <Link href="/auth/login">
+                    {" "}
+                    <Button variant="btn_blue" size="lg">
+                      Login
+                    </Button>
+                  </Link>
+                  <LoginButton mode="modal" asChild>
+                    <Button variant="btn_green" size="lg">
+                      sign up
+                    </Button>
+                  </LoginButton>
+                </>
+              )}
             </div>
           </div>
           <div className="lg:hidden">

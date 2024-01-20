@@ -26,7 +26,6 @@ import {
 import { BioSchema, LoginSchema } from "@/Schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Select, SelectTrigger, SelectValue } from "../ui/select";
 import { Input } from "../ui/input";
 
 const languages = [

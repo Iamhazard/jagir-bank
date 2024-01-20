@@ -17,7 +17,7 @@ const FooterList: React.FC<FooterListProps> = ({ list, i }) => {
       key={i}
       className="mb-4 cursor-pointer"
       onClick={() => setIsOpen(!isOpen)}>
-      <div className="border-b border-twilight flex justify-between items-center md:border-none">
+      <div className="border-b  flex justify-between items-center md:border-none">
         <h3 className="py-3 font-bold uppercase text-sm">{list.title}</h3>
         {isOpen ? (
           <svg

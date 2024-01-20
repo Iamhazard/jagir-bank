@@ -106,3 +106,9 @@ export const BioSchema = z.object({
     message: "Bio must be at least 4characters.",
   }),
 });
+
+export const experienceSchema = z.object({
+  educationCertificate: z.string(),
+  experience: z.string(),
+  language: z.string().min(1).max(50),
+});
