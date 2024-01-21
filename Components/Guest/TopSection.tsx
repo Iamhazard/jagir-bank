@@ -19,9 +19,12 @@ const TopSection = () => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleClickOutside = (event: MouseEvent) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    if (dropdownRef.current && !isNode(event.target)) {
       closeDropdown();
     }
+  };
+  const isNode = (target: EventTarget | null): target is Node => {
+    return target instanceof Node;
   };
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -31,7 +34,7 @@ const TopSection = () => {
   }, [handleClickOutside]);
 
   return (
-    <section className="flex flex-col-reverse">
+    <section className="md:flex hidden flex-col-reverse max-w-[1400px] mx-auto">
       <div className="flex items-center space-x-4  text-black p-4">
         <div className="flex space-x-5">
           {Links.map((items, l) => (
@@ -44,7 +47,7 @@ const TopSection = () => {
           ))}
           <div className="relative">
             <button
-              className="text-lg hover:text-green-600"
+              className="text-lg hover:text-green-600 flex items-center gap-1"
               onClick={toggleDropDown}>
               More
               <IoIosArrowDown width={12} height={11} />
@@ -53,12 +56,12 @@ const TopSection = () => {
               ref={dropdownRef}
               className={`${
                 dropDownMenu ? "block" : "hidden"
-              } mt-2 bg-white border border-gray-300 rounded-md shadow-lg absolute right-0`}>
+              } mt-2 bg-white border border-gray-300 rounded-md shadow-lg absolute right-0 z-10`}>
               {dropDown_Links.map((item, index) => (
                 <Link
                   key={index}
                   href={item.href}
-                  className="block px-4 py-2 hover:bg-gray-100 text-gray-800 dark:hover:bg-gray-700 dark:text-white">
+                  className="block px-4 py-2 whitespace-nowrap hover:bg-gray-100 text-gray-800 dark:hover:bg-gray-700 dark:text-white">
                   {item.label}
                 </Link>
               ))}

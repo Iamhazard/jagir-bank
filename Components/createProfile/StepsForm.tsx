@@ -16,7 +16,7 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { ProfileSchema } from "@/Schemas";
@@ -34,7 +34,6 @@ import {
 
 import Rate from "./Rate";
 import ProfileBio from "./ProfileBio";
-import { Label } from "../ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Steps from "./Steps";
 
@@ -55,10 +54,18 @@ const StepperForm: React.FC<StepperFormProps> = () => {
       address: "",
       stateName: "",
       cityName: "",
+      country: "",
       phoneNumber: +977,
       PostalCode: 4460,
       date: new Date(),
+      services: "",
+      hourlyRate: 12,
+      servicesFee: 1,
+      estimatedAmount: 11,
+      bio: "",
+      language: "",
     },
+    mode: "onSubmit",
   });
 
   const fee = 1;
@@ -73,272 +80,295 @@ const StepperForm: React.FC<StepperFormProps> = () => {
       reader.readAsDataURL(file);
     }
   };
+  const totalStep = 4;
+  const isLastStep = step === totalStep;
+
+  const onSubmit = (data: any) => {
+    console.log({ data });
+  };
 
   return (
     <ProfileWrapper
       headerLabel="Create a profile"
       backButtonLabel="Back to Register?"
       blackButtonHref="/auth/register">
-      <div className="w-full py-2 px-8">
-        <div className="flex justify-center">
-          <div className="flex items-center">
-            <div
-              className={`h-2 w-2 rounded-full ${
-                step >= 0 ? "bg-blue-500" : "bg-gray-300"
-              }`}></div>
-            <div
-              className={`h-2 w-2 rounded-full ${
-                step >= 1 ? "bg-blue-500" : "bg-gray-300"
-              }`}></div>
-            <div
-              className={`h-2 w-2 rounded-full ${
-                step >= 2 ? "bg-blue-500" : "bg-gray-300"
-              }`}></div>
-            <div
-              className={`h-2 w-2 rounded-full ${
-                step >= 3 ? "bg-blue-500" : "bg-gray-300"
-              }`}></div>
-            <div
-              className={`h-2 w-2 rounded-full ${
-                step >= 4 ? "bg-blue-500" : "bg-gray-300"
-              }`}></div>
-          </div>
-        </div>
+      <FormProvider {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="w-full py-2 px-8">
+            <div className="flex justify-center">
+              <div className="flex items-center">
+                <div
+                  className={`h-2 w-2 rounded-full ${
+                    step >= 0 ? "bg-blue-500" : "bg-gray-300"
+                  }`}></div>
+                <div
+                  className={`h-2 w-2 rounded-full ${
+                    step >= 1 ? "bg-blue-500" : "bg-gray-300"
+                  }`}></div>
+                <div
+                  className={`h-2 w-2 rounded-full ${
+                    step >= 2 ? "bg-blue-500" : "bg-gray-300"
+                  }`}></div>
+                <div
+                  className={`h-2 w-2 rounded-full ${
+                    step >= 3 ? "bg-blue-500" : "bg-gray-300"
+                  }`}></div>
+                <div
+                  className={`h-2 w-2 rounded-full ${
+                    step >= 4 ? "bg-blue-500" : "bg-gray-300"
+                  }`}></div>
+              </div>
+            </div>
 
-        {step === 0 && (
-          <>
-            <Form {...form}>
-              <form className="space-y-6">
-                <div className="flex items-center justify-center mt-4 p-3">
-                  <Label
-                    htmlFor="imageInput"
-                    className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full flex items-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      className="h-6 w-6 inline-block mr-2">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                    Upload photo
-                  </Label>
-                  <Input
-                    type="file"
-                    id="imageInput"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                  />
+            {step === 0 && (
+              <>
+                <Form {...form}>
+                  <div className="flex items-center justify-center mt-4 p-3">
+                    <label
+                      htmlFor="imageInput"
+                      className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full flex items-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        className="h-6 w-6 inline-block mr-2">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                      </svg>
+                      Upload photo
+                    </label>
+                    <Input
+                      type="file"
+                      id="imageInput"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                    />
 
-                  <div className="mt-4  space-y-3">
-                    <Avatar>
-                      <AvatarImage
-                        className="rounded-full h-16 w-16 object-cover"
-                        src="https://github.com/shadcn.png"
-                      />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
+                    <div className="mt-4  space-y-3">
+                      <Avatar>
+                        <AvatarImage
+                          className="rounded-full h-16 w-16 object-cover"
+                          src="https://github.com/shadcn.png"
+                        />
+                        <AvatarFallback>CN</AvatarFallback>
+                      </Avatar>
+                    </div>
                   </div>
-                </div>
-                <div className="space-y-4">
+                  <div className="space-y-4">
+                    <div className="flex flex-wrap -mx-3 mb-2">
+                      <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <FormField
+                          control={form.control}
+                          name="date"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-col">
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <FormControl>
+                                    <Button
+                                      variant={"outline"}
+                                      className={cn(
+                                        "w-[240px] pl-3 text-left font-normal",
+                                        !field.value && "text-muted-foreground"
+                                      )}>
+                                      {field.value ? (
+                                        format(field.value, "PPP")
+                                      ) : (
+                                        <span>Pick a date</span>
+                                      )}
+                                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                    </Button>
+                                  </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                  className="w-auto p-0"
+                                  align="start">
+                                  <Calendar
+                                    mode="single"
+                                    selected={field.value}
+                                    onSelect={field.onChange}
+                                    disabled={(date) =>
+                                      date > new Date() ||
+                                      date < new Date("1900-01-01")
+                                    }
+                                    initialFocus
+                                  />
+                                </PopoverContent>
+                              </Popover>
+
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div className="w-fit md:w-1/2 px-3">
+                        <FormField
+                          control={form.control}
+                          name="country"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Select>
+                                  <SelectTrigger
+                                    className={cn("rounded-full w-[180px]")}>
+                                    <SelectValue placeholder="Select Country" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectGroup>
+                                      <SelectItem value="np">Nepal</SelectItem>
+                                      <SelectItem value="in">India</SelectItem>
+                                      <SelectItem value="aus">
+                                        Australia
+                                      </SelectItem>
+                                      <SelectItem value="usa">USA</SelectItem>
+                                      <SelectItem value="uk">UK</SelectItem>
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+
+                    <FormField
+                      control={form.control}
+                      name="address"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Street Address*</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="address"
+                              className={cn("rounded-full")}
+                              placeholder="Enter your street address"
+                              {...field}
+                              disabled={isPending}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}></FormField>
+                  </div>
+
                   <div className="flex flex-wrap -mx-3 mb-2">
-                    <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                    <div className="w-fit md:w-1/2 px-3 mb-6 md:mb-0">
                       <FormField
                         control={form.control}
-                        name="date"
+                        name="stateName"
                         render={({ field }) => (
-                          <FormItem className="flex flex-col">
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <FormControl>
-                                  <Button
-                                    variant={"outline"}
-                                    className={cn(
-                                      "w-[240px] pl-3 text-left font-normal",
-                                      !field.value && "text-muted-foreground"
-                                    )}>
-                                    {field.value ? (
-                                      format(field.value, "PPP")
-                                    ) : (
-                                      <span>Pick a date</span>
-                                    )}
-                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                  </Button>
-                                </FormControl>
-                              </PopoverTrigger>
-                              <PopoverContent
-                                className="w-auto p-0"
-                                align="start">
-                                <Calendar
-                                  mode="single"
-                                  selected={field.value}
-                                  onSelect={field.onChange}
-                                  disabled={(date) =>
-                                    date > new Date() ||
-                                    date < new Date("1900-01-01")
-                                  }
-                                  initialFocus
-                                />
-                              </PopoverContent>
-                            </Popover>
-
+                          <FormItem>
+                            <FormLabel> State/Province</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="name"
+                                placeholder="Enter State/Province"
+                                className={cn("rounded-full")}
+                                {...field}
+                                disabled={isPending}
+                              />
+                            </FormControl>
                             <FormMessage />
                           </FormItem>
-                        )}
-                      />
+                        )}></FormField>
                     </div>
                     <div className="w-fit md:w-1/2 px-3">
-                      <Select>
-                        <SelectTrigger className={cn("rounded-full w-[180px]")}>
-                          <SelectValue placeholder="Select Country" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem value="np">Nepal</SelectItem>
-                            <SelectItem value="in">India</SelectItem>
-                            <SelectItem value="aus">Australia</SelectItem>
-                            <SelectItem value="usa">USA</SelectItem>
-                            <SelectItem value="uk">UK</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
+                      <FormField
+                        control={form.control}
+                        name="cityName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Enter City</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="name"
+                                className={cn("rounded-full")}
+                                placeholder="Enter City"
+                                {...field}
+                                disabled={isPending}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}></FormField>
                     </div>
                   </div>
-
-                  <FormField
-                    control={form.control}
-                    name="address"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Street Address*</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="address"
-                            className={cn("rounded-full")}
-                            placeholder="Enter your street address"
-                            {...field}
-                            disabled={isPending}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}></FormField>
-                </div>
-
-                <div className="flex flex-wrap -mx-3 mb-2">
-                  <div className="w-fit md:w-1/2 px-3 mb-6 md:mb-0">
-                    <FormField
-                      control={form.control}
-                      name="stateName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel> State/Province</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="name"
-                              placeholder="Enter State/Province"
-                              className={cn("rounded-full")}
-                              {...field}
-                              disabled={isPending}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}></FormField>
+                  <div className="flex flex-wrap -mx-3 mb-2">
+                    <div className="w-fit md:w-1/2 px-3 mb-6 md:mb-0">
+                      <FormField
+                        control={form.control}
+                        name="phoneNumber"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel> Phone*</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                placeholder="Enter Phone Number"
+                                className={cn("rounded-full")}
+                                {...field}
+                                disabled={isPending}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}></FormField>
+                    </div>
+                    <div className="w-fit md:w-1/2 px-3">
+                      <FormField
+                        control={form.control}
+                        name="PostalCode"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>ZIP/Postal Code</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="Zip"
+                                className={cn("rounded-full")}
+                                placeholder="Enter Postal code"
+                                {...field}
+                                disabled={isPending}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}></FormField>
+                    </div>
                   </div>
-                  <div className="w-fit md:w-1/2 px-3">
-                    <FormField
-                      control={form.control}
-                      name="cityName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Enter City</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="name"
-                              className={cn("rounded-full")}
-                              placeholder="Enter City"
-                              {...field}
-                              disabled={isPending}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}></FormField>
-                  </div>
-                </div>
-                <div className="flex flex-wrap -mx-3 mb-2">
-                  <div className="w-fit md:w-1/2 px-3 mb-6 md:mb-0">
-                    <FormField
-                      control={form.control}
-                      name="phoneNumber"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel> Phone*</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              placeholder="Enter Phone Number"
-                              className={cn("rounded-full")}
-                              {...field}
-                              disabled={isPending}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}></FormField>
-                  </div>
-                  <div className="w-fit md:w-1/2 px-3">
-                    <FormField
-                      control={form.control}
-                      name="PostalCode"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>ZIP/Postal Code</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="Zip"
-                              className={cn("rounded-full")}
-                              placeholder="Enter Postal code"
-                              {...field}
-                              disabled={isPending}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}></FormField>
-                  </div>
-                </div>
-              </form>
-            </Form>
-          </>
-        )}
+                </Form>
+              </>
+            )}
 
-        {step === 1 && <Rate />}
-        {step === 2 && <ProfileBio />}
-        {step === 3 && <Steps />}
-        {step === 4 && <div className="mt-16"></div>}
+            {step === 1 && <Rate />}
+            {step === 2 && <ProfileBio />}
+            {step === 3 && <Steps />}
+            {step === 4 && <div className="mt-16"></div>}
 
-        <div className="mt-16 flex justify-between">
-          <button
-            onClick={handlePrev}
-            disabled={step === 0}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Prev
-          </button>
-          <button
-            onClick={handleNext}
-            disabled={step === 4}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Next
-          </button>
-        </div>
-      </div>
+            <div className="mt-16 flex justify-between">
+              <button
+                onClick={handlePrev}
+                disabled={step === 0}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Prev
+              </button>
+              <button
+                type="button"
+                onClick={() => (isLastStep ? {} : handleNext())}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                {isLastStep ? "Submit" : "Next"}
+              </button>
+            </div>
+          </div>
+        </form>
+      </FormProvider>
     </ProfileWrapper>
   );
 };

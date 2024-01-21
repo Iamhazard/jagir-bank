@@ -27,9 +27,12 @@ export default async function RootLayout({
           <div className="main">
             <div className="gradient" />
           </div>
-          <NavBar />
+
           <Toaster />
-          <main className=" relative overflow-hidden">{children}</main>
+          <main className="relative flex flex-col min-h-screen">
+            <NavBar />
+            <div className="flex-grow flex-1">{children}</div>
+          </main>
         </body>
       </html>
     </SessionProvider>

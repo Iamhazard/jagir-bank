@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import styles from "../../styles/main.module.css";
 import Link from "next/link";
 import { Links } from "../../lib/MainLinks";
+import clsx from "clsx";
 
 interface ImageLink {
   href: string;
@@ -55,7 +56,7 @@ const Category = () => {
   ];
 
   return (
-    <section className="mt-12 container mx-auto px-3">
+    <section className="mt-12 max-w-[1400px]  mx-auto px-3">
       <div className="max-w-sm  mx-auto md:max-w-full">
         <h1 className={styles.heading_cat}>Browse talent by Category</h1>
         <p className={`${styles.p_category} md:text-lg sm:p-6 mb-7`}>
@@ -82,32 +83,29 @@ const Category = () => {
         </div>
         {/*Image text */}
         <div className={styles.image_container}>
-          <div className={styles.top_left}>
+          <div className={clsx("py-6 px-4 sm:px-6 md:px-8", styles.top_left)}>
             <div>
               <span>For Clients</span>
               <h1 className={styles.left_h1}> Find talent your way</h1>
-              <p className={styles.left_p}>
+              <p className=" text-xl font-medium  sm:py-2 ">
                 Work with the largest network of independent professionals and
-                get things done—from quick turnarounds to big transformations.
+                get things done from quick turnarounds to big transformations.
               </p>
             </div>
-            <div className="flex flex-wrap -mx-4">
+            <div className="flex flex-wrap gap-6 items-center mt-5">
               {imageLink.map((image, i) => (
-                <div
-                  key={i}
-                  className="w-full sm:w-1/2 md:w-1/3 lg:w-1/3 xl:w-1/3 px-4 mb-8">
-                  <div className=" border-b w-full p-5 bg-[#f5f5f5] rounded-md mt-8 ml-7">
-                    <div className={styles.card_details}>
-                      <h1 className={styles.text_title}>{image.label}</h1>
-                    </div>
-                    <button className={styles.card_button}>{image.btn}</button>
-                  </div>
-                </div>
+                <Link href={image.href} className="w-full md:w-fit">
+                  <button
+                    key={i}
+                    className="w-full p-4 bg-[#f5f5f5] rounded-md text-black hover:bg-green-600 ">
+                    {image.label}
+                  </button>
+                </Link>
               ))}
             </div>
           </div>
         </div>
-        <div className="container mx-auto max-w-3xl">
+        <div className="mx-auto max-w-3xl">
           <h5 className="text-gray-500 font-extrabold uppercase tracking-widest text-xs text-center mt-16 mb-6">
             Top skills
           </h5>

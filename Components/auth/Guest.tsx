@@ -7,11 +7,11 @@ import { useRouter } from "next/navigation";
 const GuestLogin = () => {
   const [selectedOption, setSelectedOption] = useState<string>("");
   const router = useRouter();
-  const OnClientClick = (e) => {
+  const OnClientClick = (e: React.MouseEvent) => {
     e.preventDefault();
     setSelectedOption("Client");
   };
-  const OnFreeLanceClick = (e) => {
+  const OnFreeLanceClick = (e: React.MouseEvent) => {
     e.preventDefault();
     setSelectedOption("Freelancer");
   };

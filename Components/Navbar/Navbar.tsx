@@ -32,7 +32,7 @@ const NavBar = () => {
 
   return (
     <section className="border-b border-gray-300 mb-3 sticky top-0 bg-white z-50">
-      <div className="container">
+      <div className="max-w-[1400px] mx-auto">
         <div className="px-3 flex items-center justify-between h-16">
           {/*mbl nav icon */}
           <div className="flex items-center">

@@ -16,7 +16,7 @@ import {
 
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { FormError } from "../form-error";
+import { FormError } from "./form-error";
 
 import { ResetSchema } from "@/Schemas";
 import { reset } from "@/actions/reset";

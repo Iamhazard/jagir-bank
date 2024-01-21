@@ -12,7 +12,7 @@ import {
   CommandItem,
 } from "../ui/command";
 import { CheckIcon } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 
 import {
   Form,
@@ -23,9 +23,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { BioSchema, LoginSchema } from "@/Schemas";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+
 import { Input } from "../ui/input";
 
 const languages = [
@@ -41,14 +39,7 @@ const languages = [
 ] as const;
 
 const ProfileBio = () => {
-  const form = useForm<z.infer<typeof BioSchema>>({
-    resolver: zodResolver(BioSchema),
-    defaultValues: {
-      bio: "",
-      language: "",
-      profession: "",
-    },
-  });
+  const form = useFormContext();
   return (
     <div className="mt-6">
       <Form {...form}>

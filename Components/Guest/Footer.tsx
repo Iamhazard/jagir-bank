@@ -55,8 +55,8 @@ const Footer: React.FC = () => {
 
   return (
     <div className=" py-3 px-5 bg-Green text-white mt-14">
-      <div className="  mx-auto">
-        <div className="container cursor-pointer mx-auto md:flex justify-between md:border-b md:border-twilight mb-6">
+      <div className=" max-w-[1400px]  mx-auto">
+        <div className=" cursor-pointer mx-auto md:flex justify-between md:border-b md:border-twilight mb-6">
           {footerLists.map((list, i) => (
             <div key={i}>
               <FooterList list={list} i={i} />
@@ -65,7 +65,7 @@ const Footer: React.FC = () => {
         </div>
 
         {/* copyright */}
-        <div className=" mx-[150px]">
+        <div className=" mx-auto">
           <h4 className=" text-sm">&copy; 2023 jagirBank </h4>
           <h5 className="text-sm text-gray-300">Cloned by Hazard</h5>
         </div>

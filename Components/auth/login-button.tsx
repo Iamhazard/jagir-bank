@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import GuestLogin from "./Guest";
-import LoginForm from "./Loginform";
-import RegisterForm from "./RegisterForm";
+// import LoginForm from "./Loginform";
+// import RegisterForm from "./RegisterForm";
 
 interface LoginButtonProps {
   children: React.ReactNode;

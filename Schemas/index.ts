@@ -66,6 +66,7 @@ export const FormSchema = z.object({
 
 export const ProfileSchema = z.object({
   address: z.string().min(1, { message: "Street Address is required" }),
+  country: z.string().min(1, { message: "Country Name is required" }),
   stateName: z.string().min(1, { message: "State Name  is required" }),
   cityName: z.string().min(1, { message: "City Name  is required" }),
   phoneNumber: z.number().min(10, { message: "Phone Number  is required" }),
@@ -73,24 +74,13 @@ export const ProfileSchema = z.object({
   date: z.date({
     required_error: "A date of birth is required.",
   }),
-  image: z.string().refine((data) => data.startsWith("data:image/"), {
-    message: "Please upload a valid image file.",
-  }),
-});
 
-export const ServicesSchema = z.object({
-  language: z.string({
+  services: z.string({
     required_error: "Please select a language.",
   }),
-});
-
-export const RateSchema = z.object({
-  hourlyRate: z.number(),
-  servicesFee: z.number(),
-  estimatedAmount: z.number(),
-});
-
-export const BioSchema = z.object({
+  hourlyRate: z.number().int().nonnegative(),
+  servicesFee: z.number().nonnegative(),
+  estimatedAmount: z.number().int().nonnegative(),
   bio: z
     .string()
     .min(10, {
@@ -99,16 +89,6 @@ export const BioSchema = z.object({
     .max(160, {
       message: "Bio must not be longer than 30 characters.",
     }),
-  language: z.string({
-    required_error: "Please select a language.",
-  }),
-  profession: z.string().min(4, {
-    message: "Bio must be at least 4characters.",
-  }),
-});
 
-export const experienceSchema = z.object({
-  educationCertificate: z.string(),
-  experience: z.string(),
   language: z.string().min(1).max(50),
 });

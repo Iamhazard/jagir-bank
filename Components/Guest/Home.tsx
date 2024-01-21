@@ -10,6 +10,7 @@ import Animation from "./Animation";
 import CardSection from "./CardSection";
 import LoginButton from "../auth/login-button";
 import { Button } from "../ui/button";
+import Category from "./Category";
 
 const Landing = () => {
   const router = useRouter();
@@ -17,7 +18,8 @@ const Landing = () => {
   return (
     <>
       <TopSection />
-      <div className="container mx-auto">
+
+      <div className=" max-w-[1400px] mx-auto">
         <div className="md:grid s grid-cols-12">
           <div className=" max-w-md md:max-w-full mx-auto md:mx-0 col-start-1 col-end-8 row-start-1 row-end-4 z-10 relative">
             <h1 className={`${styles.heading} p-4 sm:text-2xl`}>
@@ -32,14 +34,14 @@ const Landing = () => {
               Right now. Right here.
             </p>
 
-            <div className="flex space-x-4 md:max-w-xs">
+            <div className="flex space-x-4  p-4 md:max-w-xs">
               <LoginButton mode="modal" asChild>
                 <Button variant="btn_green" size="default">
                   Get Started
                 </Button>
               </LoginButton>
             </div>
-            <div className="mt-10">
+            <div className="mt-10 p-4">
               <h1 className=" text-green-600  text-lg leading-tight">
                 Trusted By
               </h1>
@@ -51,10 +53,8 @@ const Landing = () => {
             <Animation />
           </div>
         </div>
-        <div className="flex flex-col ">
-          {" "}
-          <CardSection />{" "}
-        </div>
+        <div className="flex flex-col  p-4"> </div>
+        <CardSection />
       </div>
     </>
   );

@@ -10,10 +10,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { experienceSchema } from "@/Schemas";
+import { useForm, useFormContext } from "react-hook-form";
 import {
   Command,
   CommandEmpty,
@@ -42,14 +39,8 @@ const languages = [
 ] as const;
 
 const Steps = () => {
-  const form = useForm<z.infer<typeof experienceSchema>>({
-    resolver: zodResolver(experienceSchema),
-    defaultValues: {
-      educationCertificate: "",
-      experience: "",
-      language: "",
-    },
-  });
+  const form = useFormContext();
+
   return (
     <div className="grid w-full max-w-sm items-center gap-1.5">
       <Form {...form}>

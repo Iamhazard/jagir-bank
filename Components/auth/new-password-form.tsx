@@ -12,16 +12,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../components/ui/form";
+} from "../../Components/ui/form";
 
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { FormError } from "../form-error";
+
 import { NewPasswordSchema } from "@/Schemas";
 import { reset } from "@/actions/reset";
 import { useSearchParams } from "next/navigation";
 import { newPassword } from "@/actions/new-password";
 import { FormSuccess } from "./form-success";
+import { FormError } from "./form-error";
 
 const NewPasswordForm = () => {
   const searchParams = useSearchParams();

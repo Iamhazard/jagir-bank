@@ -2,10 +2,7 @@
 import React, { useTransition } from "react";
 import { Input } from "../ui/input";
 import { cn } from "@/lib/utils";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { RateSchema } from "@/Schemas";
+import { useFormContext } from "react-hook-form";
 import {
   Form,
   FormControl,
@@ -16,14 +13,7 @@ import {
 
 const Rate = () => {
   const [isPending, startTransition] = useTransition();
-  const form = useForm<z.infer<typeof RateSchema>>({
-    resolver: zodResolver(RateSchema),
-    defaultValues: {
-      hourlyRate: 1,
-      servicesFee: 1,
-      estimatedAmount: 0.0,
-    },
-  });
+  const form = useFormContext();
   return (
     <div className="mt-4">
       <h1 className=" mb-3 text-2xl font-semibold">
@@ -37,10 +27,12 @@ const Rate = () => {
       <div className="mt-4">
         <Form {...form}>
           <div className="space-y-4 text-sm">
-            <div className="flex pb-4">
-              <h1 className="text-xl flex-1 font-serif">Hourly rate</h1>
-              <p className=""> Total amount client will see.</p>
-              <span>
+            <div className="flex pb-4 justify-between gap-4 items-center">
+              <div>
+                <h1 className="text-xl flex-1 font-serif">Hourly rate</h1>
+                <p className="text-gray-500"> Total amount client will see.</p>
+              </div>
+              <div className="flex gap-0.5 items-center">
                 <FormField
                   control={form.control}
                   name="hourlyRate"
@@ -48,9 +40,10 @@ const Rate = () => {
                     <FormItem>
                       <FormControl>
                         <Input
+                          aria-disabled
                           type="number"
                           className={cn(" rounded-md w-24")}
-                          placeholder="$0.00"
+                          placeholder="0"
                           {...field}
                           disabled={isPending}
                         />
@@ -58,16 +51,18 @@ const Rate = () => {
                       <FormMessage />
                     </FormItem>
                   )}></FormField>
-                /hr
-              </span>
+                <span className="text-gray-500">/hr</span>
+              </div>
             </div>
-            <div className="flex pb-4">
-              <h1 className="text-xl flex-1 font-serif">Services fee</h1>
-              <p className="">
-                {" "}
-                This helps to run platform and provide protection
-              </p>
-              <span>
+            <div className="flex pb-4 justify-between gap-4 items-center">
+              <div>
+                <h1 className="text-xl flex-1 font-serif">Services fee</h1>
+                <p className="text-gray-500">
+                  {" "}
+                  This helps to run platform and provide protection
+                </p>
+              </div>
+              <div className="flex gap-0.5 items-center">
                 {" "}
                 <FormField
                   control={form.control}
@@ -78,7 +73,7 @@ const Rate = () => {
                         <Input
                           type="number"
                           className={cn(" rounded-md w-24")}
-                          placeholder="$0.00"
+                          placeholder="0"
                           {...field}
                           disabled={isPending}
                         />
@@ -86,15 +81,17 @@ const Rate = () => {
                       <FormMessage />
                     </FormItem>
                   )}></FormField>
-                /hr
-              </span>
+                <span className="text-gray-500">/hr</span>
+              </div>
             </div>
-            <div className="flex pb-2">
-              <h1 className="text-xl flex-1 font-serif">You'll get</h1>
-              <p className="text-gray-500">
-                This estimated amount you'll receive .
-              </p>
-              <span className="ml-2">
+            <div className="flex pb-4 justify-between gap-4 items-center">
+              <div>
+                <h1 className="text-xl flex-1 font-serif">You'll get</h1>
+                <p className="text-gray-500">
+                  This estimated amount you'll receive .
+                </p>
+              </div>
+              <div className="ml-2 flex gap-0.5 items-center">
                 {" "}
                 <FormField
                   control={form.control}
@@ -105,7 +102,7 @@ const Rate = () => {
                         <Input
                           type="number"
                           className={cn(" rounded-md w-24")}
-                          placeholder="$0.00"
+                          placeholder="0"
                           {...field}
                           disabled={isPending}
                         />
@@ -113,8 +110,8 @@ const Rate = () => {
                       <FormMessage />
                     </FormItem>
                   )}></FormField>
-                /hr
-              </span>
+                <span className="text-gray-500">/hr</span>
+              </div>
             </div>
           </div>
         </Form>

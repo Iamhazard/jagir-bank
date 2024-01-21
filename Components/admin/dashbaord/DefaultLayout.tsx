@@ -1,6 +1,5 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
-import { Fragment } from "react";
 import { Menu, Disclosure, Transition } from "@headlessui/react";
 import { FaBars, FaRegBell, FaRegWindowClose } from "react-icons/fa";
 import Link from "next/link";
@@ -22,12 +21,13 @@ interface UserNavigationItem {
 
 const navigation: NavigationItem[] = [
   { name: "Dashboard", href: "/dashboard", current: true },
-  { name: "Team", href: "/", current: false },
+  { name: "Client", href: "/dashboard/client", current: false },
+  { name: "FreeLancer", href: "/dashboard/Freelancer", current: false },
   { name: "User", href: "/dashboard/user", current: false },
   { name: "Reports", href: "#", current: false },
 ];
 
-function classNames(...classes) {
+function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
@@ -136,7 +136,7 @@ const DefaultLayout = () => {
                     <div className="flex-shrink-0">
                       <img
                         className="h-10 w-10 rounded-full"
-                        src={user?.image}
+                        src={user?.image as string}
                         alt=""
                       />
                     </div>

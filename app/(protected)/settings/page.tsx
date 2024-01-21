@@ -32,6 +32,7 @@ import { Switch } from "../../../Components/ui/switch";
 import { UserRole } from "@prisma/client";
 import { FormSuccess } from "@/Components/auth/form-success";
 import { FormError } from "@/Components/auth/form-error";
+import ProfileWrapper from "@/Components/createProfile/ProfileWrapper";
 
 const SettingPage = () => {
   const [error, setError] = useState<string | undefined>();
@@ -43,7 +44,7 @@ const SettingPage = () => {
     defaultValues: {
       password: undefined,
       newPassword: undefined,
-      firstName: user?.name || undefined,
+      name: user?.name || undefined,
       email: user?.email || undefined,
       role: user?.role || undefined,
       isTwoFactorEnabled: user?.isTwoFactorEnabled || undefined,
@@ -69,17 +70,17 @@ const SettingPage = () => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <p className="text-2xl font-semibold text-center">⚙️ Settings</p>
-      </CardHeader>
+    <ProfileWrapper
+      headerLabel="⚙️ Settings"
+      backButtonLabel="Back to Register?"
+      blackButtonHref="/auth/register">
       <CardContent>
         <Form {...form}>
           <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
             <div className="space-y-4">
               <FormField
                 control={form.control}
-                name="firstName"
+                name="name"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Name</FormLabel>
@@ -186,7 +187,10 @@ const SettingPage = () => {
                       </FormControl>
                       <SelectContent>
                         <SelectItem value={UserRole.ADMIN}>Admin</SelectItem>
-                        <SelectItem value={UserRole.USER}>User</SelectItem>
+                        <SelectItem value={UserRole.Freelancer}>
+                          User
+                        </SelectItem>
+                        <SelectItem value={UserRole.Client}>User</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -225,7 +229,7 @@ const SettingPage = () => {
           </form>
         </Form>
       </CardContent>
-    </Card>
+    </ProfileWrapper>
   );
 };
 
