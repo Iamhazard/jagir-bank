@@ -20,6 +20,8 @@ export const authRoutes = [
   "/auth/new-password",
 ];
 
+export const adminRoutes = ["/dashboard/users"];
+
 /**
  * The prefix for API authentication routes
  * Routes that start with this prefix are used for API authentication purposes
@@ -32,4 +34,4 @@ export const apiAuthPrefix = "/api/auth";
  * @type {string}
  */
 
-export const DEFAULT_LOGIN_REDIRECT = "/settings";
+export const DEFAULT_LOGIN_REDIRECT = "/findwork";

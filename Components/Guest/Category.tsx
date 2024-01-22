@@ -94,10 +94,8 @@ const Category = () => {
             </div>
             <div className="flex flex-wrap gap-6 items-center mt-5">
               {imageLink.map((image, i) => (
-                <Link href={image.href} className="w-full md:w-fit">
-                  <button
-                    key={i}
-                    className="w-full p-4 bg-[#f5f5f5] rounded-md text-black hover:bg-green-600 ">
+                <Link key={i} href={image.href} className="w-full md:w-fit">
+                  <button className="w-full p-4 bg-[#f5f5f5] rounded-md text-black hover:bg-green-600 ">
                     {image.label}
                   </button>
                 </Link>

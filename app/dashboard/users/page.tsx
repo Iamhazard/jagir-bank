@@ -1,4 +1,5 @@
 import React from "react";
+import UsersTable from "@/Components/admin/dashbaord/UsersTable";
 
 const UserLayout = () => {
   return (
@@ -11,8 +12,10 @@ const UserLayout = () => {
         </div>
       </header>
       <main>
-        <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+        <div className=" flex mx-auto items-center justify-center max-w-7xl  sm:px-6 lg:px-8">
           {/* Your content */}
+
+          <UsersTable />
         </div>
       </main>
     </>

@@ -15,7 +15,7 @@
 
 .tools {
     font-family: "Neue Montreal";
-    font-size: 32px;
+    font-size: 26px;
     padding-bottom: 6px;
     line-height: 33px;
 
@@ -23,7 +23,9 @@
 
 .btn {
     background-color: rgb(16, 138, 0);
+    display: flex;
     justify-content: center;
+    align-items: center;
     font-weight: 400;
     max-height: 40px;
     height: 36px;
@@ -36,9 +38,9 @@
     align-items: center;
     text-align: center;
     color: white;
-    margin-left: 105px;
-    margin-right: 105px;
-    margin-top: 33px;
+    margin-left: 60px;
+    margin-top: 6px;
+   
 
 }
 

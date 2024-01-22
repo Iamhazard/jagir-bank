@@ -19,7 +19,7 @@ import { useSession } from "next-auth/react";
 const NavBar = () => {
   const [dropDownMenu, setDropDownMenu] = useState<boolean>(false);
   const { data: session } = useSession();
-  console.log(session);
+
   const router = useRouter();
   const Onclick = () => {
     console.log("Button clicked");
@@ -59,13 +59,11 @@ const NavBar = () => {
               <NavMenu />
             </div>
             {/*Search */}
-            <div className="p-12 relative my-auto hidden xl:block">
+            <div className="p-12 relative mx-auto hidden xl:block">
               <SearchFrom />
             </div>
             {session?.user ? (
-              <></>
-            ) : (
-              <div className="gap-2 p-2 inline-flex">
+              <div className="gap-6 p-4 inline-flex">
                 <span>
                   <IoIosHelpCircleOutline size={25} />
                 </span>
@@ -76,6 +74,8 @@ const NavBar = () => {
                   <IoIosNotifications size={25} />
                 </span>
               </div>
+            ) : (
+              <></>
             )}
           </div>
 
@@ -101,13 +101,17 @@ const NavBar = () => {
             </div>
           </div>
           <div className="lg:hidden">
-            <ul className="flex space-x-4 text-sm">
-              <li>
-                <Link href="/login">
-                  <p>Log In</p>
-                </Link>
-              </li>
-            </ul>
+            {!session?.user ? (
+              <ul className="flex space-x-4 text-sm">
+                <li>
+                  <Link href="/login">
+                    <p>Log In</p>
+                  </Link>
+                </li>
+              </ul>
+            ) : (
+              <></>
+            )}
           </div>
         </div>
         {/* mbl */}
@@ -117,16 +121,18 @@ const NavBar = () => {
               <div className="p-3 relative mb-4 mt-2">
                 <SearchFrom />
               </div>
-              <ul className="space-y-8 font-bold p-3 mb-4">
+              <div className="space-y-8 font-bold p-3 mb-4">
                 <NavMenu />
-              </ul>
+              </div>
             </div>
 
-            <div className="mt-16">
+            <div className="flex mx-auto items-center">
               <Link href="">
-                <button className="w-full bg-primary-green text-black font-bold rounded-lg my-4 py-2">
-                  Sign Up
-                </button>
+                <LoginButton mode="modal" asChild>
+                  <Button variant="btn_green" size="lg">
+                    sign up
+                  </Button>
+                </LoginButton>
               </Link>
             </div>
           </div>

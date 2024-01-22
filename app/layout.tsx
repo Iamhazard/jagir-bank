@@ -29,10 +29,8 @@ export default async function RootLayout({
           </div>
 
           <Toaster />
-          <main className="relative flex flex-col min-h-screen">
-            <NavBar />
-            <div className="flex-grow flex-1">{children}</div>
-          </main>
+
+          <div className="flex-grow flex-1">{children}</div>
         </body>
       </html>
     </SessionProvider>
