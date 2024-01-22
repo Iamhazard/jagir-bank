@@ -21,7 +21,7 @@ const ProfileWrapper = ({
   showSocial,
 }: ProfileWrapperProps) => {
   return (
-    <Card className="w-[600px] shadow-md  my-6">
+    <Card className="w-[600px] shadow-md hover:bg-gray-100 my-6">
       <CardHeader>
         <Header label={headerLabel} />
       </CardHeader>

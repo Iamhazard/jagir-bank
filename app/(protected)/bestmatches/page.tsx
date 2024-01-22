@@ -1,11 +1,8 @@
+import Jobs from "@/Components/FreelancerWoks/Jobs";
 import React from "react";
 
 const BestmatchesPage = () => {
-  return (
-    <div>
-      <h1>best matches jobs</h1>
-    </div>
-  );
+  return <Jobs />;
 };
 
 export default BestmatchesPage;
