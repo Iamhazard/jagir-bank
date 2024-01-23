@@ -202,8 +202,6 @@
     background-image: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),url("/assets/category.jpg");
     position: relative;
     display: inline-block;
-    padding-left: 16px;
-    padding-right: 16px;
     margin-top: 20px;
     overflow: hidden;
     height: fit-content;
