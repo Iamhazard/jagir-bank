@@ -24,9 +24,7 @@ export default async function RootLayout({
     <SessionProvider session={session}>
       <html lang="en">
         <body className={inter.className}>
-          <div className="main">
-            <div className="gradient" />
-          </div>
+          <div className="main" />
 
           <Toaster />
 

@@ -1,4 +1,5 @@
 "use client";
+import clsx from "clsx";
 import Link from "next/link";
 import React, { useState } from "react";
 
@@ -33,7 +34,11 @@ const Jobs = () => {
           Price fixed-Intermediate-Est.Budget:$10k
         </small>
         <div className="py-4">
-          <p className="text-justify text-clip overflow-hidden line-clamp-3">
+          <p
+            className={clsx(
+              "text-justify text-clip overflow-hidden",
+              showMore ? "line-clamp-auto" : "line-clamp-3"
+            )}>
             We are seeking a talented and experienced Full-stack Developer to
             join our team for an exciting Metaverse project. As a Full-stack
             Developer, you will be responsible for developing and maintaining
@@ -42,11 +47,11 @@ const Jobs = () => {
             create immersive and interactive experiences.
           </p>
         </div>
-        <span
+        <p
           className="text-blue-500 cursor-pointer"
           onClick={() => setShowMore(!showMore)}>
           {showMore ? "See Less" : "See More"}
-        </span>
+        </p>
         <div className="flex gap-4 mt-4">
           {skillbutton.map((btn, i) => (
             <button
