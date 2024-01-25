@@ -62,8 +62,10 @@ const NavBar = () => {
             <div className="p-12 relative mx-auto hidden xl:block">
               <SearchFrom />
             </div>
+          </div>
+          <div className="flex space-x-6">
             {session?.user ? (
-              <div className="gap-6 p-4 inline-flex">
+              <div className="gap-6 p-4 inline-flex justify-between">
                 <span>
                   <IoIosHelpCircleOutline size={25} />
                 </span>
