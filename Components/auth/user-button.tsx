@@ -12,6 +12,8 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { LogoutButton } from "./logout-button";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import Link from "next/link";
+import { SettingsIcon } from "lucide-react";
 
 export const UserButton = () => {
   const user = useCurrentUser();
@@ -33,6 +35,10 @@ export const UserButton = () => {
             Logout
           </DropdownMenuItem>
         </LogoutButton>
+        <DropdownMenuItem>
+          <SettingsIcon />
+          <Link href="/settings">Settings</Link>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

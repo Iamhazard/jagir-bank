@@ -1,4 +1,6 @@
+import UsersTable from "@/Components/admin/dashbaord/UsersTable";
 import { db } from "@/lib/db";
+import { PrismaClient } from "@prisma/client";
 import { useSession } from "next-auth/react";
 
 export const useCurrentUser = () => {
@@ -8,6 +10,7 @@ export const useCurrentUser = () => {
 };
 
 export const getAllUser = async () => {
+
   try {
     const users = await db.user.findMany();
 
@@ -17,3 +20,6 @@ export const getAllUser = async () => {
     return null;
   }
 };
+
+
+

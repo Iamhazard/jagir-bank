@@ -21,6 +21,9 @@ export const authRoutes = [
 ];
 
 export const adminRoutes = ["/dashboard/users"];
+export const clientRoutes = ["/clientProfile"];
+export const freeLancerRoutes= ["/freeLancerProfile"];
+export const jobRoutes= ["/findwork"];
 
 /**
  * The prefix for API authentication routes

@@ -21,7 +21,7 @@ const Jobs = () => {
   return (
     <div>
       <div
-        className={`max-w-2xl max-h-[500px]   p-6 bg-gray-100 hover:bg-gray-300 border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 ${
+        className={`max-w-2xl max-h-[500px]   p-6 bg-[#ffffff] hover:bg-[#F2F7F2] border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 ${
           showMore ? "expanded" : ""
         }`}>
         <small className="text-gray-400 ">Posted 2 hours ago</small>

@@ -21,10 +21,7 @@ interface UserNavigationItem {
 
 const navigation: NavigationItem[] = [
   { name: "Dashboard", href: "/dashboard", current: true },
-  { name: "Client", href: "/dashboard/client", current: false },
-  { name: "FreeLancer", href: "/dashboard/Freelancer", current: false },
   { name: "User", href: "/dashboard/users", current: false },
-  { name: "Reports", href: "#", current: false },
 ];
 
 function classNames(...classes: string[]) {

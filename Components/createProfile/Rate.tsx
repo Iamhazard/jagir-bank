@@ -42,6 +42,7 @@ const Rate = () => {
                         <Input
                           aria-disabled
                           type="number"
+                          id="hourlyRate"
                           className={cn(" rounded-md w-24")}
                           placeholder="0"
                           {...field}

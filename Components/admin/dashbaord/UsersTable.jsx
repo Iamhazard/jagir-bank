@@ -1,39 +1,22 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Table,
   TableBody,
   TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "../../ui/table";
 import { Card } from "@/Components/ui/card";
-import { getAllUser } from "@/hooks/use-current-user";
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
-const UsersTable = () => {
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetchedUsers = await fetch("/api/users");
-        setUsers(fetchedUsers);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  console.log("users from table", users);
+const UsersTable = async () => {
+  const users = await prisma.user.findMany();
 
   return (
-    <Card className="w-[600px] shadow-md  my-6">
+    <Card className="w-[800px] sm:w-[400px] md:w-[400px] shadow-md my-6">
       <Table>
         <TableCaption>A list of Users.</TableCaption>
         <TableHeader>
@@ -41,18 +24,25 @@ const UsersTable = () => {
             <TableHead className="w-[100px]">S.N</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Name</TableHead>
+            <TableHead>emailVerified</TableHead>
+            <TableHead>TwoFactorEnabled</TableHead>
             <TableHead className="text-right">Role</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {users?.map((user) => (
-            <TableRow key={user.id}>
-              <TableCell className="font-medium">{user.id}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>{user.name}</TableCell>
-              <TableCell className="text-right">{user.role}</TableCell>
-            </TableRow>
-          ))}
+          {users &&
+            users.map((user, index) => (
+              <TableRow key={index}>
+                <TableCell className="font-medium">{index + 1}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.name}</TableCell>
+                <TableCell>{user.emailVerified.toDateString()}</TableCell>
+                <TableCell className=" items-center">
+                  {user.isTwoFactorEnabled.toString()}
+                </TableCell>
+                <TableCell className="text-right">{user.role}</TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </Card>

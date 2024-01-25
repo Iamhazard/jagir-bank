@@ -1,4 +1,12 @@
+"use client";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+} from "@/Components/ui/card";
 import React from "react";
+import ChartData from "@/Components/admin/LineChart/ChartData";
 
 const DefaultDashboard = () => {
   return (
@@ -12,7 +20,14 @@ const DefaultDashboard = () => {
       </header>
       <main>
         <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-          {/* Your content */}
+          <Card className="w-[400px]">
+            <CardHeader>
+              <CardDescription>JAGIRBANK users DataSet</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ChartData />
+            </CardContent>
+          </Card>
         </div>
       </main>
     </>
