@@ -3,8 +3,8 @@ import React from "react";
 
 const BestmatchesPage = () => {
   return (
-    <div>
-      <h1>best</h1>
+    <div className="mt-4">
+      <Jobs />
     </div>
   );
 };

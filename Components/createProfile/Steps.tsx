@@ -44,7 +44,7 @@ const Steps = () => {
   return (
     <div className="grid w-full max-w-sm items-center gap-1.5">
       <Form {...form}>
-        <form className="mt-6">
+        <div className="mt-6">
           <FormField
             control={form.control}
             name="educationCertificate"
@@ -146,7 +146,7 @@ const Steps = () => {
               )}
             />
           </div>
-        </form>
+        </div>
       </Form>
     </div>
   );

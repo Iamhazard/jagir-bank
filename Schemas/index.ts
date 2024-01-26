@@ -70,7 +70,7 @@ export const ProfileSchema = z.object({
   stateName: z.string().min(1, { message: "State Name  is required" }),
   cityName: z.string().min(1, { message: "City Name  is required" }),
   phoneNumber: z.number().min(10, { message: "Phone Number  is required" }),
-  PostalCode: z.number().min(5, { message: "Phone Number  is required" }),
+  PostalCode: z.number().min(5, { message: " Postal  is required" }),
   date: z.date({
     required_error: "A date of birth is required.",
   }),
@@ -89,6 +89,7 @@ export const ProfileSchema = z.object({
     .max(160, {
       message: "Bio must not be longer than 30 characters.",
     }),
+    profession:z.string().min(1).max(50),
 
   language: z.string().min(1).max(50),
 });

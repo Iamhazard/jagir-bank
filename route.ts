@@ -37,4 +37,4 @@ export const apiAuthPrefix = "/api/auth";
  * @type {string}
  */
 
-export const DEFAULT_LOGIN_REDIRECT = "/findwork";
+export const DEFAULT_LOGIN_REDIRECT = "/bestmatches";

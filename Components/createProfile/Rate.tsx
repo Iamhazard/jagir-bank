@@ -14,6 +14,7 @@ import {
 const Rate = () => {
   const [isPending, startTransition] = useTransition();
   const form = useFormContext();
+
   return (
     <div className="mt-4">
       <h1 className=" mb-3 text-2xl font-semibold">

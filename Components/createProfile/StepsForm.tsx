@@ -55,7 +55,7 @@ const StepperForm: React.FC<StepperFormProps> = () => {
       stateName: "",
       cityName: "",
       country: "",
-      phoneNumber: +977,
+      phoneNumber: 977,
       PostalCode: 4460,
       date: new Date(),
       services: "",
@@ -63,6 +63,7 @@ const StepperForm: React.FC<StepperFormProps> = () => {
       servicesFee: 1,
       estimatedAmount: 11,
       bio: "",
+      profession: "",
       language: "",
     },
     mode: "onSubmit",
@@ -85,6 +86,7 @@ const StepperForm: React.FC<StepperFormProps> = () => {
 
   const onSubmit = (data: any) => {
     console.log({ data });
+    console.log("handle submit clicked");
   };
 
   return (
@@ -360,7 +362,7 @@ const StepperForm: React.FC<StepperFormProps> = () => {
                 Prev
               </button>
               <button
-                type="button"
+                type="submit"
                 onClick={() => (isLastStep ? {} : handleNext())}
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 {isLastStep ? "Submit" : "Next"}

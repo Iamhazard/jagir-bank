@@ -43,7 +43,7 @@ const ProfileBio = () => {
   return (
     <div className="mt-6">
       <Form {...form}>
-        <form className="w-2/3 space-y-6">
+        <div className="w-2/3 space-y-6">
           <FormField
             control={form.control}
             name="bio"
@@ -65,7 +65,7 @@ const ProfileBio = () => {
               </FormItem>
             )}
           />
-        </form>
+        </div>
         <h1 className="text-xl mt-2">
           What are yours main services you offer?
         </h1>

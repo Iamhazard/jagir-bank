@@ -1,12 +1,25 @@
-import NavBar from "@/Components/Navbar/Navbar";
-
 import React, { ReactNode } from "react";
+import Headers from "./_components/header";
+import Headermobile from "./_components/header-mobile";
+
+import MarginWidthWrapper from "./_components/margin-width-wrapper";
+import PageWrapper from "./_components/page-wrapper";
+import SideNav from "./_components/Sidebar";
 
 const ProtectedLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <main className="relative flex flex-col min-h-screen">
-      <NavBar />
-      <div className=" flex flex-1 mx-20 ">{children}</div>
+    <main>
+      <div className="flex">
+        <SideNav />
+      </div>
+      <div className="flex-1">
+        <MarginWidthWrapper>
+          <Headers />
+          <Headermobile />
+
+          <PageWrapper>{children}</PageWrapper>
+        </MarginWidthWrapper>
+      </div>
     </main>
   );
 };

@@ -2,6 +2,7 @@
 import clsx from "clsx";
 import Link from "next/link";
 import React, { useState } from "react";
+import { FiMapPin } from "react-icons/fi";
 
 const skillbutton = [
   {
@@ -21,7 +22,7 @@ const Jobs = () => {
   return (
     <div>
       <div
-        className={`max-w-2xl max-h-[500px]   p-6 bg-[#ffffff] hover:bg-[#F2F7F2] border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 ${
+        className={`max-w-[950px] max-h-[500px]   p-6 bg-[#ffffff] hover:bg-[#F2F7F2] border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 ${
           showMore ? "expanded" : ""
         }`}>
         <small className="text-gray-400 ">Posted 2 hours ago</small>
@@ -64,7 +65,10 @@ const Jobs = () => {
         <div className="flex gap-4 mt-6">
           <p>Paymant Verified</p>
           <p>$2k + spent</p>
-          <p>Place</p>
+
+          <span className="flex gap-2">
+            <FiMapPin /> Place
+          </span>
         </div>
         <div className="flex flex-1 mt-4 gap-4">
           <p>Proposals: 50+</p>
