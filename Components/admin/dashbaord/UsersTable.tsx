@@ -36,9 +36,16 @@ const UsersTable = async () => {
                 <TableCell className="font-medium">{index + 1}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.name}</TableCell>
-                <TableCell>{user.emailVerified.toDateString()}</TableCell>
+                <TableCell>
+                  {" "}
+                  {user.emailVerified
+                    ? user.emailVerified.toDateString()
+                    : "Not Verified"}
+                </TableCell>
                 <TableCell className=" items-center">
-                  {user.isTwoFactorEnabled.toString()}
+                  {user.isTwoFactorEnabled
+                    ? user.isTwoFactorEnabled.toString()
+                    : "Not enabled"}
                 </TableCell>
                 <TableCell className="text-right">{user.role}</TableCell>
               </TableRow>

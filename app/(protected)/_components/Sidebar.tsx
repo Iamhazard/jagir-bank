@@ -4,9 +4,9 @@ import React, { useState } from "react";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import SideNavItem from "./constant";
 import { Icon } from "@iconify/react";
-import { SIDENAV_ITEMS } from "./constant";
+import SIDENAV_ITEMS from "./constant";
+import { SideNavItem } from "@/@types/enum";
 
 const SideNav = () => {
   return (

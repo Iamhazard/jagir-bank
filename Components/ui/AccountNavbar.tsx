@@ -5,7 +5,7 @@ import Link from "next/link";
 import styles from "../../styles/main.module.css";
 import { UserButton } from "../auth/user-button";
 import LoginButton from "../auth/login-button";
-import { Button } from "../ui/button";
+import { Button } from "./button";
 import { useSession } from "next-auth/react";
 
 const AccountNavbar = () => {

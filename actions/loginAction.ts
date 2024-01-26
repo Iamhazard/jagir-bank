@@ -1,6 +1,6 @@
 "use server";
 
-import { AUTH_TYPE } from "@/@types/enum";
+
 import { LoginSchema } from "@/Schemas";
 import { signIn } from "@/auth";
 import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmations";

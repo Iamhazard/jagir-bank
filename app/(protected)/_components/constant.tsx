@@ -2,7 +2,7 @@ import { Icon } from "@iconify/react";
 
 import { SideNavItem } from "@/@types/enum";
 
-export const SIDENAV_ITEMS: SideNavItem[] = [
+const SIDENAV_ITEMS: SideNavItem[] = [
   {
     title: "Home",
     path: "/",
@@ -35,3 +35,4 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
     ],
   },
 ];
+export default SIDENAV_ITEMS;

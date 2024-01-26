@@ -5,7 +5,15 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-const ImageSlider = ({ images }) => {
+interface Image {
+  url: string;
+}
+
+interface ImageSliderProps {
+  images: Image[] | string[];
+}
+
+const ImageSlider: React.FC<ImageSliderProps> = ({ images }) => {
   const settings = {
     dots: true,
     infinite: true,
@@ -17,10 +25,10 @@ const ImageSlider = ({ images }) => {
 
   return (
     <Slider {...settings}>
-      {images.map((imageUrl, index) => (
+      {(images as Image[] | string[]).map((image, index) => (
         <div key={index}>
           <img
-            src={imageUrl}
+            src={typeof image === "string" ? image : image.url}
             alt={`Image ${index + 1}`}
             className="w-full h-64 object-cover rounded-lg"
           />
