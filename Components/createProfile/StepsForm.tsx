@@ -1,378 +1,641 @@
-/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import React, { ChangeEvent, useState, useTransition } from "react";
-import { CalendarIcon } from "@radix-ui/react-icons";
-import { format } from "date-fns";
-import { Button } from "../ui/button";
-import { Calendar } from "../ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import { FormProvider, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { ProfileSchema } from "@/Schemas";
+
+import { useState } from "react";
+import { motion } from "framer-motion";
 import ProfileWrapper from "./ProfileWrapper";
 
-import { cn } from "@/lib/utils";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
+import { z } from "zod";
 
-import Rate from "./Rate";
-import ProfileBio from "./ProfileBio";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import Steps from "./Steps";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { FormDataSchema } from "@/Schemas";
 
-interface StepperFormProps {}
+type Inputs = z.infer<typeof FormDataSchema>;
 
-const StepperForm: React.FC<StepperFormProps> = () => {
-  const [step, setStep] = useState<number>(0);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+const steps = [
+  {
+    id: "Step 1",
+    name: "Address",
+    fields: ["country", "state", "city", "contact", "street", "zip"],
+  },
+  {
+    id: "Step 2",
+    name: "Personal Information",
+    fields: ["hourlyrate", "estimatedamount"],
+  },
+  {
+    id: "Step 3",
+    name: "bio",
+    fields: ["message", "program", "profession"],
+  },
+  {
+    id: "Step 4",
+    name: "Education details",
+    fields: ["language"],
+  },
+  { id: "Step 5", name: "Complete" },
+];
 
-  const [place, setPlace] = useState<string>("");
+export default function Form() {
+  const [previousStep, setPreviousStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(0);
+  const delta = currentStep - previousStep;
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [selectefiles, setSelecteFiles] = useState<File | null>(null);
+  const [selecteexpfiles, setSelecteExpFiles] = useState<File | null>(null);
 
-  const handleNext = () => setStep((cur) => cur + 1);
-  const handlePrev = () => setStep((cur) => cur - 1);
-  const [isPending, startTransition] = useTransition();
-  const form = useForm<z.infer<typeof ProfileSchema>>({
-    resolver: zodResolver(ProfileSchema),
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    trigger,
+    formState: { errors },
+  } = useForm<Inputs>({
+    resolver: zodResolver(FormDataSchema),
     defaultValues: {
-      address: "",
-      stateName: "",
-      cityName: "",
-      country: "",
-      phoneNumber: 977,
-      PostalCode: 4460,
-      date: new Date(),
-      services: "",
-      hourlyRate: 12,
-      servicesFee: 1,
-      estimatedAmount: 11,
-      bio: "",
-      profession: "",
-      language: "",
+      imageInput: undefined,
+      educationfile: undefined,
+      experiencefile: undefined,
     },
-    mode: "onSubmit",
   });
 
-  const fee = 1;
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const onChange = (files: any) => {
+    console.log("Selected files:", files);
+  };
 
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const base64Data = event.target?.result as string;
-      };
-      reader.readAsDataURL(file);
+  const onFileChange = (files: any) => {
+    console.log("Selected edu", files);
+  };
+  const onexpeChange = (files: any) => {
+    console.log("Selected edu", files);
+  };
+  const processForm: SubmitHandler<Inputs> = (data) => {
+    console.log(data);
+    reset();
+  };
+
+  type FieldName = keyof Inputs;
+
+  const next = async () => {
+    const fields = steps[currentStep].fields;
+    const output = await trigger(fields as FieldName[], { shouldFocus: true });
+
+    if (!output) return;
+
+    if (currentStep < steps.length - 1) {
+      if (currentStep === steps.length - 2) {
+        await handleSubmit(processForm)();
+      }
+      setPreviousStep(currentStep);
+      setCurrentStep((step) => step + 1);
     }
   };
-  const totalStep = 4;
-  const isLastStep = step === totalStep;
 
-  const onSubmit = (data: any) => {
-    console.log({ data });
-    console.log("handle submit clicked");
+  const prev = () => {
+    if (currentStep > 0) {
+      setPreviousStep(currentStep);
+      setCurrentStep((step) => step - 1);
+    }
   };
 
   return (
     <ProfileWrapper
-      headerLabel="Create a profile"
+      headerLabel="Create a FreeLancer profile"
       backButtonLabel="Back to Register?"
       blackButtonHref="/auth/register">
-      <FormProvider {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="w-full py-2 px-8">
-            <div className="flex justify-center">
-              <div className="flex items-center">
-                <div
-                  className={`h-2 w-2 rounded-full ${
-                    step >= 0 ? "bg-blue-500" : "bg-gray-300"
-                  }`}></div>
-                <div
-                  className={`h-2 w-2 rounded-full ${
-                    step >= 1 ? "bg-blue-500" : "bg-gray-300"
-                  }`}></div>
-                <div
-                  className={`h-2 w-2 rounded-full ${
-                    step >= 2 ? "bg-blue-500" : "bg-gray-300"
-                  }`}></div>
-                <div
-                  className={`h-2 w-2 rounded-full ${
-                    step >= 3 ? "bg-blue-500" : "bg-gray-300"
-                  }`}></div>
-                <div
-                  className={`h-2 w-2 rounded-full ${
-                    step >= 4 ? "bg-blue-500" : "bg-gray-300"
-                  }`}></div>
-              </div>
-            </div>
+      <section className=" inset-0 flex flex-col justify-between p-24">
+        {/* steps */}
+        <nav aria-label="Progress">
+          <ol
+            role="list"
+            className="space-y-4 md:flex md:space-x-8 md:space-y-0">
+            {steps.map((step, index) => (
+              <li key={step.name} className="md:flex-1">
+                {currentStep > index ? (
+                  <div className="group flex w-full flex-col border-l-4 border-sky-600 py-2 pl-4 transition-colors md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4">
+                    <span className="text-sm font-medium text-sky-600 transition-colors ">
+                      {step.id}
+                    </span>
+                    <span className="text-sm font-medium">{step.name}</span>
+                  </div>
+                ) : currentStep === index ? (
+                  <div
+                    className="flex w-full flex-col border-l-4 border-sky-600 py-2 pl-4 md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4"
+                    aria-current="step">
+                    <span className="text-sm font-medium text-sky-600">
+                      {step.id}
+                    </span>
+                    <span className="text-sm font-medium">{step.name}</span>
+                  </div>
+                ) : (
+                  <div className="group flex w-full flex-col border-l-4 border-gray-200 py-2 pl-4 transition-colors md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4">
+                    <span className="text-sm font-medium text-gray-500 transition-colors">
+                      {step.id}
+                    </span>
+                    <span className="text-sm font-medium">{step.name}</span>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ol>
+        </nav>
 
-            {step === 0 && (
-              <>
-                <Form {...form}>
-                  <div className="flex items-center justify-center mt-4 p-3">
-                    <label
-                      htmlFor="imageInput"
-                      className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full flex items-center">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        className="h-6 w-6 inline-block mr-2">
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                      </svg>
-                      Upload photo
-                    </label>
-                    <Input
-                      type="file"
-                      id="imageInput"
-                      className="hidden"
-                      accept="image/*"
-                      onChange={handleImageChange}
+        {/* Form */}
+        <form className="mt-4 py-4" onSubmit={handleSubmit(processForm)}>
+          {currentStep === 0 && (
+            <motion.div
+              initial={{ x: delta >= 0 ? "50%" : "-50%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}>
+              <h2 className="text-base font-semibold leading-7 text-gray-900">
+                Address
+              </h2>
+              <p className="mt-1 text-sm leading-6 text-gray-600">
+                Address where you can receive mail.
+              </p>
+              <div className="flex items-center justify-center gap-4 mt-4 ">
+                <label
+                  htmlFor="imageInput"
+                  className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full flex items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    className="h-6 w-6 inline-block mr-2">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                  </svg>
+                  Upload photo
+                </label>
+                <input
+                  type="file"
+                  id="imageInput"
+                  className="hidden"
+                  {...register("imageInput")}
+                  onChange={(e) => {
+                    onChange(e.target.files);
+                    setSelectedImage(e.target.files?.[0] || null);
+                  }}
+                  accept="image/*"
+                />
+                {selectedImage && (
+                  <div className="mt-4 ">
+                    <img
+                      src={URL.createObjectURL(selectedImage)}
+                      alt="Selected"
+                      className="rounded-full h-16 w-16 object-cover"
                     />
+                  </div>
+                )}
+              </div>
+              <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                <div className="sm:col-span-3">
+                  <label
+                    htmlFor="country"
+                    className="block text-sm font-medium leading-6 text-gray-900">
+                    Country
+                  </label>
+                  <div className="mt-2">
+                    <select
+                      id="country"
+                      {...register("country")}
+                      autoComplete="country-name"
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                      <option>Nepal</option>
+                      <option>India</option>
+                      <option>China</option>
+                      <option>Srilanka</option>
+                      <option>United States</option>
+                      <option>Canada</option>
+                      <option>Mexico</option>
+                      <option>Austraia</option>
+                    </select>
+                    {errors.country?.message && (
+                      <p className="mt-2 text-sm text-red-400">
+                        {errors.country.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
-                    <div className="mt-4  space-y-3">
-                      <Avatar>
-                        <AvatarImage
-                          className="rounded-full h-16 w-16 object-cover"
-                          src="https://github.com/shadcn.png"
-                        />
-                        <AvatarFallback>CN</AvatarFallback>
-                      </Avatar>
+                <div className="col-span-full">
+                  <label
+                    htmlFor="street"
+                    className="block text-sm font-medium leading-6 text-gray-900">
+                    Street address
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      id="street"
+                      {...register("street")}
+                      autoComplete="street-address"
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                    />
+                    {errors.street?.message && (
+                      <p className="mt-2 text-sm text-red-400">
+                        {errors.street.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="col-span-full">
+                  <label
+                    htmlFor="city"
+                    className="block text-sm font-medium leading-6 text-gray-900">
+                    City
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      id="city"
+                      {...register("city")}
+                      autoComplete="address-level2"
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                    />
+                    {errors.city?.message && (
+                      <p className="mt-2 text-sm text-red-400">
+                        {errors.city.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="sm:col-span-2 sm:col-start-1">
+                  <label
+                    htmlFor="contact"
+                    className="block text-sm font-medium leading-6 text-gray-900">
+                    Contact Number
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      id="contact"
+                      {...register("contact")}
+                      autoComplete="9860"
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                    />
+                    {errors.contact?.message && (
+                      <p className="mt-2 text-sm text-red-400">
+                        {errors.contact.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label
+                    htmlFor="state"
+                    className="block text-sm font-medium leading-6 text-gray-900">
+                    State / Province
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      id="state"
+                      {...register("state")}
+                      autoComplete="address-level1"
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                    />
+                    {errors.state?.message && (
+                      <p className="mt-2 text-sm text-red-400">
+                        {errors.state.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label
+                    htmlFor="zip"
+                    className="block text-sm font-medium leading-6 text-gray-900">
+                    ZIP / Postal code
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      id="zip"
+                      {...register("zip")}
+                      autoComplete="postal-code"
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                    />
+                    {errors.zip?.message && (
+                      <p className="mt-2 text-sm text-red-400">
+                        {errors.zip.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+          {currentStep === 1 && (
+            <motion.div
+              initial={{ x: delta >= 0 ? "50%" : "-50%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}>
+              <h2 className="text-base font-semibold leading-7 text-gray-900">
+                Now, let s set your hourly rate.
+              </h2>
+              <p className="mt-1 text-sm leading-6 text-gray-600">
+                Clients will see this rate on your profile and search result
+                once you publish your profile.You can adjust your rate every
+                time you submit proposal
+              </p>
+              <div className="space-y-4 text-sm mt-4">
+                <div className="flex pb-4 justify-between gap-4 items-center">
+                  <div>
+                    {" "}
+                    <h1 className="text-xl flex-1 font-serif">Hourly rate</h1>
+                    <p className="text-gray-500">
+                      {" "}
+                      Total amount client will see.
+                    </p>
+                  </div>
+
+                  <div className=" flex gap-0.5 items-center">
+                    <input
+                      type="text"
+                      id="hourlyrate"
+                      {...register("hourlyrate")}
+                      autoComplete=""
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                    />
+                    <span className="text-gray-500">/hr</span>
+                    {errors.hourlyrate?.message && (
+                      <p className="mt-2 text-sm text-red-400">
+                        {errors.hourlyrate.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex pb-4 justify-between gap-4 items-center">
+                  <div>
+                    <h1 className="text-xl flex-1 font-serif">Services fee</h1>
+                    <p className="text-gray-500">
+                      {" "}
+                      This helps to run platform and provide protection
+                    </p>
+                  </div>
+                  <div className="mt-2 flex gap-0.5 items-center">
+                    <input
+                      type="text"
+                      id="disabled-input"
+                      aria-label="disabled input"
+                      className="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder="$2"
+                      disabled
+                    />
+                    <span className="text-gray-500">/hr</span>
+                  </div>
+                </div>
+
+                <div className="flex pb-4 justify-between gap-4 items-center">
+                  <div>
+                    <h1 className="text-xl flex-1 font-serif">You ll get</h1>
+                    <p className="text-gray-500">
+                      This estimated amount you ll receive .
+                    </p>
+                  </div>
+                  <div className="mt-2 flex gap-0.5 items-center">
+                    <input
+                      id="estimatedamount"
+                      type="text"
+                      {...register("estimatedamount")}
+                      autoComplete=""
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                    />
+                    <span className="text-gray-500">/hr</span>
+                    {errors.estimatedamount?.message && (
+                      <p className="mt-2 text-sm text-red-400">
+                        {errors.estimatedamount.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {currentStep === 2 && (
+            <motion.div
+              initial={{ x: delta >= 0 ? "50%" : "-50%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}>
+              <div className="w-2/3 space-y-6">
+                <label
+                  htmlFor="message"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  Your message
+                </label>
+                <textarea
+                  id="message"
+                  {...register("message")}
+                  className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Tell us a little bit about yourself,skills,experiences and interest."></textarea>
+                {errors.message?.message && (
+                  <p className="mt-2 text-sm text-red-400">
+                    {errors.message.message}
+                  </p>
+                )}
+              </div>
+              <h1 className="text-xl mt-2">
+                What are yours main services you offer?
+              </h1>
+              <p className="text-gray-500 dark:text-gray-40 mt-2">
+                Choose at least one services that best describe the type of work
+                you do.
+              </p>
+              <div className="mt-3">
+                <div className="sm:col-span-3 mt-3">
+                  <div className="mt-2">
+                    <select
+                      id="program"
+                      {...register("program")}
+                      autoComplete="program"
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                      <option>Logo design</option>
+                      <option>Web, Mobile, & Software Development</option>
+                      <option>WordPress design</option>
+                      <option>Accounting and Consulting</option>
+                      <option>Data Entry</option>
+                      <option>Design and Creative</option>
+                      <option>Engineering and Architecture</option>
+                      <option>Translation</option>
+                      <option>Sales and Marketing</option>
+                    </select>
+                    {errors.program?.message && (
+                      <p className="mt-2 text-sm text-red-400">
+                        {errors.program.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="mt-6">
+                <h1 className="text-xl mt-4">Add your Main Profession?</h1>
+                <div className="mt-4">
+                  <div className="col-span-full">
+                    <label
+                      htmlFor="profession"
+                      className="block text-sm font-medium leading-6 text-gray-900">
+                      Profession
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        type="text"
+                        id="profession"
+                        {...register("profession")}
+                        autoComplete="Software Engineer |Javascript | OS"
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                      />
+                      {errors.profession?.message && (
+                        <p className="mt-2 text-sm text-red-400">
+                          {errors.profession.message}
+                        </p>
+                      )}
                     </div>
                   </div>
-                  <div className="space-y-4">
-                    <div className="flex flex-wrap -mx-3 mb-2">
-                      <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                        <FormField
-                          control={form.control}
-                          name="date"
-                          render={({ field }) => (
-                            <FormItem className="flex flex-col">
-                              <Popover>
-                                <PopoverTrigger asChild>
-                                  <FormControl>
-                                    <Button
-                                      variant={"outline"}
-                                      className={cn(
-                                        "w-[240px] pl-3 text-left font-normal",
-                                        !field.value && "text-muted-foreground"
-                                      )}>
-                                      {field.value ? (
-                                        format(field.value, "PPP")
-                                      ) : (
-                                        <span>Pick a date</span>
-                                      )}
-                                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                    </Button>
-                                  </FormControl>
-                                </PopoverTrigger>
-                                <PopoverContent
-                                  className="w-auto p-0"
-                                  align="start">
-                                  <Calendar
-                                    mode="single"
-                                    selected={field.value}
-                                    onSelect={field.onChange}
-                                    disabled={(date) =>
-                                      date > new Date() ||
-                                      date < new Date("1900-01-01")
-                                    }
-                                    initialFocus
-                                  />
-                                </PopoverContent>
-                              </Popover>
+                </div>
+              </div>
+            </motion.div>
+          )}
 
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                      <div className="w-fit md:w-1/2 px-3">
-                        <FormField
-                          control={form.control}
-                          name="country"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Select>
-                                  <SelectTrigger
-                                    className={cn("rounded-full w-[180px]")}>
-                                    <SelectValue placeholder="Select Country" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectGroup>
-                                      <SelectItem value="np">Nepal</SelectItem>
-                                      <SelectItem value="in">India</SelectItem>
-                                      <SelectItem value="aus">
-                                        Australia
-                                      </SelectItem>
-                                      <SelectItem value="usa">USA</SelectItem>
-                                      <SelectItem value="uk">UK</SelectItem>
-                                    </SelectGroup>
-                                  </SelectContent>
-                                </Select>
-                              </FormControl>
-
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    </div>
-
-                    <FormField
-                      control={form.control}
-                      name="address"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Street Address*</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="address"
-                              className={cn("rounded-full")}
-                              placeholder="Enter your street address"
-                              {...field}
-                              disabled={isPending}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}></FormField>
+          {currentStep === 3 && (
+            <motion.div
+              initial={{ x: delta >= 0 ? "50%" : "-50%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}>
+              <div className="gap-4">
+                <div>
+                  <span className="text-xl">
+                    Clients like to know what you now -add your education here.
+                  </span>
+                  <h1 className="text-xl">Add education.</h1>
+                  <input
+                    className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                    id="educationfile"
+                    type="file"
+                    {...register("educationfile")}
+                    onChange={(e) => {
+                      onFileChange(e.target.files);
+                      setSelecteFiles(e.target.files?.[0] || null);
+                    }}
+                  />
+                  <p className="text-gray-500 dark:text-gray-40 p-2">
+                    Add any equivalent degree?
+                  </p>
+                </div>
+                <div>
+                  <span className="text-xl">
+                    Clients like to know what you now -add your experience here.
+                  </span>
+                  <h1 className="text-xl">Add experience.</h1>
+                  <input
+                    className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                    id="experiencefile"
+                    type="file"
+                    {...register("experiencefile")}
+                    onChange={(e) => {
+                      onexpeChange(e.target.files);
+                      setSelecteExpFiles(e.target.files?.[0] || null);
+                    }}
+                  />
+                  <p className="text-gray-500 dark:text-gray-40 p-2">
+                    Add any equivalent experience?
+                  </p>
+                </div>
+                <div className="sm:col-span-3">
+                  <label
+                    htmlFor="country"
+                    className="block text-sm font-medium leading-6 text-gray-900">
+                    Country
+                  </label>
+                  <div className="mt-2">
+                    <select
+                      id="language"
+                      {...register("language")}
+                      autoComplete="Nepali"
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                      <option>Nepali</option>
+                      <option>Hindi</option>
+                      <option>Chinese</option>
+                      <option>English</option>
+                      <option>French</option>
+                    </select>
+                    {errors.language?.message && (
+                      <p className="mt-2 text-sm text-red-400">
+                        {errors.language.message}
+                      </p>
+                    )}
                   </div>
-
-                  <div className="flex flex-wrap -mx-3 mb-2">
-                    <div className="w-fit md:w-1/2 px-3 mb-6 md:mb-0">
-                      <FormField
-                        control={form.control}
-                        name="stateName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel> State/Province</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="name"
-                                placeholder="Enter State/Province"
-                                className={cn("rounded-full")}
-                                {...field}
-                                disabled={isPending}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}></FormField>
-                    </div>
-                    <div className="w-fit md:w-1/2 px-3">
-                      <FormField
-                        control={form.control}
-                        name="cityName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Enter City</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="name"
-                                className={cn("rounded-full")}
-                                placeholder="Enter City"
-                                {...field}
-                                disabled={isPending}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}></FormField>
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap -mx-3 mb-2">
-                    <div className="w-fit md:w-1/2 px-3 mb-6 md:mb-0">
-                      <FormField
-                        control={form.control}
-                        name="phoneNumber"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel> Phone*</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                placeholder="Enter Phone Number"
-                                className={cn("rounded-full")}
-                                {...field}
-                                disabled={isPending}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}></FormField>
-                    </div>
-                    <div className="w-fit md:w-1/2 px-3">
-                      <FormField
-                        control={form.control}
-                        name="PostalCode"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>ZIP/Postal Code</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="Zip"
-                                className={cn("rounded-full")}
-                                placeholder="Enter Postal code"
-                                {...field}
-                                disabled={isPending}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}></FormField>
-                    </div>
-                  </div>
-                </Form>
-              </>
-            )}
-
-            {step === 1 && <Rate />}
-            {step === 2 && <ProfileBio />}
-            {step === 3 && <Steps />}
-            {step === 4 && <div className="mt-16"></div>}
-
-            <div className="mt-16 flex justify-between">
-              <button
-                onClick={handlePrev}
-                disabled={step === 0}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Prev
-              </button>
-              <button
-                type="submit"
-                onClick={() => (isLastStep ? {} : handleNext())}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                {isLastStep ? "Submit" : "Next"}
-              </button>
-            </div>
-          </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+          {currentStep === 4 && (
+            <>
+              <h2 className="text-base font-semibold leading-7 text-gray-900">
+                Complete
+              </h2>
+              <p className="mt-1 text-sm leading-6 text-gray-600">
+                Thank you for your submission.
+              </p>
+            </>
+          )}
         </form>
-      </FormProvider>
+
+        {/* Navigation */}
+        <div className="mt-8 pt-5">
+          <div className="flex justify-between">
+            <button
+              type="button"
+              onClick={prev}
+              disabled={currentStep === 0}
+              className="rounded bg-white px-2 py-1 text-sm font-semibold text-sky-900 shadow-sm ring-1 ring-inset ring-sky-300 hover:bg-sky-50 disabled:cursor-not-allowed disabled:opacity-50">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="h-6 w-6">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 19.5L8.25 12l7.5-7.5"
+                />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={next}
+              disabled={currentStep === steps.length - 1}
+              className="rounded bg-white px-2 py-1 text-sm font-semibold text-sky-900 shadow-sm ring-1 ring-inset ring-sky-300 hover:bg-sky-50 disabled:cursor-not-allowed disabled:opacity-50">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="h-6 w-6">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
     </ProfileWrapper>
   );
-};
-
-export default StepperForm;
+}

@@ -31,7 +31,7 @@ const Headers = () => {
             <span className="font-bold text-xl flex ">JAGIRBANK</span>
           </Link>
         </div>
-
+        <h1>Freelancer Dashbaord</h1>
         <div className="hidden md:block">
           <div className="h-8 w-8 rounded-full bg-zinc-300 flex items-center justify-center text-center">
             <UserButton />

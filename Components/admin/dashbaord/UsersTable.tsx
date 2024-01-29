@@ -16,7 +16,7 @@ const UsersTable = async () => {
   const users = await prisma.user.findMany();
 
   return (
-    <Card className="w-[800px] sm:w-[400px] md:w-[400px] shadow-md my-6">
+    <Card className="w-[600px]  shadow-md my-6">
       <Table>
         <TableCaption>A list of Users.</TableCaption>
         <TableHeader>

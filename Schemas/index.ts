@@ -1,6 +1,7 @@
 import { UserRole } from "@prisma/client";
 import * as z from "zod";
 
+
 export const SettingsSchema = z
   .object({
     name: z.optional(z.string()),
@@ -58,38 +59,35 @@ export const NewPasswordSchema = z.object({
   password: z.string().min(6, { message: "Minium 6 character required" }),
 });
 
-export const FormSchema = z.object({
-  items: z.array(z.string()).refine((value) => value.some((item) => item), {
-    message: "You have to select at least one item.",
-  }),
+
+
+const phoneRegex = new RegExp(
+  /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/ 
+);
+const amountRegex = /^[0-9]*\.?[0-9]+$/;
+
+const MAX_FILE_SIZE = 1024 * 1024 * 5;
+const ACCEPTED_IMAGE_MIME_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
+
+
+export const FormDataSchema = z.object({
+  country: z.string().min(1, 'Country is required'),
+  street: z.string().min(1, 'Street is required'),
+  contact: z.string().regex(phoneRegex,'Invalid Number!'),
+  city: z.string().min(1, 'City is required'),
+  state: z.string().min(1, 'State is required'),
+  zip: z.string().min(1, 'Zip is required'),
+   hourlyrate: z.string().regex(amountRegex,"Hourly rate must be a positive number"),
+  estimatedamount:z.string().regex(amountRegex,"estimatedamount  must be a positive number"),
+  message: z.string().min(10, 'minium 10 words  is required'),
+  program: z.string().min(1, 'program is required'),
+  profession: z.string().min(1, 'profession is required'),
+  language: z.string().min(1, 'language is required'),
+  
 });
 
-export const ProfileSchema = z.object({
-  address: z.string().min(1, { message: "Street Address is required" }),
-  country: z.string().min(1, { message: "Country Name is required" }),
-  stateName: z.string().min(1, { message: "State Name  is required" }),
-  cityName: z.string().min(1, { message: "City Name  is required" }),
-  phoneNumber: z.number().min(10, { message: "Phone Number  is required" }),
-  PostalCode: z.number().min(5, { message: " Postal  is required" }),
-  date: z.date({
-    required_error: "A date of birth is required.",
-  }),
-
-  services: z.string({
-    required_error: "Please select a language.",
-  }),
-  hourlyRate: z.number().int().nonnegative(),
-  servicesFee: z.number().nonnegative(),
-  estimatedAmount: z.number().int().nonnegative(),
-  bio: z
-    .string()
-    .min(10, {
-      message: "Bio must be at least 10 characters.",
-    })
-    .max(160, {
-      message: "Bio must not be longer than 30 characters.",
-    }),
-    profession:z.string().min(1).max(50),
-
-  language: z.string().min(1).max(50),
-});
