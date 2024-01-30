@@ -88,6 +88,5 @@ export const FormDataSchema = z.object({
   program: z.string().min(1, 'program is required'),
   profession: z.string().min(1, 'profession is required'),
   language: z.string().min(1, 'language is required'),
-  
 });
 

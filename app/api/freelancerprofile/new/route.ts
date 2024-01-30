@@ -1,37 +1,29 @@
-"use server";
 
 const cloudinary = require("cloudinary").v2;
-import {fileSizeFormatter} from  "@/lib/multer"
-import { FormDataSchema } from "@/Schemas";
 import { db } from "@/lib/db";
+import {fileSizeFormatter} from  "@/lib/multer"
 
-import * as z from "zod";
-import { NextApiRequest } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 
 
 interface MulterRequest extends NextApiRequest {
   files: any;
 }
 
-export const freelancerProfile = async (values: z.infer<typeof FormDataSchema>,req:NextApiRequest) => {
-  const validatedFiled = FormDataSchema.safeParse(values);
-
-  if (!validatedFiled.success) {
-    return { error: "Invalid fields" };
-  }
+export const POST =async(req:NextApiRequest,res:NextApiResponse)=>{
     
-  
-const  {country,street,contact,city,state,zip,hourlyrate,estimatedamount,message,program,profession,language}=validatedFiled.data;
+    const  {userId,country,street,contact,city,state,zip,hourlyrate,estimatedamount,message,program,profession,language,experiencefile,educationfile,imageInput}=await req.body;
 
-const {userId,experiencefile,educationfile,imageInput}=await req.body;
-
+    //validation
 try {
-    if(!experiencefile ||!educationfile||!imageInput){
- return new Response(JSON.stringify("Missing required fields"),{
+    if(!country || !street || !contact ||!city || !state  ||!zip || ! hourlyrate ||  !estimatedamount || !message || !program ||!profession ||! language ||!experiencefile ||!educationfile||!imageInput){
+        return new Response(JSON.stringify("Missing required fields"),{
 status:400,
         })
     }
-    let fileData ={};
+//image upload
+
+let fileData ={};
 const documentFile=(req as MulterRequest).files;
 
 if(documentFile){
@@ -57,9 +49,11 @@ if(documentFile){
         
     }
 }
-   await db.freelancerProfile.create({
-    data: {
-    userId:userId ,
+//create a profile
+
+const FreelancerProfile = await db.freelancerProfile.create({
+ data:{
+    userId : userId ,
     country,
     street,
     contact,
@@ -75,16 +69,16 @@ if(documentFile){
     experiencefile:fileData as string,
     educationfile:fileData as string,
     imageInput :fileData as string,
-    },
-  });
-    
+
+ }
+})
+  return new Response(JSON.stringify(FreelancerProfile), { status: 201 });
 } catch (error) {
-      console.error("Error in POST CREATING PROFILE", error);
+     console.error("Error in POST /api/profile/new:", error);
     return new Response(JSON.stringify("failed to c Freelncer profile"), {
       status: 500,
     });
+    
 }
-
-
- 
-};
+    
+}

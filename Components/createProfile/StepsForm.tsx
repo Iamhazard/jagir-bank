@@ -1,15 +1,16 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { motion } from "framer-motion";
 import ProfileWrapper from "./ProfileWrapper";
 
-import { z } from "zod";
+import { string, z } from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { FormDataSchema } from "@/Schemas";
+import { freelancerProfile } from "@/actions/profile";
 
 type Inputs = z.infer<typeof FormDataSchema>;
 
@@ -41,9 +42,13 @@ export default function Form() {
   const [previousStep, setPreviousStep] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const delta = currentStep - previousStep;
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [selectefiles, setSelecteFiles] = useState<File | null>(null);
-  const [selecteexpfiles, setSelecteExpFiles] = useState<File | null>(null);
+  const [selectedImage, setSelectedImage] = useState<File | "">("");
+  const [selectefiles, setSelecteFiles] = useState<File | "">("");
+  const [selecteexpfiles, setSelecteExpFiles] = useState<File | "">("");
+  const [error, setError] = useState<string | undefined>("");
+  const [profiledata, setProfileData] = useState();
+  const [success, setSuccess] = useState<string | undefined>("");
+  const [isPending, startTransition] = useTransition();
 
   const {
     register,
@@ -54,25 +59,56 @@ export default function Form() {
     formState: { errors },
   } = useForm<Inputs>({
     resolver: zodResolver(FormDataSchema),
-    defaultValues: {
-      imageInput: undefined,
-      educationfile: undefined,
-      experiencefile: undefined,
-    },
   });
 
   const onChange = (files: any) => {
+    setSelectedImage(selectedImage);
     console.log("Selected files:", files);
   };
 
   const onFileChange = (files: any) => {
+    setSelecteFiles(selectefiles);
     console.log("Selected edu", files);
   };
   const onexpeChange = (files: any) => {
+    setSelecteExpFiles(selecteexpfiles);
     console.log("Selected edu", files);
   };
-  const processForm: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
+  const processForm: SubmitHandler<Inputs> = async (data) => {
+    const formData = new FormData();
+    formData.append("country", data.country);
+    formData.append("street", data.street);
+    formData.append("contact", data.contact);
+    formData.append("city", data.city);
+    formData.append("zip", data.zip);
+    formData.append("hourlyrate", data.hourlyrate);
+    formData.append("estimatedamount", data.estimatedamount);
+    formData.append("message", data.message);
+    formData.append("program", data.program);
+    formData.append("profession", data.profession);
+    formData.append("language", data.language);
+    formData.append("imageInput", selectedImage);
+    formData.append("educationfile", selectefiles);
+    formData.append("experiencefile", selecteexpfiles);
+    console.log(...formData);
+    try {
+      const response = await fetch("api/freelancerprofile/new", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.message || "An error occurred");
+      } else {
+        const profiledata = await response.json();
+        setProfileData(profiledata);
+        setSuccess("Profile created successfully");
+      }
+    } catch (error) {
+      setError("An error occurred while processing the request");
+    }
+
     reset();
   };
 
@@ -177,10 +213,9 @@ export default function Form() {
                   type="file"
                   id="imageInput"
                   className="hidden"
-                  {...register("imageInput")}
                   onChange={(e) => {
                     onChange(e.target.files);
-                    setSelectedImage(e.target.files?.[0] || null);
+                    setSelectedImage(e.target.files?.[0] || "");
                   }}
                   accept="image/*"
                 />
@@ -523,10 +558,9 @@ export default function Form() {
                     className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                     id="educationfile"
                     type="file"
-                    {...register("educationfile")}
                     onChange={(e) => {
                       onFileChange(e.target.files);
-                      setSelecteFiles(e.target.files?.[0] || null);
+                      setSelecteFiles(e.target.files?.[0] || "");
                     }}
                   />
                   <p className="text-gray-500 dark:text-gray-40 p-2">
@@ -542,10 +576,9 @@ export default function Form() {
                     className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                     id="experiencefile"
                     type="file"
-                    {...register("experiencefile")}
                     onChange={(e) => {
                       onexpeChange(e.target.files);
-                      setSelecteExpFiles(e.target.files?.[0] || null);
+                      setSelecteExpFiles(e.target.files?.[0] || "");
                     }}
                   />
                   <p className="text-gray-500 dark:text-gray-40 p-2">

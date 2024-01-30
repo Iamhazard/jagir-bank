@@ -100,9 +100,9 @@ model FreelancerProfile {
   program                String
   profession              String
   language              String
-  experience             String?
-  educationCertificate   String?
-  profileImage         String?
+  experiencefile             String?
+  educationfile             String?
+  imageInput         String?
   user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
 
