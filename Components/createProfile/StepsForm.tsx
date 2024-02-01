@@ -10,7 +10,7 @@ import { string, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { FormDataSchema } from "@/Schemas";
-import { freelancerProfile } from "@/actions/profile";
+import { useSession } from "next-auth/react";
 
 type Inputs = z.infer<typeof FormDataSchema>;
 
@@ -49,7 +49,8 @@ export default function Form() {
   const [profiledata, setProfileData] = useState();
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
-
+  const { data: session } = useSession();
+  const userid: string | undefined = session?.user.id;
   const {
     register,
     handleSubmit,
@@ -63,53 +64,65 @@ export default function Form() {
 
   const onChange = (files: any) => {
     setSelectedImage(selectedImage);
-    console.log("Selected files:", files);
+    // console.log("Selected files:", files);
   };
 
   const onFileChange = (files: any) => {
     setSelecteFiles(selectefiles);
-    console.log("Selected edu", files);
+    // console.log("Selected edu", files);
   };
   const onexpeChange = (files: any) => {
     setSelecteExpFiles(selecteexpfiles);
-    console.log("Selected edu", files);
+    // console.log("Selected edu", files);
   };
   const processForm: SubmitHandler<Inputs> = async (data) => {
-    const formData = new FormData();
-    formData.append("country", data.country);
-    formData.append("street", data.street);
-    formData.append("contact", data.contact);
-    formData.append("city", data.city);
-    formData.append("zip", data.zip);
-    formData.append("hourlyrate", data.hourlyrate);
-    formData.append("estimatedamount", data.estimatedamount);
-    formData.append("message", data.message);
-    formData.append("program", data.program);
-    formData.append("profession", data.profession);
-    formData.append("language", data.language);
-    formData.append("imageInput", selectedImage);
-    formData.append("educationfile", selectefiles);
-    formData.append("experiencefile", selecteexpfiles);
-    console.log(...formData);
     try {
+      const formData = new FormData();
+      formData.append("userId", userid as string);
+      formData.append("country", data.country);
+      formData.append("street", data.street);
+      formData.append("city", data.city);
+      formData.append("contact", data.contact);
+      formData.append("state", data.state);
+      formData.append("zip", data.zip);
+      formData.append("hourlyrate", data.hourlyrate);
+      formData.append("estimatedamount", data.estimatedamount);
+      formData.append("message", data.message);
+      formData.append("program", data.program);
+      formData.append("profession", data.profession);
+      formData.append("language", data.language);
+      formData.append("imageInput", selectedImage);
+      formData.append("educationfile", selectefiles);
+      formData.append("experiencefile", selecteexpfiles);
+      // console.log(...formData);
+      console.log("Selected image ", selectedImage);
+      const formDataObject: any = {};
+      for (const pair of formData.entries()) {
+        formDataObject[pair[0]] = pair[1];
+      }
+
+      console.log("formdata obh", formDataObject);
+
       const response = await fetch("api/freelancerprofile/new", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        body: JSON.stringify(formDataObject),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData.message || "An error occurred");
-      } else {
+      if (response.ok) {
         const profiledata = await response.json();
+        console.log("profile data", profiledata);
         setProfileData(profiledata);
         setSuccess("Profile created successfully");
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || "An error occurred");
       }
     } catch (error) {
       setError("An error occurred while processing the request");
     }
-
-    reset();
   };
 
   type FieldName = keyof Inputs;

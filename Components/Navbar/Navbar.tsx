@@ -19,7 +19,7 @@ import { useSession } from "next-auth/react";
 const NavBar = () => {
   const [dropDownMenu, setDropDownMenu] = useState<boolean>(false);
   const { data: session } = useSession();
-  console.log("session", session);
+  // console.log("session", session);
 
   const router = useRouter();
   const Onclick = () => {

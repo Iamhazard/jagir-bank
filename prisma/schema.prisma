@@ -87,12 +87,12 @@ model TwoFactorConfirmation {
 
 model FreelancerProfile {
   id                   String   @id @default(cuid())
-  userId         String  @unique
-  street        String   
-  country              String   
-  state            String   
-  city             String   
-  contact        String
+  userId         String    
+  country              String?
+  street        String?  
+  city             String?   
+  contact        String?
+  state            String?  
   zip               String?
   hourlyrate           String?
   estimatedamount      String?
@@ -104,8 +104,6 @@ model FreelancerProfile {
   educationfile             String?
   imageInput         String?
   user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-
-  
+  @@unique([userId])
 }
 
