@@ -90,3 +90,18 @@ export const FormDataSchema = z.object({
   language: z.string().min(1, 'language is required'),
 });
 
+export const ClientSchema = z.object({
+  country: z.string().min(1, 'Country is required'),
+  street: z.string().min(1, 'Street is required'),
+  contact: z.string().regex(phoneRegex,'Invalid Number!'),
+  city: z.string().min(1, 'City is required'),
+  state: z.string().min(1, 'State is required'),
+  zip: z.string().min(1, 'Zip is required'),
+   hourlyrate: z.string().regex(amountRegex,"Hourly rate must be a positive number"),
+  estimatedamount:z.string().regex(amountRegex,"estimatedamount  must be a positive number"),
+  message: z.string().min(10, 'minium 10 words  is required'),
+  program: z.string().min(1, 'program is required'),
+  profession: z.string().min(1, 'profession is required'),
+  language: z.string().min(1, 'language is required'),
+});
+

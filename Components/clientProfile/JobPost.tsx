@@ -18,10 +18,16 @@ import {
 } from "@/Components/ui/accordion";
 import { Checkbox } from "../ui/checkbox";
 import { Label } from "../ui/label";
+import { FormFieldProps } from "@/@types/enum";
 
-const JobPost = () => {
-  const [isPending, startTransition] = useTransition();
-  const form = useFormContext();
+const JobPost: React.FC<FormFieldProps> = ({
+  type,
+  placeholder,
+  name,
+  register,
+  error,
+  valueAsNumber,
+}) => {
   return (
     <div className="mt-4">
       <div className="flex ">
@@ -38,9 +44,9 @@ const JobPost = () => {
                 <div className="flex ">
                   <Checkbox id="terms" />
                   <label
-                    htmlFor="terms"
+                    htmlFor={name}
                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
-                    Medium
+                    {placeholder}
                   </label>
                 </div>
                 <small className=" text-gray-500">Well defined project</small>
@@ -48,7 +54,7 @@ const JobPost = () => {
 
               <div className="flex flex-col px-6  space-y-2">
                 <div className="flex">
-                  <Checkbox id="terms" />
+                  <Checkbox id="terms" {...register(name)} />
                   <label
                     htmlFor="terms"
                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
