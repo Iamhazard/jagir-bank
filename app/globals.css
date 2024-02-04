@@ -115,4 +115,7 @@ body,
   body {
     @apply bg-background text-foreground;
   }
+  radio-label {
+     @apply w-5 h-5 inline-flex items-center
+}
 }

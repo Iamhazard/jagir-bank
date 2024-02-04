@@ -10,7 +10,12 @@ export type SideNavItem = {
 
 
 export type FormData = {
-    skill: string;
+    skills:{
+      skills1:string,
+      skills2:string,
+      skills3:string,
+
+    }
   
   };
 

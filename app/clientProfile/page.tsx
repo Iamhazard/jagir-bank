@@ -1,13 +1,10 @@
+"use client";
 import ClientForms from "@/Components/clientProfile/ClientForm";
 
 import React from "react";
 
 const CreateProfile = () => {
-  return (
-    <>
-      <ClientForms />
-    </>
-  );
+  return <ClientForms />;
 };
 
 export default CreateProfile;

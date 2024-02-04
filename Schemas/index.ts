@@ -66,14 +66,6 @@ const phoneRegex = new RegExp(
 );
 const amountRegex = /^[0-9]*\.?[0-9]+$/;
 
-const MAX_FILE_SIZE = 1024 * 1024 * 5;
-const ACCEPTED_IMAGE_MIME_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
-
 
 export const FormDataSchema = z.object({
   country: z.string().min(1, 'Country is required'),
@@ -90,6 +82,17 @@ export const FormDataSchema = z.object({
   language: z.string().min(1, 'language is required'),
 });
 
+const skillsSchema = z.object({
+  skill1: z.string(),
+  skill2: z.string(),
+  skill3: z.string(),
+});
+
+const RateSchema=z.object({
+  from:z.string().regex(amountRegex,"fixed  must be a positive number"),
+  to:z.string().regex(amountRegex,"fixed  must be a positive number"),
+})
+
 export const ClientSchema = z.object({
   country: z.string().min(1, 'Country is required'),
   street: z.string().min(1, 'Street is required'),
@@ -97,11 +100,22 @@ export const ClientSchema = z.object({
   city: z.string().min(1, 'City is required'),
   state: z.string().min(1, 'State is required'),
   zip: z.string().min(1, 'Zip is required'),
-   hourlyrate: z.string().regex(amountRegex,"Hourly rate must be a positive number"),
-  estimatedamount:z.string().regex(amountRegex,"estimatedamount  must be a positive number"),
-  message: z.string().min(10, 'minium 10 words  is required'),
-  program: z.string().min(1, 'program is required'),
-  profession: z.string().min(1, 'profession is required'),
-  language: z.string().min(1, 'language is required'),
+  skills: skillsSchema,
+  projectSize:z.string().min(1, { message: "Please select a value" }).max(260, { message: "The name is too long" }),
+  duration:z.union([z.literal("moreThan6Months"),z.literal('3to6Months'),z.literal('1to3Months')]).transform((data) => {
+    if (data !== 'moreThan6Months' && data !== '3to6Months' && data!=="1to3Months") {
+      throw new Error('Please select an option');
+    }
+    return data;
+  }),
+    expertise:z.union([z.literal("entry"),z.literal('intermediate'),z.literal('expert')]).transform((data) => {
+    if (data !== 'entry' &&   data!=="intermediate" && data !== 'expert') {
+      throw new Error('Please select an option');
+    }
+    return data;
+  }),
+  rate:RateSchema,
+  fixed:z.string().regex(amountRegex,"fixed  must be a positive number"),
+  jobDescription:z.string().min(60, 'minium 60 words  is required'),
 });
 

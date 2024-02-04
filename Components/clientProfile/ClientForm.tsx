@@ -5,12 +5,15 @@ import { useState, useTransition } from "react";
 import { motion } from "framer-motion";
 import ProfileWrapper from "../createProfile/ProfileWrapper";
 import JobPost from "./JobPost";
-import { string, z } from "zod";
+import { z } from "zod";
 import FormField from "./FormFields";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { ClientSchema } from "@/Schemas";
 import { useSession } from "next-auth/react";
+import ClientBudget from "./ClientBudget";
+import ClientJobs from "./Jobs";
+import Address from "./Address";
 
 type Inputs = z.infer<typeof ClientSchema>;
 
@@ -20,38 +23,62 @@ const steps = [
     name: "Address",
     fields: ["country", "state", "city", "contact", "street", "zip"],
   },
+
   {
-    id: "Step 2",
-    name: "Personal Information",
-    fields: ["hourlyrate", "estimatedamount"],
+    id: "Step 2 ",
+    name: "Skills",
+    fields: ["skills1", "skills2", "skills3"],
   },
   {
     id: "Step 3",
-    name: "bio",
-    fields: ["message", "program", "profession"],
+    name: "Scope of works",
+    fields: ["projectSize", "duration", "expertise"],
   },
   {
     id: "Step 4",
-    name: "Education details",
-    fields: ["language"],
+    name: "Rate details",
+    fields: ["from", "to", "fixed?"],
   },
-  { id: "Step 5", name: "Complete" },
+  { id: "Step 5", name: "jobDescription", fields: ["jobPost"] },
+  { id: "Step 6", name: "Complete" },
 ];
 
 export default function Form() {
   const [previousStep, setPreviousStep] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const delta = currentStep - previousStep;
-  const [selectedImage, setSelectedImage] = useState<File | "">("");
-  const [selectefiles, setSelecteFiles] = useState<File | "">("");
-  const [selecteexpfiles, setSelecteExpFiles] = useState<File | "">("");
   const [error, setError] = useState<string | undefined>("");
   const [profiledata, setProfileData] = useState();
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
-  const { data: session } = useSession();
-  const userid: string | undefined = session?.user.id;
+  // const { data: session } = useSession();
+  // const userid: string | undefined = session?.user.id;
 
+  const methods = useForm<Inputs>({
+    resolver: zodResolver(ClientSchema),
+    defaultValues: {
+      county: "",
+      street: "",
+      contact: "",
+      city: "",
+      state: "",
+      zip: "",
+      skills: {
+        skill1: "",
+        skill2: "",
+        skill3: "",
+      },
+      projectSize: "",
+      duration: "",
+      expertise: "",
+      rate: {
+        from: "",
+        to: "",
+      },
+      fixed: "",
+      jobDescription: "",
+    },
+  });
   const {
     register,
     handleSubmit,
@@ -59,11 +86,10 @@ export default function Form() {
     reset,
     trigger,
     formState: { errors },
-  } = useForm<Inputs>({
-    resolver: zodResolver(ClientSchema),
-  });
+  } = methods;
 
-  const processForm: SubmitHandler<Inputs> = async (data) => {
+  const processForm: SubmitHandler<Inputs> = async (values) => {
+    console.log(values);
     // try {
     //   const formData = new FormData();
     //   formData.append("userId", userid as string);
@@ -114,9 +140,9 @@ export default function Form() {
 
   const next = async () => {
     const fields = steps[currentStep].fields;
-    // const output = await trigger(fields as FieldName[], { shouldFocus: true });
+    const output = await trigger(fields as FieldName[], { shouldFocus: true });
 
-    // if (!output) return;
+    if (!output) return;
 
     if (currentStep < steps.length - 1) {
       if (currentStep === steps.length - 2) {
@@ -136,7 +162,7 @@ export default function Form() {
 
   return (
     <ProfileWrapper
-      headerLabel="Create a FreeLancer profile"
+      headerLabel="Create a Client profile"
       backButtonLabel="Back to Register?"
       blackButtonHref="/auth/register">
       <section className=" inset-0 flex flex-col justify-between p-10">
@@ -175,275 +201,70 @@ export default function Form() {
             ))}
           </ol>
         </nav>
+        <FormProvider {...methods}>
+          {/* Form */}
+          <form className="mt-4 py-4" onSubmit={handleSubmit(processForm)}>
+            {currentStep === 0 && (
+              <motion.div
+                initial={{ x: delta >= 0 ? "50%" : "-50%", opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}>
+                <Address register={register} />
+              </motion.div>
+            )}
+            {currentStep === 1 && (
+              <motion.div
+                initial={{ x: delta >= 0 ? "50%" : "-50%", opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}>
+                <h2 className="text-base font-semibold leading-7 text-gray-900">
+                  What are the main skills require for your work?
+                </h2>
+                <p className="mt-1 text-sm leading-6 text-gray-600">
+                  Add 3 skills for best result
+                </p>
+                <FormField register={register} />
+              </motion.div>
+            )}
 
-        {/* Form */}
-        <form className="mt-4 py-4" onSubmit={handleSubmit(processForm)}>
-          {currentStep === 0 && (
-            <motion.div
-              initial={{ x: delta >= 0 ? "50%" : "-50%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}>
-              <h2 className="text-base font-semibold leading-7 text-gray-900">
-                Address
-              </h2>
-              <p className="mt-1 text-sm leading-6 text-gray-600">
-                Address where you can receive mail.
-              </p>
+            {currentStep === 2 && (
+              <motion.div
+                initial={{ x: delta >= 0 ? "50%" : "-50%", opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}>
+                <JobPost register={register} />
+              </motion.div>
+            )}
 
-              <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                <div className="sm:col-span-3">
-                  <label
-                    htmlFor="country"
-                    className="block text-sm font-medium leading-6 text-gray-900">
-                    Country
-                  </label>
-                  <div className="mt-2">
-                    <select
-                      id="country"
-                      {...register("country")}
-                      autoComplete="country-name"
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:max-w-xs sm:text-sm sm:leading-6">
-                      <option>Nepal</option>
-                      <option>India</option>
-                      <option>China</option>
-                      <option>Srilanka</option>
-                      <option>United States</option>
-                      <option>Canada</option>
-                      <option>Mexico</option>
-                      <option>Austraia</option>
-                    </select>
-                    {errors.country?.message && (
-                      <p className="mt-2 text-sm text-red-400">
-                        {errors.country.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="col-span-full">
-                  <label
-                    htmlFor="street"
-                    className="block text-sm font-medium leading-6 text-gray-900">
-                    Street address
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      type="text"
-                      id="street"
-                      {...register("street")}
-                      autoComplete="street-address"
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
-                    />
-                    {errors.street?.message && (
-                      <p className="mt-2 text-sm text-red-400">
-                        {errors.street.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="col-span-full">
-                  <label
-                    htmlFor="city"
-                    className="block text-sm font-medium leading-6 text-gray-900">
-                    City
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      type="text"
-                      id="city"
-                      {...register("city")}
-                      autoComplete="address-level2"
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
-                    />
-                    {errors.city?.message && (
-                      <p className="mt-2 text-sm text-red-400">
-                        {errors.city.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="sm:col-span-2 sm:col-start-1">
-                  <label
-                    htmlFor="contact"
-                    className="block text-sm font-medium leading-6 text-gray-900">
-                    Contact Number
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      type="text"
-                      id="contact"
-                      {...register("contact")}
-                      autoComplete="9860"
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
-                    />
-                    {errors.contact?.message && (
-                      <p className="mt-2 text-sm text-red-400">
-                        {errors.contact.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label
-                    htmlFor="state"
-                    className="block text-sm font-medium leading-6 text-gray-900">
-                    State / Province
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      type="text"
-                      id="state"
-                      {...register("state")}
-                      autoComplete="address-level1"
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
-                    />
-                    {errors.state?.message && (
-                      <p className="mt-2 text-sm text-red-400">
-                        {errors.state.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label
-                    htmlFor="zip"
-                    className="block text-sm font-medium leading-6 text-gray-900">
-                    ZIP / Postal code
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      type="text"
-                      id="zip"
-                      {...register("zip")}
-                      autoComplete="postal-code"
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
-                    />
-                    {errors.zip?.message && (
-                      <p className="mt-2 text-sm text-red-400">
-                        {errors.zip.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-          {currentStep === 1 && (
-            <motion.div
-              initial={{ x: delta >= 0 ? "50%" : "-50%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}>
-              <h2 className="text-base font-semibold leading-7 text-gray-900">
-                What are the main skills require for your work?
-              </h2>
-              <p className="mt-1 text-sm leading-6 text-gray-600">
-                Add 3 skills for best result
-              </p>
-              <div className="space-y-4 text-sm mt-4">
-                <FormField
-                  type="text"
-                  placeholder="Enter skill"
-                  name="skill1"
-                  register={register}
-                  error={error.skill1}
-                />
-              </div>
-            </motion.div>
-          )}
-
-          {currentStep === 2 && (
-            <motion.div
-              initial={{ x: delta >= 0 ? "50%" : "-50%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}>
-              <JobPost />
-            </motion.div>
-          )}
-
-          {currentStep === 3 && (
-            <motion.div
-              initial={{ x: delta >= 0 ? "50%" : "-50%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}>
-              <div className="gap-4">
-                <div>
-                  <span className="text-xl">
-                    Clients like to know what you now -add your education here.
-                  </span>
-                  <h1 className="text-xl">Add education.</h1>
-                  <input
-                    className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                    id="educationfile"
-                    type="file"
-                    onChange={(e) => {
-                      onFileChange(e.target.files);
-                      setSelecteFiles(e.target.files?.[0] || "");
-                    }}
-                  />
-                  <p className="text-gray-500 dark:text-gray-40 p-2">
-                    Add any equivalent degree?
-                  </p>
-                </div>
-                <div>
-                  <span className="text-xl">
-                    Clients like to know what you now -add your experience here.
-                  </span>
-                  <h1 className="text-xl">Add experience.</h1>
-                  <input
-                    className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                    id="experiencefile"
-                    type="file"
-                    onChange={(e) => {
-                      onexpeChange(e.target.files);
-                      setSelecteExpFiles(e.target.files?.[0] || "");
-                    }}
-                  />
-                  <p className="text-gray-500 dark:text-gray-40 p-2">
-                    Add any equivalent experience?
-                  </p>
-                </div>
-                <div className="sm:col-span-3">
-                  <label
-                    htmlFor="country"
-                    className="block text-sm font-medium leading-6 text-gray-900">
-                    Country
-                  </label>
-                  <div className="mt-2">
-                    <select
-                      id="language"
-                      {...register("language")}
-                      autoComplete="Nepali"
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:max-w-xs sm:text-sm sm:leading-6">
-                      <option>Nepali</option>
-                      <option>Hindi</option>
-                      <option>Chinese</option>
-                      <option>English</option>
-                      <option>French</option>
-                    </select>
-                    {errors.language?.message && (
-                      <p className="mt-2 text-sm text-red-400">
-                        {errors.language.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-          {currentStep === 4 && (
-            <>
-              <h2 className="text-base font-semibold leading-7 text-gray-900">
-                Complete
-              </h2>
-              <p className="mt-1 text-sm leading-6 text-gray-600">
-                Thank you for your submission.
-              </p>
-            </>
-          )}
-        </form>
+            {currentStep === 3 && (
+              <motion.div
+                initial={{ x: delta >= 0 ? "50%" : "-50%", opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}>
+                <ClientBudget register={register} />
+              </motion.div>
+            )}
+            {currentStep === 4 && (
+              <motion.div
+                initial={{ x: delta >= 0 ? "50%" : "-50%", opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}>
+                <ClientJobs register={register} />
+              </motion.div>
+            )}
+            {currentStep === 5 && (
+              <>
+                <h2 className="text-base font-semibold leading-7 text-gray-900">
+                  Complete
+                </h2>
+                <p className="mt-1 text-sm leading-6 text-gray-600">
+                  Thank you for your submission.
+                </p>
+                <button type="submit">Submit</button>
+              </>
+            )}
+          </form>
+        </FormProvider>
 
         {/* Navigation */}
         <div className="mt-8 pt-5">

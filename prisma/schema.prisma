@@ -107,3 +107,24 @@ model FreelancerProfile {
   @@unique([userId])
 }
 
+model ClientProfile {
+  id                   String   @id @default(cuid())
+  userId         String    
+  country              String?
+  street        String?  
+  city             String?   
+  contact        String?
+  state            String?  
+  zip               String?
+  hourlyrate           String?
+  estimatedamount      String?
+  message                  String
+  program                String
+  profession              String
+  language              String
+  experiencefile             String?
+  educationfile             String?
+  imageInput         String?
+  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId])
+}

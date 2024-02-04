@@ -1,33 +1,16 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { useTransition } from "react";
-import { Input } from "../ui/input";
-import { cn } from "@/lib/utils";
-import { useFormContext } from "react-hook-form";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "../ui/form";
+import React from "react";
+
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/Components/ui/accordion";
-import { Checkbox } from "../ui/checkbox";
-import { Label } from "../ui/label";
-import { FormFieldProps } from "@/@types/enum";
+import { useFormContext } from "react-hook-form";
 
-const JobPost: React.FC<FormFieldProps> = ({
-  type,
-  placeholder,
-  name,
-  register,
-  error,
-  valueAsNumber,
-}) => {
+const JobRequired = () => {
+  const { register } = useFormContext();
   return (
     <div className="mt-4">
       <div className="flex ">
@@ -41,41 +24,62 @@ const JobPost: React.FC<FormFieldProps> = ({
           <AccordionContent>
             <div className="flex-col items-center space-y-3">
               <div className="flex flex-col px-6 space-y-2">
-                <div className="flex ">
-                  <Checkbox id="terms" />
-                  <label
-                    htmlFor={name}
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
-                    {placeholder}
-                  </label>
+                <div className="flex items-center">
+                  <>
+                    <input
+                      type="radio"
+                      id="projectSize"
+                      value="medium"
+                      {...register("projectSize")}
+                    />
+                    <label
+                      htmlFor="medium"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2 radio-label">
+                      Medium
+                    </label>
+                  </>
                 </div>
-                <small className=" text-gray-500">Well defined project</small>
+                <small className="text-gray-500">Well defined project</small>
               </div>
 
-              <div className="flex flex-col px-6  space-y-2">
-                <div className="flex">
-                  <Checkbox id="terms" {...register(name)} />
-                  <label
-                    htmlFor="terms"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
-                    Large
-                  </label>
+              <div className="flex flex-col px-6 space-y-2">
+                <div className="flex items-center">
+                  <>
+                    <input
+                      type="radio"
+                      id="projectSize"
+                      value="large"
+                      {...register("projectSize")}
+                    />
+                    <label
+                      htmlFor="large"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2 radio-label">
+                      Large
+                    </label>
+                  </>
                 </div>
-                <small className=" text-gray-500">
+                <small className="text-gray-500">
                   Larger and complex project
                 </small>
               </div>
 
               <div className="flex flex-col px-6 space-y-2">
-                <div className="flex">
-                  <Checkbox id="terms" />
-                  <label
-                    htmlFor="terms"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
-                    Small
-                  </label>
+                <div className="flex items-center">
+                  <>
+                    <input
+                      type="radio"
+                      id="projectSize"
+                      value="small"
+                      {...register("projectSize")}
+                    />
+                    <label
+                      htmlFor="small"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
+                      Small
+                    </label>
+                  </>
                 </div>
-                <small className=" text-gray-500">Very small project</small>
+                <small className="text-gray-500">Very small project</small>
               </div>
             </div>
           </AccordionContent>
@@ -87,30 +91,51 @@ const JobPost: React.FC<FormFieldProps> = ({
           <AccordionContent>
             <div className="flex-col items-center space-y-3">
               <div className="px-6">
-                <Checkbox id="terms" />
-                <label
-                  htmlFor="terms"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
-                  more than 6 months
-                </label>
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    id="duration"
+                    value="moreThan6Months"
+                    {...register("duration")}
+                  />
+                  <label
+                    htmlFor="moreThan6Months"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
+                    more than 6 months
+                  </label>
+                </div>
               </div>
 
               <div className="px-6">
-                <Checkbox id="terms" />
-                <label
-                  htmlFor="terms"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
-                  3 to 6 months
-                </label>
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    id="duration"
+                    value="3to6Months"
+                    {...register("duration")}
+                  />
+                  <label
+                    htmlFor="3to6Months"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
+                    3 to 6 months
+                  </label>
+                </div>
               </div>
 
               <div className="px-6">
-                <Checkbox id="terms" />
-                <label
-                  htmlFor="terms"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
-                  1 to 3 months
-                </label>
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    id="duration"
+                    value="1to3Months"
+                    {...register("duration")}
+                  />
+                  <label
+                    htmlFor="1to3Months"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
+                    1 to 3 months
+                  </label>
+                </div>
               </div>
             </div>
           </AccordionContent>
@@ -125,43 +150,64 @@ const JobPost: React.FC<FormFieldProps> = ({
             <div className="flex-col items-center space-y-3">
               <div className="flex flex-col px-6 space-y-2">
                 <div className="flex ">
-                  <Checkbox id="terms" />
-                  <Label
-                    htmlFor="terms"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
-                    Entry
-                  </Label>
+                  <>
+                    <input
+                      type="radio"
+                      id="expertise"
+                      value="entry"
+                      {...register("expertise")}
+                    />
+                    <label
+                      htmlFor="entry"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
+                      Entry
+                    </label>
+                  </>
                 </div>
-                <small className=" text-gray-500">
-                  Looking for someOne relatively new to this field
+                <small className="text-gray-500">
+                  Looking for someone relatively new to this field
                 </small>
               </div>
 
-              <div className="flex flex-col px-6  space-y-2">
+              <div className="flex flex-col px-6 space-y-2">
                 <div className="flex">
-                  <Checkbox id="terms" />
-                  <label
-                    htmlFor="terms"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
-                    Intermediate
-                  </label>
+                  <>
+                    <input
+                      type="radio"
+                      value="intermediate"
+                      id="expertise"
+                      {...register("expertise")}
+                    />
+                    <label
+                      htmlFor="intermediate"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
+                      Intermediate
+                    </label>
+                  </>
                 </div>
-                <small className=" text-gray-500">
+                <small className="text-gray-500">
                   Looking for substantial experience.
                 </small>
               </div>
 
               <div className="flex flex-col px-6 space-y-2">
                 <div className="flex">
-                  <Checkbox id="terms" />
-                  <label
-                    htmlFor="terms"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
-                    Expert
-                  </label>
+                  <>
+                    <input
+                      type="radio"
+                      value="expert"
+                      id="expertise"
+                      {...register("expertise")}
+                    />
+                    <label
+                      htmlFor="expert"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
+                      Expert
+                    </label>
+                  </>
                 </div>
-                <small className=" text-gray-500">
-                  Looking for Deep expertise in the field
+                <small className="text-gray-500">
+                  Looking for deep expertise in the field
                 </small>
               </div>
             </div>
@@ -172,4 +218,4 @@ const JobPost: React.FC<FormFieldProps> = ({
   );
 };
 
-export default JobPost;
+export default JobRequired;
