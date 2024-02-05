@@ -1,7 +1,15 @@
-import { useFormContext } from "react-hook-form";
+import { UseFormRegister, useFormContext } from "react-hook-form";
 
-const FormFields = () => {
-  const { register } = useFormContext();
+type FormComponentProps = {
+  register: UseFormRegister<{
+    skills1: string;
+    skills2: string;
+    skills3: string;
+  }>;
+};
+
+const FormFields: React.FC<FormComponentProps> = ({ register }) => {
+  // const { register } = useFormContext();
   return (
     <>
       <div className="col-span-full">

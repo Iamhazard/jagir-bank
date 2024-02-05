@@ -1,14 +1,19 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState, useTransition } from "react";
+import React, { useState, useTransition } from "react";
 import { motion } from "framer-motion";
 import ProfileWrapper from "../createProfile/ProfileWrapper";
 import JobPost from "./JobPost";
 import { z } from "zod";
 import FormField from "./FormFields";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
+import {
+  useForm,
+  SubmitHandler,
+  FormProvider,
+  UseFormRegister,
+} from "react-hook-form";
 import { ClientSchema } from "@/Schemas";
 import { useSession } from "next-auth/react";
 import ClientBudget from "./ClientBudget";
@@ -44,7 +49,23 @@ const steps = [
   { id: "Step 6", name: "Complete" },
 ];
 
-export default function Form() {
+type FormFields = {
+  register: string;
+  country: string;
+  post: string;
+  skills1: string;
+  skills2: string;
+  skills3: string;
+  projectSize: string;
+  duration: string;
+  expertise: string;
+  from: string;
+  to: string;
+  fixed: string;
+  jobDescription: string;
+};
+
+const ClientForm: React.FC<FormFields> = () => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [previousStep, setPreviousStep] = useState(0);
@@ -86,9 +107,9 @@ export default function Form() {
     startTransition(() => {
       clientProfile(values).then((data) => {
         setError(data?.error);
-        setSuccess(data?.success);
       });
     });
+    reset();
     console.log(values);
   };
 
@@ -268,4 +289,6 @@ export default function Form() {
       </section>
     </ProfileWrapper>
   );
-}
+};
+
+export default ClientForm;

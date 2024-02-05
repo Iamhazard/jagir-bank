@@ -1,7 +1,8 @@
 import { v2 as cloudinary } from "cloudinary";
 import { db } from "@/lib/db";
 import { fileSizeFormatter, upload } from "@/lib/multer";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiResponse } from "next";
+import { NextRequest, NextResponse } from 'next/server';
 
 interface MulterFile {
   fieldname: string;
@@ -14,16 +15,16 @@ interface MulterFile {
   path: string;
   buffer: Buffer;
 }
-interface CustomNextApiRequest extends NextApiRequest {
+interface CustomNextApiRequest extends NextRequest {
   json: () => Promise<any>;
   files?: any;
 }
 
-interface MulterRequest extends NextApiRequest {
+interface MulterRequest extends NextRequest {
   files: MulterFile[];
 }
 
-export const POST = async (req: CustomNextApiRequest, res: NextApiResponse) => {
+export const POST = async (req: CustomNextApiRequest, res: NextResponse) => {
   if (req.method === "POST") {
     try {
       const {
@@ -69,7 +70,7 @@ export const POST = async (req: CustomNextApiRequest, res: NextApiResponse) => {
             status: 422,
           });
         } else {
-          documentFile.images = (req as MulterRequest).files.map(
+          documentFile.images = (req as unknown as MulterRequest).files.map(
             (file) => file.filename
           );
         }
