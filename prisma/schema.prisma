@@ -28,6 +28,7 @@ model User {
   isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
   profile               FreelancerProfile[]
+  clientProfile         ClientProfile[]
 }
 
 model Account {
@@ -111,20 +112,17 @@ model ClientProfile {
   id                   String   @id @default(cuid())
   userId         String    
   country              String?
-  street        String?  
-  city             String?   
-  contact        String?
-  state            String?  
-  zip               String?
-  hourlyrate           String?
-  estimatedamount      String?
-  message                  String
-  program                String
-  profession              String
-  language              String
-  experiencefile             String?
-  educationfile             String?
-  imageInput         String?
+  post        String?  
+  skills1          String?
+  skills2          String?
+  skills3               String?
+  projectSize           String?
+  duration               String?
+  expertise                  String
+  from                String
+  to              String
+  fixed              String
+  jobDescription             String?
   user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@unique([userId])
 }

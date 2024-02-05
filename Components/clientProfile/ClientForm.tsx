@@ -14,20 +14,21 @@ import { useSession } from "next-auth/react";
 import ClientBudget from "./ClientBudget";
 import ClientJobs from "./Jobs";
 import Address from "./Address";
+import { clientProfile } from "@/actions/clientProfile";
 
 type Inputs = z.infer<typeof ClientSchema>;
 
 const steps = [
   {
     id: "Step 1",
-    name: "Address",
-    fields: ["country", "state", "city", "contact", "street", "zip"],
+    name: "Job title",
+    fields: ["country", "post"],
   },
 
   {
     id: "Step 2 ",
     name: "Skills",
-    fields: ["skills1", "skills2", "skills3"],
+    fields: ["skills1", "skills3", "skills3"],
   },
   {
     id: "Step 3",
@@ -37,44 +38,33 @@ const steps = [
   {
     id: "Step 4",
     name: "Rate details",
-    fields: ["from", "to", "fixed?"],
+    fields: ["from", "to", "fixed"],
   },
   { id: "Step 5", name: "jobDescription", fields: ["jobPost"] },
   { id: "Step 6", name: "Complete" },
 ];
 
 export default function Form() {
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
   const [previousStep, setPreviousStep] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const delta = currentStep - previousStep;
-  const [error, setError] = useState<string | undefined>("");
-  const [profiledata, setProfileData] = useState();
-  const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
-  // const { data: session } = useSession();
-  // const userid: string | undefined = session?.user.id;
 
   const methods = useForm<Inputs>({
     resolver: zodResolver(ClientSchema),
     defaultValues: {
-      county: "",
-      street: "",
-      contact: "",
-      city: "",
-      state: "",
-      zip: "",
-      skills: {
-        skill1: "",
-        skill2: "",
-        skill3: "",
-      },
+      post: "",
+      country: "",
+      skills1: "",
+      skills2: "",
+      skills3: "",
       projectSize: "",
       duration: "",
       expertise: "",
-      rate: {
-        from: "",
-        to: "",
-      },
+      from: "",
+      to: "",
       fixed: "",
       jobDescription: "",
     },
@@ -88,52 +78,18 @@ export default function Form() {
     formState: { errors },
   } = methods;
 
-  const processForm: SubmitHandler<Inputs> = async (values) => {
+  const processForm: SubmitHandler<Inputs> = (
+    values: z.infer<typeof ClientSchema>
+  ) => {
+    setError("");
+    setSuccess("");
+    startTransition(() => {
+      clientProfile(values).then((data) => {
+        setError(data?.error);
+        setSuccess(data?.success);
+      });
+    });
     console.log(values);
-    // try {
-    //   const formData = new FormData();
-    //   formData.append("userId", userid as string);
-    //   formData.append("country", data.country);
-    //   formData.append("street", data.street);
-    //   formData.append("city", data.city);
-    //   formData.append("contact", data.contact);
-    //   formData.append("state", data.state);
-    //   formData.append("zip", data.zip);
-    //   formData.append("hourlyrate", data.hourlyrate);
-    //   formData.append("estimatedamount", data.estimatedamount);
-    //   formData.append("message", data.message);
-    //   formData.append("program", data.program);
-    //   formData.append("profession", data.profession);
-    //   formData.append("language", data.language);
-    //   formData.append("imageInput", selectedImage);
-    //   formData.append("educationfile", selectefiles);
-    //   formData.append("experiencefile", selecteexpfiles);
-    //   // console.log(...formData);
-    //   console.log("Selected image ", selectedImage);
-    //   const formDataObject: any = {};
-    //   for (const pair of formData.entries()) {
-    //     formDataObject[pair[0]] = pair[1];
-    //   }
-    //   console.log("formdata obh", formDataObject);
-    //   const response = await fetch("api/freelancerprofile/new", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "multipart/form-data",
-    //     },
-    //     body: JSON.stringify(formDataObject),
-    //   });
-    //   if (response.ok) {
-    //     const profiledata = await response.json();
-    //     console.log("profile data", profiledata);
-    //     setProfileData(profiledata);
-    //     setSuccess("Profile created successfully");
-    //   } else {
-    //     const errorData = await response.json();
-    //     setError(errorData.message || "An error occurred");
-    //   }
-    // } catch (error) {
-    //   setError("An error occurred while processing the request");
-    // }
   };
 
   type FieldName = keyof Inputs;

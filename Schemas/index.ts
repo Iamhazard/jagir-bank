@@ -83,9 +83,9 @@ export const FormDataSchema = z.object({
 });
 
 const skillsSchema = z.object({
-  skill1: z.string(),
-  skill2: z.string(),
-  skill3: z.string(),
+  skills1: z.string(),
+  skills2: z.string(),
+  skills3: z.string(),
 });
 
 const RateSchema=z.object({
@@ -95,26 +95,16 @@ const RateSchema=z.object({
 
 export const ClientSchema = z.object({
   country: z.string().min(1, 'Country is required'),
-  street: z.string().min(1, 'Street is required'),
-  contact: z.string().regex(phoneRegex,'Invalid Number!'),
-  city: z.string().min(1, 'City is required'),
-  state: z.string().min(1, 'State is required'),
-  zip: z.string().min(1, 'Zip is required'),
-  skills: skillsSchema,
+  post: z.string().min(1, 'post is required'),
+  skills1: z.string(),
+  skills2: z.string(),
+  skills3: z.string(),
   projectSize:z.string().min(1, { message: "Please select a value" }).max(260, { message: "The name is too long" }),
-  duration:z.union([z.literal("moreThan6Months"),z.literal('3to6Months'),z.literal('1to3Months')]).transform((data) => {
-    if (data !== 'moreThan6Months' && data !== '3to6Months' && data!=="1to3Months") {
-      throw new Error('Please select an option');
-    }
-    return data;
-  }),
-    expertise:z.union([z.literal("entry"),z.literal('intermediate'),z.literal('expert')]).transform((data) => {
-    if (data !== 'entry' &&   data!=="intermediate" && data !== 'expert') {
-      throw new Error('Please select an option');
-    }
-    return data;
-  }),
-  rate:RateSchema,
+  duration:z.string().min(1, { message: "Please select a value" }).max(260, { message: "The name is too long" }),
+  expertise:z.string().min(1, { message: "Please select a value" }).max(260, { message: "The name is too long" }),
+  
+ from:z.string().regex(amountRegex,"fixed  must be a positive number"),
+  to:z.string().regex(amountRegex,"fixed  must be a positive number"),
   fixed:z.string().regex(amountRegex,"fixed  must be a positive number"),
   jobDescription:z.string().min(60, 'minium 60 words  is required'),
 });
