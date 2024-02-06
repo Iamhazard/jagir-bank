@@ -109,3 +109,14 @@ export const ClientSchema = z.object({
   jobDescription:z.string().min(60, 'minium 60 words  is required'),
 });
 
+
+export const MessageSchema=z.object({
+  id:z.string(),
+  text :z.string(),
+  isUserMessage:z.boolean(),
+  
+})
+
+//array validator
+export const MessageArraySchema = z.array(MessageSchema);
+export type Message=z.infer<typeof MessageSchema>

@@ -4,6 +4,7 @@ import styles from "../../styles/main.module.css";
 import Link from "next/link";
 import Image from "next/image";
 import clsx from "clsx";
+import Chat from "../AIbot/Chat";
 const CardSection = () => {
   return (
     <>
@@ -31,20 +32,13 @@ const CardSection = () => {
                 className=" object-cover"
               />
             </Link>
-            <span className="">
+            <small className="text-sm font-mono">
               Start a conversation powered by OpenAI technologies.
-            </span>
+            </small>
           </div>
         </div>
-        <div className="p-10">
-          <h5 className="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
-            <div className={styles.Aicard}>
-              <p>
-                Hi 👋 I m here to help you up your work game with a little help
-                from AI.
-              </p>
-            </div>
-          </h5>
+        <div className="p-4 flex justify-end">
+          <Chat />
         </div>
       </div>
     </>
