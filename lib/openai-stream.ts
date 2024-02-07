@@ -27,29 +27,39 @@ export async function OpenAIStream(payload: OpenAIStreamPayload) {
   
     let counter = 0;
   
-    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    const res = await fetch("https://api.openai.com/v1/chat/completions/", {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY ?? ""}`,
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY }`,
+        
       },
-      method: "POST",
+
+      
+     
       body: JSON.stringify(payload),
     });
+    
+     console.log(process.env.OPENAI_API_KEY)
   
-const stream = new ReadableStream({
+     try {
+      const stream = new ReadableStream({
+  
       async start(controller) {
         // callback
         function onParse(event: ParsedEvent | ReconnectInterval) {
           if (event.type === "event") {
+
             const data = event.data;
-            // https://beta.openai.com/docs/api-reference/completions/create#completions/create-stream
             if (data === "[DONE]") {
               controller.close();
               return;
             }
             try {
               const json = JSON.parse(data);
+              console.log("open ai",json)
               const text = json.choices[0].delta?.content || "";
+               console.log("Text",text)
               if (counter < 2 && (text.match(/\n/) || []).length) {
                 // this is a prefix character (i.e., "\n\n"), do nothing
                 return;
@@ -57,20 +67,26 @@ const stream = new ReadableStream({
               const queue = encoder.encode(text);
               controller.enqueue(queue);
               counter++;
-            } catch (e) {
+            } catch (error) {
               // maybe parse error
-              controller.error(e);
+              controller.error(error);
             }
           }
         }
    const parser = createParser(onParse);
-        // https://web.dev/streams/#asynchronous-iteration
+  
+      
         for await (const chunk of res.body as any) {
           parser.feed(decoder.decode(chunk));
         }
       },
     });
+ return stream
+     } catch (error) {
+      console.log(error)
+     }
+
    
 
-    return stream
+   
 }

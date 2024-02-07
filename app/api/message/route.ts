@@ -1,12 +1,21 @@
+import OpenAI from 'openai';
 import { MessageArraySchema } from "@/Schemas";
-import { chatbotPrompt } from "@/helpers/constants/chatbot-prompt";
-import { ChatGPTMessage, OpenAIStream, OpenAIStreamPayload } from "@/lib/openai-stream";
 
-export async function POST(req:Request){
+import { ChatGPTMessage, OpenAIStream, OpenAIStreamPayload } from "@/lib/openai-stream";
+import { chatbotPrompt } from '@/helpers/constants/chatbot-prompt';
+
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+export async function POST(request:Request){
     
-const {messages}=await req.json();
+const {messages}=await request.json();
+//console.log("messages",messages)
 
 const parsedMessages=MessageArraySchema.parse(messages)
+//console.log("parsed messages",parsedMessages)
 
 
 //for sending to gpt
@@ -17,11 +26,14 @@ const parsedMessages=MessageArraySchema.parse(messages)
       content: message.text,
     }
   })
+ //console.log(outboundMessages)
+
 
 outboundMessages.unshift({
     role:'system',
-    content: chatbotPrompt
+    content: chatbotPrompt,
 })
+
 
  const payload:OpenAIStreamPayload = {
     model: 'gpt-3.5-turbo',
@@ -37,6 +49,7 @@ outboundMessages.unshift({
 
 
   const stream = await OpenAIStream(payload)
+  //console.log(stream)
 
   return new  Response(stream)
 

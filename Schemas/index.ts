@@ -110,13 +110,13 @@ export const ClientSchema = z.object({
 });
 
 
-export const MessageSchema=z.object({
-  id:z.string(),
-  text :z.string(),
-  isUserMessage:z.boolean(),
-  
+export const MessageSchema = z.object({
+  id: z.string(),
+  text: z.string(),
+  isUserMessage: z.boolean(),
 })
 
-//array validator
-export const MessageArraySchema = z.array(MessageSchema);
-export type Message=z.infer<typeof MessageSchema>
+// array validator
+export const MessageArraySchema = z.array(MessageSchema)
+
+export type Message = z.infer<typeof MessageSchema>
