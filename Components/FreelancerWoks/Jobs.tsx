@@ -22,9 +22,8 @@ const Jobs = () => {
   return (
     <div>
       <div
-        className={`max-w-[950px] max-h-[500px]   p-6 bg-[#ffffff] hover:bg-[#F2F7F2] border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 ${
-          showMore ? "expanded" : ""
-        }`}>
+        className={`max-w-[950px] max-h-[500px]   p-6 bg-[#ffffff] hover:bg-[#F2F7F2] border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 ${showMore ? "expanded" : ""
+          }`}>
         <small className="text-gray-400 ">Posted 2 hours ago</small>
         <Link href="#">
           <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">

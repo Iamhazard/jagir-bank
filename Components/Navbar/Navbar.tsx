@@ -4,7 +4,6 @@ import React, { use, useState } from "react";
 
 import styles from "../../styles/styles.module.css";
 import Link from "next/link";
-
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import LoginButton from "../auth/login-button";
