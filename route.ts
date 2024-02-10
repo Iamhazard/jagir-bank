@@ -22,8 +22,9 @@ export const authRoutes = [
 
 export const adminRoutes = ["/dashboard/users"];
 export const clientRoutes = ["/clientProfile"];
+export const dashboardRoutes= ["/dashboard"];
 export const freeLancerRoutes= ["/freeLancerProfile"];
-export const jobRoutes= ["/findwork"];
+export const jobRoutes= ["/jobs/bestmatches"];
 
 /**
  * The prefix for API authentication routes
@@ -37,4 +38,4 @@ export const apiAuthPrefix = "/api/auth";
  * @type {string}
  */
 
-export const DEFAULT_LOGIN_REDIRECT = "/bestmatches";
+export const DEFAULT_LOGIN_REDIRECT = "/jobs/bestmatches";

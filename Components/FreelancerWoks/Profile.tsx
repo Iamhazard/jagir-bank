@@ -19,7 +19,7 @@ const Profile = () => {
             variant: "link2",
             className: "gap-1.5",
           })}
-          href="/sign-in">
+          href="/freelancerProfile/viewprofile">
           Name
         </Link>
 

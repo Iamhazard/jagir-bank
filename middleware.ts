@@ -4,6 +4,7 @@ import {
   DEFAULT_LOGIN_REDIRECT,
   apiAuthPrefix,
   authRoutes,
+  jobRoutes,
   publicRoutes,
 } from "@/route";
 
@@ -20,6 +21,7 @@ export default auth((req) => {
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
   const isDashboardRoute = authRoutes.includes(nextUrl.pathname);
+  const isJobsRoute = jobRoutes.includes(nextUrl.pathname);
 
   if (isDashboardRoute) {
     return null;
@@ -35,6 +37,11 @@ export default auth((req) => {
     }
     return null;
   }
+
+  
+
+
+
 
   if (!isLoggedIn && !isPublicRoute) {
     let callbackUrl = nextUrl.pathname;

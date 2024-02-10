@@ -96,6 +96,46 @@ const JobSheet = () => {
 
                                 <Separator />
                             </div>
+                            <div className="py-6">
+                                <h1 className="text-xl font-medium">Project type:</h1>
+
+                            </div>
+                            <div>
+                                <Separator />
+                                <h1 className="py-2 px-1 text-md font-bold">
+                                    Skills and Expertise
+                                </h1>
+                                <div className="flex-1">
+                                    <h1>
+                                        Front-End Development Deliverables
+                                    </h1>
+                                    <div className=" flex py-2 gap-3">
+                                        <Button variant="outline">Web application</Button>
+                                        <Button variant='outline'>Blog</Button>
+                                    </div>
+                                </div>
+                                <div className="py-4">
+                                    <h4>Front-End Development Languages</h4>
+                                    <div className=" flex py-2 gap-3">
+                                        <Button variant="outline">Web application</Button>
+                                        <Button variant='outline'>Blog</Button>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <Separator />
+                            <div className="py-4">
+                                <h1>Activity on this job</h1>
+                                <div className="flex-col flex">
+                                    <small>Proposals:
+                                        50+</small> {""}
+                                    <small>Last viewed by client:
+                                        7 hours ago</small>
+
+                                </div>
+                            </div>
+
                         </div>
 
                         <div>
