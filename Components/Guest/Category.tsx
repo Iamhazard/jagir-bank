@@ -61,7 +61,7 @@ const Category = () => {
         <h1 className={styles.heading_cat}>Browse talent by Category</h1>
         <p className={`${styles.p_category} md:text-lg sm:p-6 mb-7`}>
           Looking for project?
-          <Link href="/" className="text-green-600 underline">
+          <Link href="/jobs/bestmatches" className="text-green-600 underline">
             Browse jobs
           </Link>
         </p>

@@ -1,5 +1,5 @@
 import React from "react";
-import { useFormContext } from "react-hook-form";
+import { useForm, useFormContext } from "react-hook-form";
 import {
   Accordion,
   AccordionContent,
@@ -9,6 +9,10 @@ import {
 
 const ClientBudget = () => {
   const { register } = useFormContext();
+  const {
+
+    formState: { errors, isDirty, isSubmitting, touchedFields, submitCount },
+  } = useForm();
   return (
     <>
       <Accordion type="single" collapsible className="w-full">
@@ -26,8 +30,9 @@ const ClientBudget = () => {
                   className="rounded-md border-0  p-4  py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
                   type="text"
                   id="from"
-                  {...register("from")}
+                  {...register("jobs.form.7")}
                 />
+                {errors?.form && <span className="text-red-500">Input  required.</span>}
                 <span className="text-gray-400 p-1">/hr</span>
               </div>
 
@@ -41,8 +46,9 @@ const ClientBudget = () => {
                   className="rounded-md border-0 p-4 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
                   type="text"
                   id="to"
-                  {...register("to")}
+                  {...register("jobs.to.8")}
                 />
+                {errors?.to && <span className="text-red-500">Input  required. to</span>}
                 <span className="text-gray-400 p-1">/hr</span>
               </div>
             </div>
@@ -63,7 +69,7 @@ const ClientBudget = () => {
                 placeholder="0"
                 type="text"
                 id="fixed"
-                {...register("fixed")}
+                {...register("jobs.fixed.9")}
               />
             </div>
           </AccordionContent>

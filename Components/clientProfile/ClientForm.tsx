@@ -13,6 +13,7 @@ import {
   SubmitHandler,
   FormProvider,
   UseFormRegister,
+  useFieldArray,
 } from "react-hook-form";
 import { ClientSchema } from "@/Schemas";
 import { useSession } from "next-auth/react";
@@ -76,18 +77,21 @@ const ClientForm: React.FC<FormFields> = () => {
   const methods = useForm<Inputs>({
     resolver: zodResolver(ClientSchema),
     defaultValues: {
-      post: "",
       country: "",
-      skills1: "",
-      skills2: "",
-      skills3: "",
-      projectSize: "",
-      duration: "",
-      expertise: "",
-      from: "",
-      to: "",
-      fixed: "",
-      jobDescription: "",
+      jobs: [{
+        post: "",
+        skills1: "",
+        skills2: "",
+        skills3: "",
+        projectSize: "",
+        duration: "",
+        expertise: "",
+        from: "",
+        to: "",
+        fixed: "",
+        jobDescription: "",
+      }]
+
     },
   });
   const {
@@ -96,8 +100,11 @@ const ClientForm: React.FC<FormFields> = () => {
     watch,
     reset,
     trigger,
+    control,
     formState: { errors },
   } = methods;
+
+
 
   const processForm: SubmitHandler<Inputs> = (
     values: z.infer<typeof ClientSchema>
@@ -237,7 +244,7 @@ const ClientForm: React.FC<FormFields> = () => {
                 <p className="mt-1 text-sm leading-6 text-gray-600">
                   Thank you for your submission.
                 </p>
-                <button type="submit">Submit</button>
+
               </>
             )}
           </form>

@@ -32,6 +32,8 @@ export default auth((req) => {
   }
 
   if (isAuthRoute) {
+
+    console.log("auth route",isAuthRoute)
     if (isLoggedIn) {
       return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
     }

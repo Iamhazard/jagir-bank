@@ -27,7 +27,7 @@ const EditProfileDialog = ({ type, name }: ProfileProps) => {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Edit profile</DialogTitle>
+                    <DialogTitle>Edit {type}</DialogTitle>
                     <DialogDescription>
                         {type}
                     </DialogDescription>

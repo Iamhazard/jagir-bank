@@ -30,8 +30,12 @@ export const clientProfile = async (values: z.infer<typeof ClientSchema>) => {
 
   if (!validatedFiled.success) {
     return { error: "Invalid fields" };
+    
   }
-  const { country,post,skills1,skills2,skills3,projectSize,duration,expertise,from,to,fixed,jobDescription} = validatedFiled.data;
+
+  const { clientProfile: profileData, jobs: jobData } = validatedFiled.data; 
+
+ // const { country,post,skills1,skills2,skills3,projectSize,duration,expertise,from,to,fixed,jobDescription} = validatedFiled.data;
 
 
 // const embedding=await  getFreelancerEmbedding(country,post,skills1,skills2,skills3,projectSize,duration,expertise,from,to,fixed,jobDescription);
@@ -50,33 +54,28 @@ export const clientProfile = async (values: z.infer<typeof ClientSchema>) => {
 //  })
 
  
-  const client=  await db.clientProfile.create({
+  const clientProfile=  await db.clientProfile.create({
     data: {
-       user: { connect: { id:dbUser.id }},
-      country,
-      post,
-      skills1,
-      skills2,
-      skills3,
-      projectSize,
-      duration,
-      expertise,
-      from,
-      to,
-      fixed,
-      jobDescription,   
-       
+     user:{connect:{id:dbUser.id}},
+     ...profileData
     },
   });
 
-
+const createdJobs = await Promise.all(jobData.map(async (job) => {
+    return db.job.create({
+      data: {
+        clientProfileId: clientProfile.id,
+        ...job,
+      },
+    });
+  }));
 
   //for verification
   // const verificationToken = await generateVerificationToken(email);
 
   // await sendVerificationEmail(verificationToken.email, verificationToken.token);
+  return { success: "Profile and jobs created successfully", clientProfile, jobs: createdJobs };
 
-  // return { success: "confirmation email Sent!" };
 };
 
 // async function getFreelancerEmbedding(

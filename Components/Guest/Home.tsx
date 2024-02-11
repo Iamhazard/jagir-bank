@@ -11,9 +11,12 @@ import CardSection from "./CardSection";
 import LoginButton from "../auth/login-button";
 import { Button } from "../ui/button";
 import Category from "./Category";
+import { useSession } from "next-auth/react";
+
 
 const Landing = () => {
   const router = useRouter();
+  const { data: session } = useSession();
 
   return (
     <>
@@ -35,11 +38,21 @@ const Landing = () => {
             </p>
 
             <div className="flex space-x-4  p-4 md:max-w-xs">
-              <LoginButton mode="modal" asChild>
+              {session?.user ? (
                 <Button variant="btn_green" size="default">
-                  Get Started
+                  Find jobs
                 </Button>
-              </LoginButton>
+              ) : (
+
+                <LoginButton mode="modal" asChild>
+                  <Button variant="btn_green" size="default">
+                    Get Started
+                  </Button>
+                </LoginButton>
+              )}
+
+
+
             </div>
             <div className="mt-10 p-4">
               <h1 className=" text-green-600  text-lg leading-tight">

@@ -82,14 +82,14 @@ const NavBar = () => {
           </div>
 
           <div className="hidden lg:block ">
-            <div className="flex space-x-4">
+            <div className="flex space-x-2">
               {session?.user ? (
                 <UserButton />
               ) : (
                 <>
                   <Link href="/auth/login">
                     {" "}
-                    <Button variant="btn_blue" size="lg">
+                    <Button variant="outline" size="lg">
                       Login
                     </Button>
                   </Link>

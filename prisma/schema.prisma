@@ -112,6 +112,13 @@ model ClientProfile {
   id                   String   @id @default(cuid())
   userId         String    
   country              String?
+  Jobs               Job[]
+  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId])
+}
+
+model Job {
+  id         String   @id @default(cuid())
   post        String?  
   skills1          String?
   skills2          String?
@@ -123,6 +130,6 @@ model ClientProfile {
   to              String
   fixed              String
   jobDescription             String?
-  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  @@unique([userId])
+  clientProfile  ClientProfile @relation(fields: [clientProfileId], references: [id])
+  clientProfileId String
 }

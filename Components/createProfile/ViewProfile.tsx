@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import Image from "next/image";
 import EditProfile from "./EditProfile";
 import EditProfileDialog from "./EditProfiledialog";
+import { formatPrice } from "@/lib/utils";
 
 const ViewProfile = () => {
     return (
@@ -30,26 +31,66 @@ const ViewProfile = () => {
             </div>
             <Separator className=" w-full h-[1px] bg-black rounded-lg" />
             <div className="py-2 flex justify-between items-center mx-2">
-                <div className="flex px-10 gap-2 items-center">
+                <div className="flex px-10 gap-2">
                     <h1>Amrit Acharya</h1>
-                    <EditProfileDialog name="Your title" type="Edit your Title" />
+                    <div className=" flex rounded-full border border-Green bg-white justify-center items-center w-8 h-8">
+                        <EditProfileDialog name="Your title" type="Edit your Title" />
+                    </div>
+                </div>
+                <div className="flex px-12">
+                    <span>{formatPrice(5)}</span>
+                    <div className=" flex rounded-full border border-Green bg-white justify-center items-center w-8 h-8">
+                        <EditProfileDialog name="Your rate" type="Edit your Rate" />
+                    </div>
+                </div>
+                <div>
+
                 </div>
 
-                <p>5
-                    <EditProfileDialog name="Your title" type="Edit your Title" />
-                </p>
+
 
 
             </div>
             <div className="flex ">
-                <p className="px-10">
-                    Hello there! I am a passionate and hardworking React & MERN Stack
-                    Developer who loves building websites. I'm great at making things look
-                    good and work smoothly. I'm always learning new things to make sure
-                    I'm up-to-date with the latest technology stuff in web development.
-                </p>
+                <div>
+                    <p className="px-10">
+                        Hello there! I am a passionate and hardworking React & MERN Stack
+                        Developer who loves building websites. I'm great at making things look
+                        good and work smoothly. I'm always learning new things to make sure
+                        I'm up-to-date with the latest technology stuff in web development.
+                    </p>
+                </div>
+
+                <span>
+                    <div className=" flex rounded-full border border-Green bg-white justify-center items-center w-8 h-8">
+                        <EditProfileDialog name="Write about yourself" type="Bio" />
+                    </div>
+
+                </span>
+
             </div>
-            <EditProfileDialog name="Your title" type="Edit your Title" />
+
+            <div className=" flex py-5 px-10">
+                Work history
+            </div>
+            <Separator className=" w-full h-[1px] bg-black rounded-lg" />
+            <div className="flex py-5 px-10">
+
+                Portfolio
+            </div>
+            <Separator className=" w-full h-[1px] bg-black rounded-lg" />
+
+            <div className="py-5 px-10">
+                Skills
+                <div className="flex items-center py-4 gap-4 px-6 ">
+
+                    <Button variant="outline" size='sm'>sKILS</Button>
+                    <Button variant="outline" size='sm'>sKILS</Button>
+                    <Button variant="outline" size='sm'>sKILS</Button>
+                </div>
+            </div>
+
+
         </Card>
     );
 };

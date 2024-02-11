@@ -18,7 +18,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { FormError } from "./form-error";
 import { FormSuccess } from "./form-success";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { register } from "@/actions/registerAction";
 
 const RegisterForm = () => {
@@ -27,6 +27,7 @@ const RegisterForm = () => {
   const [isPending, startTransition] = useTransition();
   const params = useSearchParams();
   const type = params.get("type")?.trim();
+  const route = useRouter()
   const role = type === "Freelancer" ? "Freelancer" : "Client";
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
@@ -45,6 +46,11 @@ const RegisterForm = () => {
       register(values).then((data) => {
         setError(data.error);
         setSuccess(data.success);
+        if (data.success || role === 'Client') {
+          route.push("/clientProfile")
+        } else {
+          route.push("/")
+        }
       });
     });
   };
