@@ -2,8 +2,7 @@
 /* eslint-disable react/no-unescaped-entities */
 import { Button } from "@/Components/ui/button";
 import React, { useState } from "react";
-import { Input } from "@/Components/ui/input";
-import { Label } from "@/Components/ui/label";
+
 import { MdOutlineCheckCircle, MdOutlineMoreTime } from "react-icons/md";
 import { CiCalendarDate } from "react-icons/ci";
 import { GiSkills } from "react-icons/gi";
@@ -20,23 +19,41 @@ import {
 
 import Jobs from "./Jobs";
 import { Separator } from "../ui/separator";
+import Alljobs from "./AllJobs";
 
-const JobSheet = () => {
+
+
+
+
+export interface JobSheetProps {
+    id: number,
+    title: string,
+    jobdescription?: string;
+}
+
+
+
+const JobSheet: React.FC<JobSheetProps> = ({ title }: JobSheetProps) => {
     const [showMore, setShowMore] = useState(false);
+
     return (
         <Sheet>
             <SheetTrigger asChild>
+
                 <div>
-                    <Jobs />
+                    <Jobs id={undefined} title={title} jobsbudget={""} jobsdescription={""} Place={""} />
                 </div>
             </SheetTrigger>
             <SheetContent>
                 <SheetHeader>
                     <SheetTitle>
-                        {" "}
-                        <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
-                            Full-stack Developer for Metaverse Project
-                        </h5>
+                        <div>
+                            <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                                {title}
+                            </h5>
+                        </div>
+
+
                     </SheetTitle>
                     <SheetDescription>
                         <small className="text-gray-400 ">Posted 2 hours ago</small>
@@ -48,19 +65,7 @@ const JobSheet = () => {
                     <div className="flex max-w-[800px]  gap-4 ">
                         <div className="flex-1">
                             <p className=" text-justify text-clip py-4">
-                                We are seeking a talented and experienced Full-stack Developer
-                                to join our team for an exciting Metaverse project. As a
-                                Full-stack Developer, you will be responsible for developing and
-                                maintaining both front-end and back-end components of the
-                                project. You will collaborate with our team of designers and
-                                project managers to create immersive and interactive
-                                experiences. We are seeking a talented and experienced
-                                Full-stack Developer to join our team for an exciting Metaverse
-                                project. As a Full-stack Developer, you will be responsible for
-                                developing and maintaining both front-end and back-end
-                                components of the project. You will collaborate with our team of
-                                designers and project managers to create immersive and
-                                interactive experiences.
+                                jobdescription
                             </p>
                             <div className="mt-4">
                                 <Separator />

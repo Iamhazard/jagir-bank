@@ -1,6 +1,6 @@
 import UsersTable from "@/Components/admin/dashbaord/UsersTable";
 import { db } from "@/lib/db";
-import { PrismaClient } from "@prisma/client";
+
 import { useSession } from "next-auth/react";
 
 export const useCurrentUser = () => {

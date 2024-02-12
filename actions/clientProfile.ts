@@ -32,11 +32,32 @@ export const clientProfile = async (values: z.infer<typeof ClientSchema>) => {
     return { error: "Invalid fields" };
     
   }
+ 
 
-  const { clientProfile: profileData, jobs: jobData } = validatedFiled.data; 
+  const { country,jobs:jobData} = validatedFiled.data;
 
- // const { country,post,skills1,skills2,skills3,projectSize,duration,expertise,from,to,fixed,jobDescription} = validatedFiled.data;
 
+     //check if existing Client Profile
+     
+ const existingClientProfile=await db.clientProfile.findFirst({where:{userId:dbUser.id}});
+
+
+ let clientProfile: { id: any; userId?: string; country?: string | null; };
+
+
+ 
+ // If a ClientProfile exists, use it; otherwise, create a new one
+
+  if (existingClientProfile) {
+    clientProfile = existingClientProfile;
+  } else {
+    clientProfile = await db.clientProfile.create({
+      data: {
+        user: { connect: { id: dbUser.id } },
+        country,
+      },
+    });
+  }
 
 // const embedding=await  getFreelancerEmbedding(country,post,skills1,skills2,skills3,projectSize,duration,expertise,from,to,fixed,jobDescription);
 
@@ -53,13 +74,7 @@ export const clientProfile = async (values: z.infer<typeof ClientSchema>) => {
 
 //  })
 
- 
-  const clientProfile=  await db.clientProfile.create({
-    data: {
-     user:{connect:{id:dbUser.id}},
-     ...profileData
-    },
-  });
+
 
 const createdJobs = await Promise.all(jobData.map(async (job) => {
     return db.job.create({

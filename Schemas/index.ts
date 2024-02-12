@@ -95,9 +95,6 @@ const RateSchema=z.object({
 
 
 
-
-
-
 export const ClientSchema = z.object({
    country: z.string().min(1, 'Country is required'),
    jobs: z.array(z.object({

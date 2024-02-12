@@ -32,7 +32,6 @@ const ClientBudget = () => {
                   id="from"
                   {...register("jobs.form.7")}
                 />
-                {errors?.form && <span className="text-red-500">Input  required.</span>}
                 <span className="text-gray-400 p-1">/hr</span>
               </div>
 
@@ -48,7 +47,6 @@ const ClientBudget = () => {
                   id="to"
                   {...register("jobs.to.8")}
                 />
-                {errors?.to && <span className="text-red-500">Input  required. to</span>}
                 <span className="text-gray-400 p-1">/hr</span>
               </div>
             </div>

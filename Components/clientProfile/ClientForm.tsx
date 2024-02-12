@@ -1,26 +1,28 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable @next/next/no-img-element */
 "use client";
-
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/Components/ui/accordion";
 import React, { useState, useTransition } from "react";
 import { motion } from "framer-motion";
 import ProfileWrapper from "../createProfile/ProfileWrapper";
-import JobPost from "./JobPost";
 import { z } from "zod";
-import FormField from "./FormFields";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   useForm,
   SubmitHandler,
   FormProvider,
-  UseFormRegister,
   useFieldArray,
 } from "react-hook-form";
 import { ClientSchema } from "@/Schemas";
-import { useSession } from "next-auth/react";
-import ClientBudget from "./ClientBudget";
-import ClientJobs from "./Jobs";
-import Address from "./Address";
 import { clientProfile } from "@/actions/clientProfile";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type Inputs = z.infer<typeof ClientSchema>;
 
@@ -66,30 +68,20 @@ type FormFields = {
   jobDescription: string;
 };
 
-const ClientForm: React.FC<FormFields> = () => {
+const ClientForm: React.FC<Inputs> = () => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [previousStep, setPreviousStep] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const delta = currentStep - previousStep;
   const [isPending, startTransition] = useTransition();
-
+  const router = useRouter()
   const methods = useForm<Inputs>({
     resolver: zodResolver(ClientSchema),
     defaultValues: {
       country: "",
       jobs: [{
-        post: "",
-        skills1: "",
-        skills2: "",
-        skills3: "",
-        projectSize: "",
-        duration: "",
-        expertise: "",
-        from: "",
-        to: "",
-        fixed: "",
-        jobDescription: "",
+
       }]
 
     },
@@ -104,6 +96,10 @@ const ClientForm: React.FC<FormFields> = () => {
     formState: { errors },
   } = methods;
 
+  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
+    control,
+    name: "jobs",
+  });
 
 
   const processForm: SubmitHandler<Inputs> = (
@@ -114,6 +110,9 @@ const ClientForm: React.FC<FormFields> = () => {
     startTransition(() => {
       clientProfile(values).then((data) => {
         setError(data?.error);
+        setSuccess(data?.success);
+        router.push('/clientdashboard')
+
       });
     });
     reset();
@@ -193,7 +192,77 @@ const ClientForm: React.FC<FormFields> = () => {
                 initial={{ x: delta >= 0 ? "50%" : "-50%", opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}>
-                <Address register={register} />
+                <>
+                  <h2 className="text-base font-semibold leading-7 text-gray-900">
+                    Job Title
+                  </h2>
+                  <p className="mt-1 text-sm leading-6 text-gray-600">
+                    This helps your job post stand out the right candidate.it's the first
+                    thing they'll see make it count.
+                  </p>
+
+                  <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                    <div className="col-span-full">
+                      <label
+                        htmlFor="post"
+                        className="block text-sm font-medium leading-6 text-gray-900">
+                        Write a tittle for your job post
+                      </label>
+                      <div className="mt-2">
+                        {fields.map((field, index) => (
+                          <input
+                            key={field.id}
+                            type="text"
+                            id={`post_${index}`}
+                            {...register(`jobs.${index}.post`)}
+                            autoComplete="web"
+                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                          />
+                        ))}
+
+
+
+                        <span>
+                          <p className="text-sm py-4">Examples</p>
+                          <small className="text-gray-500">
+                            <li>
+                              Build responsive WordPress site with booking/payment
+                              functionality
+                            </li>
+                            <li>AR experience needed for virtual product demos (ARCore)</li>
+                            <li>
+                              Developer needed to update Android app UI for new OS/device
+                              specs
+                            </li>
+                          </small>
+                        </span>
+                      </div>
+                    </div>
+                    <div className="sm:col-span-3">
+                      <label
+                        htmlFor="country"
+                        className="block text-sm font-medium leading-6 text-gray-900">
+                        Country
+                      </label>
+                      <div className="mt-2">
+                        <select
+                          id="country"
+                          autoComplete="country-name"
+                          {...register("country")}
+                          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                          <option>Nepal</option>
+                          <option>India</option>
+                          <option>China</option>
+                          <option>Srilanka</option>
+                          <option>United States</option>
+                          <option>Canada</option>
+                          <option>Mexico</option>
+                          <option>Austraia</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </>
               </motion.div>
             )}
             {currentStep === 1 && (
@@ -207,7 +276,51 @@ const ClientForm: React.FC<FormFields> = () => {
                 <p className="mt-1 text-sm leading-6 text-gray-600">
                   Add 3 skills for best result
                 </p>
-                <FormField register={register} />
+                <div className="col-span-full">
+                  <label
+                    htmlFor="skill"
+                    className="block text-sm font-medium leading-6 text-gray-900">
+                    Skills
+                  </label>
+                  <div className="mt-2">
+
+                    {fields.map((field, index) => (
+                      <input
+                        key={field.id}
+                        type="text"
+                        id={`skills1${index}`}
+                        {...register(`jobs.${index}.skills1`)}
+                        autoComplete="web"
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                      />
+                    ))}
+
+                  </div>
+                  <div className="mt-2">
+                    {fields.map((field, index) => (
+                      <input
+                        key={field.id}
+                        type="text"
+                        id={`skills2${index}`}
+                        {...register(`jobs.${index}.skills2`)}
+                        autoComplete="web"
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                      />
+                    ))}
+                  </div>
+                  <div className="mt-2">
+                    {fields.map((field, index) => (
+                      <input
+                        key={field.id}
+                        type="text"
+                        id={`skills3${index}`}
+                        {...register(`jobs.${index}.skills3`)}
+                        autoComplete="web"
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                      />
+                    ))}
+                  </div>
+                </div>
               </motion.div>
             )}
 
@@ -216,7 +329,251 @@ const ClientForm: React.FC<FormFields> = () => {
                 initial={{ x: delta >= 0 ? "50%" : "-50%", opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}>
-                <JobPost register={register} />
+                <div className="mt-4">
+                  <div className="flex ">
+                    <h1 className="text-2xl text-gray-800 ">
+                      Next,estimate the Scope of your works?
+                    </h1>
+                  </div>
+                  <Accordion type="single" collapsible>
+                    <AccordionItem value="item-1">
+                      <AccordionTrigger>Consider your size of project</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="flex-col items-center space-y-3">
+                          <div className="flex flex-col px-6 space-y-2">
+                            <div className="flex items-center">
+                              <>
+                                {fields.map((field, index) => (
+                                  <input
+                                    key={field.id}
+                                    type="radio"
+                                    value="medium"
+                                    id={`projectSize${index}`}
+                                    {...register(`jobs.${index}.projectSize`)}
+                                    autoComplete="web"
+                                  />
+                                ))}
+
+
+                                <label
+                                  htmlFor="medium"
+                                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2 radio-label">
+                                  Medium
+                                </label>
+                              </>
+                            </div>
+                            <small className="text-gray-500">Well defined project</small>
+                          </div>
+
+                          <div className="flex flex-col px-6 space-y-2">
+                            <div className="flex items-center">
+                              <>
+                                {fields.map((field, index) => (
+                                  <input
+                                    key={field.id}
+                                    type="radio"
+                                    value="large"
+                                    id={`projectSize${index}`}
+                                    {...register(`jobs.${index}.projectSize`)}
+                                    autoComplete="web"
+                                  />
+                                ))}
+
+                                <label
+                                  htmlFor="large"
+                                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2 radio-label">
+                                  Large
+                                </label>
+                              </>
+                            </div>
+                            <small className="text-gray-500">
+                              Larger and complex project
+                            </small>
+                          </div>
+
+                          <div className="flex flex-col px-6 space-y-2">
+                            <div className="flex items-center">
+                              <>
+                                {fields.map((field, index) => (
+                                  <input
+                                    key={field.id}
+                                    type="radio"
+                                    value="small"
+                                    id={`projectSize${index}`}
+                                    {...register(`jobs.${index}.projectSize`)}
+                                    autoComplete="web"
+                                  />
+                                ))}
+                                <label
+                                  htmlFor="small"
+                                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
+                                  Small
+                                </label>
+                              </>
+                            </div>
+                            <small className="text-gray-500">Very small project</small>
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                  <Accordion type="single" collapsible>
+                    <AccordionItem value="item-1">
+                      <AccordionTrigger>How long will your work take?</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="flex-col items-center space-y-3">
+                          <div className="px-6">
+                            <div className="flex items-center">
+
+                              {fields.map((field, index) => (
+                                <input
+                                  key={field.id}
+                                  type="radio"
+                                  value="moreThan6Months"
+                                  id={`duration${index}`}
+                                  {...register(`jobs.${index}.duration`)}
+                                  autoComplete="web"
+                                />
+                              ))}
+
+                              <label
+                                htmlFor="moreThan6Months"
+                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
+                                more than 6 months
+                              </label>
+                            </div>
+                          </div>
+
+                          <div className="px-6">
+                            <div className="flex items-center">
+                              {fields.map((field, index) => (
+                                <input
+                                  key={field.id}
+                                  type="radio"
+                                  value="3to6Months"
+                                  id={`duration${index}`}
+                                  {...register(`jobs.${index}.duration`)}
+                                  autoComplete="web"
+                                />
+                              ))}
+                              <label
+                                htmlFor="3to6Months"
+                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
+                                3 to 6 months
+                              </label>
+                            </div>
+                          </div>
+
+                          <div className="px-6">
+                            <div className="flex items-center">
+                              {fields.map((field, index) => (
+                                <input
+                                  key={field.id}
+                                  type="radio"
+                                  value="1to3Months"
+                                  id={`duration${index}`}
+                                  {...register(`jobs.${index}.duration`)}
+                                  autoComplete="web"
+                                />
+                              ))}
+                              <label
+                                htmlFor="1to3Months"
+                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
+                                1 to 3 months
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                  <Accordion type="single" collapsible>
+                    <AccordionItem value="item-1">
+                      <AccordionTrigger>
+                        What level of experiences will it need?
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="flex-col items-center space-y-3">
+                          <div className="flex flex-col px-6 space-y-2">
+                            <div className="flex ">
+                              <>
+                                {fields.map((field, index) => (
+                                  <input
+                                    key={field.id}
+                                    type="radio"
+                                    value="expertise"
+                                    id={`expertise${index}`}
+                                    {...register(`jobs.${index}.expertise`)}
+                                    autoComplete="web"
+                                  />
+                                ))}
+
+                                <label
+                                  htmlFor="entry"
+                                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
+                                  Entry
+                                </label>
+                              </>
+                            </div>
+                            <small className="text-gray-500">
+                              Looking for someone relatively new to this field
+                            </small>
+                          </div>
+
+                          <div className="flex flex-col px-6 space-y-2">
+                            <div className="flex">
+                              <>
+                                {fields.map((field, index) => (
+                                  <input
+                                    key={field.id}
+                                    type="radio"
+                                    value="intermediate"
+                                    id={`expertise${index}`}
+                                    {...register(`jobs.${index}.expertise`)}
+                                    autoComplete="web"
+                                  />
+                                ))}
+                                <label
+                                  htmlFor="intermediate"
+                                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
+                                  Intermediate
+                                </label>
+                              </>
+                            </div>
+                            <small className="text-gray-500">
+                              Looking for substantial experience.
+                            </small>
+                          </div>
+
+                          <div className="flex flex-col px-6 space-y-2">
+                            <div className="flex">
+                              <>
+                                {fields.map((field, index) => (
+                                  <input
+                                    key={field.id}
+                                    type="radio"
+                                    value="expert"
+                                    id={`expertise${index}`}
+                                    {...register(`jobs.${index}.expertise`)}
+                                    autoComplete="web"
+                                  />
+                                ))}
+                                <label
+                                  htmlFor="expert"
+                                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-2">
+                                  Expert
+                                </label>
+                              </>
+                            </div>
+                            <small className="text-gray-500">
+                              Looking for deep expertise in the field
+                            </small>
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </div>
               </motion.div>
             )}
 
@@ -225,7 +582,84 @@ const ClientForm: React.FC<FormFields> = () => {
                 initial={{ x: delta >= 0 ? "50%" : "-50%", opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}>
-                <ClientBudget register={register} />
+                <>
+                  <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="item-1">
+                      <AccordionTrigger>Hourly rate!</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="flex items-center gap-4">
+                          <div>
+                            <label
+                              htmlFor="number-input"
+                              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                              From:
+                            </label>
+
+                            {fields.map((field, index) => (
+                              <input
+                                className="rounded-md border-0  p-4  py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+
+                                key={field.id}
+                                type="text"
+                                id={`from${index}`}
+                                {...register(`jobs.${index}.from`)}
+                                autoComplete="web"
+                              />
+                            ))}
+                            <span className="text-gray-400 p-1">/hr</span>
+                          </div>
+
+                          <div>
+                            <label
+                              htmlFor="number-input"
+                              className="block mb-2text-sm font-medium text-gray-900 dark:text-white">
+                              To:
+                            </label>
+                            {fields.map((field, index) => (
+                              <input
+                                className="rounded-md border-0  p-4  py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+
+                                key={field.id}
+                                type="text"
+                                id={`to${index}`}
+                                {...register(`jobs.${index}.to`)}
+                                autoComplete="web"
+                              />
+                            ))}
+                            <span className="text-gray-400 p-1">/hr</span>
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="item-2">
+                      <AccordionTrigger>Fixed Price?</AccordionTrigger>
+                      <AccordionContent>
+                        <p>Set price for the project and pay at the end.</p>
+                        <div>
+                          <h1>What is the best estimate for your Projects</h1>
+                          <small>
+                            You cand negotiate this cost and create milestones when you chat
+                          </small>
+
+                          {fields.map((field, index) => (
+                            <input
+                              className="rounded-md border-0  p-4  py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+
+                              key={field.id}
+                              type="text"
+                              id={`fixed${index}`}
+                              {...register(`jobs.${index}.fixed`)}
+                              autoComplete="web"
+                            />
+                          ))}
+
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+
+                  <small className="text-Green mt-5 ">Not ready to set an hour rate?</small>
+                </>
               </motion.div>
             )}
             {currentStep === 4 && (
@@ -233,7 +667,54 @@ const ClientForm: React.FC<FormFields> = () => {
                 initial={{ x: delta >= 0 ? "50%" : "-50%", opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}>
-                <ClientJobs register={register} />
+                <>
+                  <div className="flex justify-between gap-10">
+                    <div className=" max-w-[200px]">
+                      <small>Job Post</small>
+                      <h1 className="text-2xl">Start the conversation</h1>
+
+                      <p className=" py-2 text-sm font-semibold text-gray-900 dark:text-white">
+                        Talents are looking for:
+                      </p>
+                      <ul className=" space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
+                        <li>
+                          <small>The skills required for your work</small>
+                        </li>
+                        <li>
+                          <small>Clear expectations about your task or deliverables.</small>
+                        </li>
+                        <li>
+                          <small>Details about how you or your team like to work.</small>
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="flex-1 mt-6">
+                      <h2>Describe what you need</h2>
+
+                      <>
+                        {fields.map((field, index) => (
+                          <textarea
+                            key={field.id}
+                            rows={12}
+                            id={`jobDescription${index}`}
+                            {...register(`jobs.${index}.jobDescription`)}
+                            className={`block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500  "border-red-500"
+                              }`}
+                            placeholder="Describe the jobs"
+                          />
+                        ))}
+
+
+                      </>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center py-2">
+                    <span>
+                      <Link href="/">Need help?</Link>
+                    </span>
+                    <p>see some examples!</p>
+                  </div>
+                </>
               </motion.div>
             )}
             {currentStep === 5 && (

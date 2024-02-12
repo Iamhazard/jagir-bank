@@ -16,7 +16,15 @@ const skillbutton = [
   },
 ];
 
-const Jobs = () => {
+export interface jobsProps {
+  id: string | undefined;
+  title: string,
+  jobsbudget: string,
+  jobsdescription: string,
+  Place: string,
+}
+
+const Jobs = ({ title, jobsbudget, jobsdescription, Place }: jobsProps) => {
   const [showMore, setShowMore] = useState(false);
 
   return (
@@ -27,11 +35,11 @@ const Jobs = () => {
         <small className="text-gray-400 ">Posted 2 hours ago</small>
         <Link href="#">
           <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
-            Full-stack Developer for Metaverse Project
+            {title}
           </h5>
         </Link>
         <small className="mb-3 font-normal text-gray-500 dark:text-gray-400">
-          Price fixed-Intermediate-Est.Budget:$10k
+          {jobsbudget || " Price fixed-Intermediate-Est.Budget:$10k"}
         </small>
         <div className="py-4">
           <p
@@ -39,12 +47,7 @@ const Jobs = () => {
               "text-justify text-clip overflow-hidden",
               showMore ? "line-clamp-auto" : "line-clamp-3"
             )}>
-            We are seeking a talented and experienced Full-stack Developer to
-            join our team for an exciting Metaverse project. As a Full-stack
-            Developer, you will be responsible for developing and maintaining
-            both front-end and back-end components of the project. You will
-            collaborate with our team of designers and project managers to
-            create immersive and interactive experiences.
+            {jobsdescription}
           </p>
         </div>
         <p
@@ -66,7 +69,7 @@ const Jobs = () => {
           <p>$2k + spent</p>
 
           <span className="flex gap-2">
-            <FiMapPin /> Place
+            <FiMapPin /> {Place}
           </span>
         </div>
         <div className="flex flex-1 mt-4 gap-4">
