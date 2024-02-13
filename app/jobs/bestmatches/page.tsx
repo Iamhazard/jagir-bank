@@ -15,7 +15,7 @@ const BestmatchesPage = async () => {
     <div className="mt-4">
       {jobs.map((job) => (
         <div key={job.id}>
-          <JobSheet id={0} title={job?.post || ""} jobdescription={job?.jobDescription || ""} />
+          <JobSheet id={0} title={job?.post || ""} jobdescription={job?.jobDescription || ""} duration={job?.duration || ""} expertise={job?.expertise || ""} projectSize={job?.projectSize || ""} fixed={job?.fixed || ""} Place={""} from={job?.from || ""} to={job?.to || ""} />
         </div>
       ))}
 

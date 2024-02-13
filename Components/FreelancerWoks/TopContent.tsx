@@ -1,10 +1,13 @@
+import { useSession } from "next-auth/react";
 import React from "react";
 
 const TopContent = () => {
+  const { data: session } = useSession()
+  //console.log(session)
   return (
     <div className="w-[952px]">
       <h1 className="text-3xl font-sans font-extrabold py-4 right-0 ">
-        Hi Name! {""}👋{" "}
+        Hi {session?.user.name}! {""}👋{" "}
       </h1>
       <div className="flex">
         <form className="w-[952px]">

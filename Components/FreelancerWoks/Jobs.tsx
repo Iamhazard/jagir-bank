@@ -3,6 +3,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import React, { useState } from "react";
 import { FiMapPin } from "react-icons/fi";
+import { MdOutlineCheckCircle } from "react-icons/md";
 
 const skillbutton = [
   {
@@ -19,13 +20,20 @@ const skillbutton = [
 export interface jobsProps {
   id: string | undefined;
   title: string,
-  jobsbudget: string,
+  from: string,
+  to: string,
   jobsdescription: string,
+  duration: string,
+  expertise: string,
+  projectSize: string,
+  fixed: string,
   Place: string,
 }
 
-const Jobs = ({ title, jobsbudget, jobsdescription, Place }: jobsProps) => {
+const Jobs = ({ title, from, to, jobsdescription, Place, duration, expertise, projectSize, fixed }: jobsProps) => {
   const [showMore, setShowMore] = useState(false);
+
+
 
   return (
     <div>
@@ -39,7 +47,10 @@ const Jobs = ({ title, jobsbudget, jobsdescription, Place }: jobsProps) => {
           </h5>
         </Link>
         <small className="mb-3 font-normal text-gray-500 dark:text-gray-400">
-          {jobsbudget || " Price fixed-Intermediate-Est.Budget:$10k"}
+          {/* {jobsbudget || " Price fixed-Intermediate-Est.Budget:$10k"} */}
+
+          {`Hourly:$${from}-$${to}-Fixed:$${fixed}-${expertise} `}
+
         </small>
         <div className="py-4">
           <p
@@ -65,7 +76,10 @@ const Jobs = ({ title, jobsbudget, jobsdescription, Place }: jobsProps) => {
           ))}
         </div>
         <div className="flex gap-4 mt-6">
-          <p>Paymant Verified</p>
+          <span className="flex gap-2">
+            <MdOutlineCheckCircle size={18} color="green" />
+            <small className="text-gray-600">Payment verified</small>
+          </span>
           <p>$2k + spent</p>
 
           <span className="flex gap-2">

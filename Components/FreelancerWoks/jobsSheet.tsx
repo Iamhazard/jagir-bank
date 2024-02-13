@@ -19,7 +19,6 @@ import {
 
 import Jobs from "./Jobs";
 import { Separator } from "../ui/separator";
-import Alljobs from "./AllJobs";
 
 
 
@@ -29,11 +28,19 @@ export interface JobSheetProps {
     id: number,
     title: string,
     jobdescription?: string;
+    jobsbudget?: string;
+    duration: string,
+    expertise: string,
+    projectSize: string,
+    fixed: string,
+    Place: string,
+    from: string,
+    to: string,
 }
 
 
 
-const JobSheet: React.FC<JobSheetProps> = ({ title }: JobSheetProps) => {
+const JobSheet: React.FC<JobSheetProps> = ({ title, jobdescription, from, to, Place, fixed, duration, expertise, projectSize }: JobSheetProps) => {
     const [showMore, setShowMore] = useState(false);
 
     return (
@@ -41,7 +48,7 @@ const JobSheet: React.FC<JobSheetProps> = ({ title }: JobSheetProps) => {
             <SheetTrigger asChild>
 
                 <div>
-                    <Jobs id={undefined} title={title} jobsbudget={""} jobsdescription={""} Place={""} />
+                    <Jobs id={undefined} title={title} to={to} from={from} jobsdescription={jobdescription || ""} Place={Place} duration={duration || ""} expertise={expertise} projectSize={projectSize} fixed={fixed} />
                 </div>
             </SheetTrigger>
             <SheetContent>
@@ -65,7 +72,7 @@ const JobSheet: React.FC<JobSheetProps> = ({ title }: JobSheetProps) => {
                     <div className="flex max-w-[800px]  gap-4 ">
                         <div className="flex-1">
                             <p className=" text-justify text-clip py-4">
-                                jobdescription
+                                {jobdescription}
                             </p>
                             <div className="mt-4">
                                 <Separator />
@@ -76,22 +83,22 @@ const JobSheet: React.FC<JobSheetProps> = ({ title }: JobSheetProps) => {
                                             <h1 className="">  More than 30</h1>
 
                                         </div>
-                                        <small>hourly</small>
+                                        <small>{`Hourly:$${from}-$${to} `}</small>
                                     </div>
                                     <div>
                                         <div className="flex gap-1 items-center">
                                             <CiCalendarDate />
-                                            <h1>3 to 6 months</h1>
+                                            <h1>{duration}</h1>
 
                                         </div>
-                                        <p> <small>Project Length</small></p>
+                                        <p> <small>{projectSize}</small></p>
                                     </div>
                                     <div>
                                         <div className="flex gap-1 items-center">
 
                                             <GiSkills />
 
-                                            <h1>Expert</h1>
+                                            <h1>{expertise}</h1>
 
                                         </div>
 
