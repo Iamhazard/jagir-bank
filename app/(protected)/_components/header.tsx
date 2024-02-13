@@ -3,7 +3,7 @@
 import React from "react";
 
 import Link from "next/link";
-import { useSelectedLayoutSegment } from "next/navigation";
+import { useSearchParams, useSelectedLayoutSegment } from "next/navigation";
 
 import useScroll from "@/hooks/use-scroll";
 import { cn } from "@/lib/utils";
@@ -31,7 +31,7 @@ const Headers = () => {
             <span className="font-bold text-xl flex ">JAGIRBANK</span>
           </Link>
         </div>
-        <h1>Freelancer Dashbaord</h1>
+        <h1 className="text-2xl text-slate-700 font-medium font-sans">Dashboard</h1>
         <div className="hidden md:block">
           <div className="h-8 w-8 rounded-full bg-zinc-300 flex items-center justify-center text-center">
             <UserButton />
