@@ -39,9 +39,12 @@ const Landing = () => {
 
             <div className="flex space-x-4  p-4 md:max-w-xs">
               {session?.user ? (
-                <Button variant="btn_green" size="default">
-                  Find jobs
-                </Button>
+                <Link href='jobs/bestmatches'>
+                  <Button variant="btn_green" size="default">
+                    Find jobs
+                  </Button>
+                </Link>
+
               ) : (
 
                 <LoginButton mode="modal" asChild>

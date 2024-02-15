@@ -18,12 +18,12 @@ import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
 const components: { title: string; href: string; description: string }[] = [
   {
     title: "Ways to Earn Money",
-    href: "/docs/primitives/alert-dialog",
+    href: "/",
     description: "Learn Why JagirBank has the right opportunities for you",
   },
   {
     title: "Find work for your Skills",
-    href: "/docs/primitives/hover-card",
+    href: "/",
     description: "Explore the kind of work available in your field",
   },
 ];
@@ -64,10 +64,10 @@ export function NavMenu() {
                   </NavigationMenuLink>
                 </div>
               </li>
-              <ListItem href="/docs" title="Logo Design">
+              <ListItem href="/" title="Logo Design">
                 Find Logo designing Posts!
               </ListItem>
-              <ListItem href="/docs/installation" title="Articles & blog posts">
+              <ListItem href="" title="Articles & blog posts">
                 Post Articles & blog posts .
               </ListItem>
               <ListItem href="/docs/primitives/typography" title="SEO">
@@ -75,7 +75,7 @@ export function NavMenu() {
               </ListItem>
 
               <ListItem
-                href="/docs/primitives/typography"
+                href="/"
                 title="Web Development">
                 Freelancer can search new web development jobs and Client can
                 posts a jobs.

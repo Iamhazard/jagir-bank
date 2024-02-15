@@ -1,11 +1,12 @@
 import React, { ReactNode } from "react";
-import NavBar from "@/Components/Navbar/Navbar";
+
 import JobTabs from "@/Components/FreelancerWoks/JobTabs";
+import JobsNavBar from "./_components/JobsNavbar";
 
 const ProtectedLayout = ({ children }: { children: ReactNode }) => {
   return (
     <main className="relative flex flex-col">
-      <NavBar />
+      <JobsNavBar />
       <JobTabs>
         <div>{children}</div>
       </JobTabs>

@@ -12,11 +12,11 @@ import { cn } from "@/lib/utils";
 const Clientdata = () => {
     return (
         <>
-            <div className=" py-4 px-6 flex justify-between">
+            <div className=" py-10 px-6 flex justify-between">
                 <div className="flex">
                     <h1 className="text-4xl items-center font-medium ">Your workspace</h1>
                     <div className=" flex items-center px-4 gap-3">
-                        <Link href="">
+                        <Link href="/clientdashboard/allPost">
                             <Button variant='link' className="text-Green">All Job Post</Button>
                         </Link>
 
@@ -25,12 +25,17 @@ const Clientdata = () => {
                             <Button variant="link" className="text-Green">All Contract</Button>
                         </Link>
 
+                        <Separator orientation="vertical" />
+                        <Link href="/clientdashboard/draftPost">
+                            <Button variant='link' className="text-Green">All Draft post</Button>
+                        </Link>
+
                     </div>
 
                 </div>
                 <Button variant='btn_green'>+ Post a job</Button>
             </div>
-            <section className="border-t border-slate-400 bg-slate-200">
+            <section className="border-t border-slate-400 bg-emerald-200">
                 <MaxWidthWrapper className="py-20">
                     <div>
                         <ClientCard />

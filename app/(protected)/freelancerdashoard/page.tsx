@@ -1,7 +1,13 @@
 import React from "react";
+import FreeLancerCard from "../_components/freeLancerCard";
 
 const FreeLancerDashboardPage = () => {
-  return <div>page</div>;
+  return (
+    <>
+      <FreeLancerCard />
+    </>
+  )
+
 };
 
 export default FreeLancerDashboardPage;
