@@ -29,6 +29,7 @@ model User {
   twoFactorConfirmation TwoFactorConfirmation?
   profile               FreelancerProfile[]
   clientProfile         ClientProfile[]
+  messages              Message[]
 }
 
 model Account {
@@ -132,4 +133,15 @@ model Job {
   jobDescription             String?
   clientProfile  ClientProfile @relation(fields: [clientProfileId], references: [id])
   clientProfileId String
+}
+
+model Message{
+ id         String   @id @default(cuid())
+ text       String
+ imageUrl      String?
+ userId        String
+createdAt              DateTime @default(now())
+updatedAt              DateTime @updatedAt   
+  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
 }
