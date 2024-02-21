@@ -6,7 +6,7 @@ import { Message } from '@/Schemas'
 const defaultValue = [
     {
         id: nanoid(),
-        text: 'senpai, how can I help you?',
+        text: 'HI, how can I help you?',
         isUserMessage: false,
     },
 ]

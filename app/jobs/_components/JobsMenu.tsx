@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/Components/ui/card";
+
 import {
     NavigationMenu, NavigationMenuContent,
     NavigationMenuItem,
@@ -107,6 +107,13 @@ export function JobsMenu() {
                     <Link href="/docs" legacyBehavior passHref>
                         <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                             Why JagirBank
+                        </NavigationMenuLink>
+                    </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                    <Link href="/users" legacyBehavior passHref>
+                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                            Messages
                         </NavigationMenuLink>
                     </Link>
                 </NavigationMenuItem>

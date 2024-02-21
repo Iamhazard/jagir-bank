@@ -27,9 +27,7 @@ export default async function RootLayout({
         <Providers>
           <body className={inter.className}>
             <div className="main" />
-
             <Toaster />
-
             <div className="flex-grow flex-1">{children}</div>
           </body>
         </Providers>
