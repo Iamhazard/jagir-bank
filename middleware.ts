@@ -1,6 +1,8 @@
 import authConfig from "./auth.config";
-import NextAuth from "next-auth";
+import NextAuth from "next-auth"
+import { UserRole } from "@prisma/client";
 import {
+  DEFAULT_LOGIN,
   DEFAULT_LOGIN_REDIRECT,
   apiAuthPrefix,
   authRoutes,
@@ -24,7 +26,10 @@ export default auth((req) => {
   const isJobsRoute = jobRoutes.includes(nextUrl.pathname);
 
   if (isDashboardRoute) {
-    return null;
+    if(UserRole !=='ADMIN'){
+ return Response.redirect(new URL(DEFAULT_LOGIN, nextUrl));
+    }
+   
   }
 
   if (isApiAuthRoute) {
@@ -33,7 +38,7 @@ export default auth((req) => {
 
   if (isAuthRoute) {
 
-    console.log("auth route",isAuthRoute)
+    //console.log("auth route",isAuthRoute)
     if (isLoggedIn) {
       return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
     }

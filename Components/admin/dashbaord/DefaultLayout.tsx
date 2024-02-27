@@ -22,6 +22,8 @@ interface UserNavigationItem {
 const navigation: NavigationItem[] = [
   { name: "Dashboard", href: "/dashboard", current: true },
   { name: "User", href: "/dashboard/users", current: false },
+  { name: "Add Category", href: "/dashboard/category", current: false },
+  { name: "Add Skills", href: "/dashboard/skills", current: false },
 ];
 
 function classNames(...classes: string[]) {
@@ -33,8 +35,8 @@ const DefaultLayout = () => {
     logout();
   };
   const userNavigation: UserNavigationItem[] = [
-    { name: "Your Profile", href: "/settings", onClick: () => {} },
-    { name: "Settings", href: "/settings", onClick: () => {} },
+    { name: "Your Profile", href: "/settings", onClick: () => { } },
+    { name: "Settings", href: "/settings", onClick: () => { } },
     { name: "Sign out", href: "", onClick: handleSignOutClick },
   ];
   const user = useCurrentUser();

@@ -152,6 +152,23 @@ model Job {
   clientProfileId String        @db.ObjectId
 }
 
+model Category {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  createdAt DateTime @default(now())
+  Skill     Skills[]
+  updatedAt DateTime @updatedAt
+}
+
+model Skills {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  title      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String   @db.ObjectId
+}
+
 model Conversation {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   createdAt     DateTime @default(now())

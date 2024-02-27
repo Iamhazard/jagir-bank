@@ -7,10 +7,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/Components/ui/accordion";
-import React, { useState, useTransition } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { motion } from "framer-motion";
 import ProfileWrapper from "../createProfile/ProfileWrapper";
 import { z } from "zod";
+import Select, { ActionMeta, MultiValue } from 'react-select'
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -23,8 +24,31 @@ import { ClientSchema } from "@/Schemas";
 import { clientProfile } from "@/actions/clientProfile";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Button } from "../ui/button";
+import { IoIosAdd } from "react-icons/io";
+import axios from "axios";
 
 type Inputs = z.infer<typeof ClientSchema>;
+
+interface Category {
+  id: string;
+  title: string;
+}
+
+interface Skill {
+  id: string;
+  title: string;
+}
+const CategoryOptions = [
+  { value: 'Development', label: 'Development' },
+  { value: 'AI services', label: 'AI services' },
+  { value: 'Desgin', label: 'Desgin' },
+  { value: 'Technical writing', label: 'Technical writing' },
+  { value: 'Data Science & Analytics', label: 'Data Science & Analytics' },
+  { value: 'IT & Networking', label: 'IT & Networking' },
+  { value: 'Sales & Marketing', label: 'Sales & Marketing' },
+  { value: 'Engineering & Architecture', label: 'Engineering & Architecture' },
+]
 
 const steps = [
   {
@@ -73,9 +97,14 @@ const ClientForm: React.FC<Inputs> = () => {
   const [success, setSuccess] = useState<string | undefined>("");
   const [previousStep, setPreviousStep] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedSkills, setSelectedSkills] = useState<{ value: string; label: string }[]>([]);
+
+  const [selectedCategory, setSelectedCategory] = useState<null | MultiValue<{ value: string; label: string; }>>(null);
   const delta = currentStep - previousStep;
   const [isPending, startTransition] = useTransition();
   const router = useRouter()
+
   const methods = useForm<Inputs>({
     resolver: zodResolver(ClientSchema),
     defaultValues: {
@@ -141,6 +170,46 @@ const ClientForm: React.FC<Inputs> = () => {
       setPreviousStep(currentStep);
       setCurrentStep((step) => step - 1);
     }
+  };
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('/api/category/getcategory');
+        setCategories(response.data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+
+
+  useEffect(() => {
+    const fetchSkills = async () => {
+      if (selectedCategory) {
+        try {
+          const categoryIds = selectedCategory.map(cat => cat.value).join(',');
+          const response = await axios.get(`/api/skills/getskill?categoryIds=${categoryIds}`);
+          ;
+          setSelectedSkills(response.data);
+        } catch (error) {
+          console.error('Error fetching categories:', error);
+        }
+      }
+
+    };
+
+    fetchSkills();
+  }, [selectedCategory]);
+
+  console.log({ selectedSkills })
+
+
+  const handleCategoryChange = (newValue: MultiValue<{ value: string; label: string; }>, actionMeta: ActionMeta<{ value: string; label: string; }>) => {
+    setSelectedCategory(newValue);
   };
 
   return (
@@ -273,16 +342,54 @@ const ClientForm: React.FC<Inputs> = () => {
                 <h2 className="text-base font-semibold leading-7 text-gray-900">
                   What are the main skills require for your work?
                 </h2>
-                <p className="mt-1 text-sm leading-6 text-gray-600">
-                  Add 3 skills for best result
-                </p>
-                <div className="col-span-full">
+                <h2 className="mt-1 text-sm leading-6 text-gray-600 py-2">Category</h2>
+                <Select
+                  isMulti
+                  name="skills"
+                  options={categories.map((category) => ({ value: category.id, label: category.title }))}
+                  className="basic-multi-select"
+                  onChange={handleCategoryChange}
+                  classNamePrefix="select"
+                />
+                <div>
+
+                  <h2 className="text-base font-semibold leading-7 text-gray-900">
+                    Selected skills
+                  </h2>
+                </div>
+                <div>
+                  <h2 className="text-base font-semibold leading-7 text-gray-900">
+                    Popular skills
+                  </h2>
+                  <div className="flex gap-3">
+                    <ul>
+                      {selectedSkills.map((skill) => (
+                        <li key={skill.value}>{skill.label}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+                <div className="col-span-full py-4">
                   <label
                     htmlFor="skill"
                     className="block text-sm font-medium leading-6 text-gray-900">
                     Skills
                   </label>
                   <div className="mt-2">
+                    <p className="mt-1 text-sm leading-6 text-gray-600">
+                      Add 3 skills for best result
+                    </p>
 
                     {fields.map((field, index) => (
                       <input
@@ -780,3 +887,4 @@ const ClientForm: React.FC<Inputs> = () => {
 };
 
 export default ClientForm;
+
