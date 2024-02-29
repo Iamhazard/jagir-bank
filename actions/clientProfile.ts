@@ -77,19 +77,33 @@ export const clientProfile = async (values: z.infer<typeof ClientSchema>) => {
 
 
 const createdJobs = await Promise.all(jobData.map(async (job) => {
-    return db.job.create({
-      data: {
-        clientProfileId: clientProfile.id,
-        ...job,
-      },
-    });
-  }));
+  const {skills,...rest} = job;
+  const skillIds = skills.map(skill =>  skill.skill );
+  return db.job.create({
+    data: {
+      clientProfileId: clientProfile.id,
+      ...rest,
+      SkillsOnJobs: {
+        createMany: {
+          data: skillIds.map(skillId => ({
+            skillId: skillId.toString()
+          }))
+        }
+      }
+    }
+  });
+}));
+
+
+ 
+     
+  
 
   //for verification
   // const verificationToken = await generateVerificationToken(email);
 
   // await sendVerificationEmail(verificationToken.email, verificationToken.token);
-  return { success: "Profile and jobs created successfully", clientProfile, jobs: createdJobs };
+  return { success: "Profile and jobs created successfully", clientProfile, jobs: createdJobs};
 
 };
 

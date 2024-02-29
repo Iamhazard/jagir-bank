@@ -7,7 +7,7 @@ import TopContent from "./TopContent";
 import FreelancerWrapper from "./FreelancerWrapper";
 import ProgresSlider from "./ProgresSlider";
 import Profile from "./Profile";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 interface JobsComponentProps {
   children: ReactNode;
@@ -25,22 +25,20 @@ const JobTabs = ({ children }: JobsComponentProps) => {
             <li className="me-2">
               <Link
                 href="/bestmatches"
-                className={`inline-block p-4 text-blue-600 border-b-2 border-transparent border-blue-600 rounded-t-lg dark:text-blue-500 dark ${
-                  pathname === "/recentlyposted"
+                className={`inline-block p-4 text-blue-600 border-b-2 border-transparent border-blue-600 rounded-t-lg dark:text-blue-500 dark ${pathname === "/recentlyposted"
                     ? "text-blue-600 border-blue-600 dark:text-blue-500"
                     : ""
-                }`}>
+                  }`}>
                 Best Matches
               </Link>
             </li>
             <li className="me-2">
               <Link
                 href="/recentlyposted"
-                className={`inline-block p-4 text-blue-600 border-b-2 border-transparent border-blue-600 rounded-t-lg dark:text-blue-500 dark ${
-                  pathname === "/recentlyposted"
+                className={`inline-block p-4 text-blue-600 border-b-2 border-transparent border-blue-600 rounded-t-lg dark:text-blue-500 dark ${pathname === "/recentlyposted"
                     ? "text-blue-600 border-blue-600 dark:text-blue-500"
                     : ""
-                }`}
+                  }`}
                 aria-current="page">
                 Recently Posted
               </Link>
@@ -48,11 +46,10 @@ const JobTabs = ({ children }: JobsComponentProps) => {
             <li className="me-2">
               <Link
                 href="/savedjobs"
-                className={`inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${
-                  pathname === "/savedjobs"
+                className={`inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${pathname === "/savedjobs"
                     ? "text-gray-600 border-gray-300 dark:text-gray-300"
                     : ""
-                }`}>
+                  }`}>
                 {" "}
                 Saved jobs
               </Link>

@@ -134,22 +134,30 @@ model ClientProfile {
 }
 
 model Job {
-  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  id              String         @id @default(auto()) @map("_id") @db.ObjectId
   post            String?
-  skills1         String?
-  skills2         String?
-  skills3         String?
   projectSize     String?
   duration        String?
   expertise       String
   from            String
   to              String
   fixed           String
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
   jobDescription  String?
-  clientProfile   ClientProfile @relation(fields: [clientProfileId], references: [id])
-  clientProfileId String        @db.ObjectId
+  clientProfile   ClientProfile  @relation(fields: [clientProfileId], references: [id])
+  clientProfileId String         @db.ObjectId
+  SkillsOnJobs    SkillsOnJobs[]
+}
+
+model SkillsOnJobs {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  skill   Skills @relation(fields: [skillId], references: [id])
+  skillId String @db.ObjectId
+  job     Job    @relation(fields: [jobId], references: [id])
+  jobId   String @db.ObjectId
+
+  @@index([skillId, jobId])
 }
 
 model Category {
@@ -161,12 +169,13 @@ model Category {
 }
 
 model Skills {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  title      String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  category   Category @relation(fields: [categoryId], references: [id])
-  categoryId String   @db.ObjectId
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  title        String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  category     Category       @relation(fields: [categoryId], references: [id])
+  categoryId   String         @db.ObjectId
+  SkillsOnJobs SkillsOnJobs[]
 }
 
 model Conversation {

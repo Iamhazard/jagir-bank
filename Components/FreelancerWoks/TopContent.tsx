@@ -1,9 +1,33 @@
 import { useSession } from "next-auth/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { JobSheetProps } from "./jobsSheet";
 
 const TopContent = () => {
   const { data: session } = useSession()
   //console.log(session)
+  const [jobs, setJob] = useState<JobSheetProps[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        //const response = await fetch(`/api/skill/${id}`);
+        const response = await fetch(`/api/job`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch jobs');
+        }
+        const data = await response.json();
+        setJob(data);
+        setLoading(false);
+      } catch (error) {
+        console.log(error)
+        setLoading(false);
+      }
+    };
+
+
+    fetchJobs();
+  }, []);
   return (
     <div className="w-[952px]">
       <h1 className="text-3xl font-sans font-extrabold py-4 right-0 ">

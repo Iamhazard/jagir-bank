@@ -1,7 +1,7 @@
 "use client";
 /* eslint-disable react/no-unescaped-entities */
 import { Button } from "@/Components/ui/button";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { MdOutlineCheckCircle, MdOutlineMoreTime } from "react-icons/md";
 import { CiCalendarDate } from "react-icons/ci";
@@ -19,14 +19,17 @@ import {
 
 import Jobs from "./Jobs";
 import { Separator } from "../ui/separator";
+import { format } from "date-fns";
+
 
 
 
 
 
 export interface JobSheetProps {
-    id: number,
+    id: string,
     title: string,
+    country: string,
     jobdescription?: string;
     jobsbudget?: string;
     duration: string,
@@ -36,19 +39,47 @@ export interface JobSheetProps {
     Place: string,
     from: string,
     to: string,
+    post: string,
+    jobDescription: string,
+    createdAt: string,
+    skills: Array<{ title: string }>;
+
 }
 
 
 
-const JobSheet: React.FC<JobSheetProps> = ({ title, jobdescription, from, to, Place, fixed, duration, expertise, projectSize }: JobSheetProps) => {
+const JobSheet: React.FC<JobSheetProps> = ({ title, jobdescription, from, to, Place, fixed, duration, expertise, projectSize, id, skills, createdAt, country }: JobSheetProps) => {
     const [showMore, setShowMore] = useState(false);
+    const [clientdata, setClientData] = useState<JobSheetProps[]>([]);
+    const [loading, setLoading] = useState(true)
+    useEffect(() => {
+        const fetchClient = async () => {
+            try {
+                //const response = await fetch(`/api/skill/${id}`);
+                const response = await fetch(`/api/profile/clientProfile`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch client');
+                }
+                const data = await response.json();
+                setClientData(data);
+                setLoading(false);
+            } catch (error) {
+                console.log(error)
+                setLoading(false);
+            }
+        };
 
+
+        fetchClient();
+    }, []);
+
+    //console.log("first", clientdata)
     return (
         <Sheet>
             <SheetTrigger asChild>
 
                 <div>
-                    <Jobs id={undefined} title={title} to={to} from={from} jobsdescription={jobdescription || ""} Place={Place} duration={duration || ""} expertise={expertise} projectSize={projectSize} fixed={fixed} />
+                    <Jobs id={id} title={title} to={to} from={from} jobsdescription={jobdescription || ""} Place={Place} duration={duration || ""} expertise={expertise} projectSize={projectSize} fixed={fixed} skills={skills} createdAt={createdAt} country={country} />
                 </div>
             </SheetTrigger>
             <SheetContent>
@@ -63,7 +94,7 @@ const JobSheet: React.FC<JobSheetProps> = ({ title, jobdescription, from, to, Pl
 
                     </SheetTitle>
                     <SheetDescription>
-                        <small className="text-gray-400 ">Posted 2 hours ago</small>
+                        <small className="text-gray-400 "> {format(new Date(createdAt), "E  h  a ")}</small>
                     </SheetDescription>
                 </SheetHeader>
                 <div>
@@ -109,7 +140,7 @@ const JobSheet: React.FC<JobSheetProps> = ({ title, jobdescription, from, to, Pl
                                 <Separator />
                             </div>
                             <div className="py-6">
-                                <h1 className="text-xl font-medium">Project type:</h1>
+                                <h1 className="text-xl font-medium">Project type:One time project</h1>
 
                             </div>
                             <div>
@@ -122,15 +153,32 @@ const JobSheet: React.FC<JobSheetProps> = ({ title, jobdescription, from, to, Pl
                                         Front-End Development Deliverables
                                     </h1>
                                     <div className=" flex py-2 gap-3">
-                                        <Button variant="outline">Web application</Button>
-                                        <Button variant='outline'>Blog</Button>
+                                        <div className="flex gap-4 mt-4">
+                                            {skills.map((skill, i) => (
+                                                <Button
+                                                    key={i}
+                                                    variant='outline'
+                                                    className="bg-gray-400 max-h-10 rounded-3xl border-[1px] p-2 items-center">
+                                                    {skill.title}
+
+                                                </Button>
+                                            ))}
+                                        </div>
+
                                     </div>
                                 </div>
                                 <div className="py-4">
                                     <h4>Front-End Development Languages</h4>
-                                    <div className=" flex py-2 gap-3">
-                                        <Button variant="outline">Web application</Button>
-                                        <Button variant='outline'>Blog</Button>
+                                    <div className="flex gap-4 mt-4">
+                                        {skills.map((skill, i) => (
+                                            <Button
+                                                key={i}
+                                                variant='outline'
+                                                className="bg-gray-400 max-h-10 rounded-3xl border-[1px] p-2 items-center">
+                                                {skill.title}
+
+                                            </Button>
+                                        ))}
                                     </div>
 
                                 </div>
@@ -187,7 +235,7 @@ const JobSheet: React.FC<JobSheetProps> = ({ title, jobdescription, from, to, Pl
 
                                     <p className="text-gray-600">
                                         {" "}
-                                        <small>Country</small>
+                                        <small>{country}</small>
                                     </p>
 
                                     <small className="text-gray-600">

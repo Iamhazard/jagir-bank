@@ -24,8 +24,6 @@ import { ClientSchema } from "@/Schemas";
 import { clientProfile } from "@/actions/clientProfile";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Button } from "../ui/button";
-import { IoIosAdd } from "react-icons/io";
 import axios from "axios";
 
 type Inputs = z.infer<typeof ClientSchema>;
@@ -60,7 +58,7 @@ const steps = [
   {
     id: "Step 2 ",
     name: "Skills",
-    fields: ["skills1", "skills3", "skills3"],
+    fields: ["skill"],
   },
   {
     id: "Step 3",
@@ -80,9 +78,7 @@ type FormFields = {
   register: string;
   country: string;
   post: string;
-  skills1: string;
-  skills2: string;
-  skills3: string;
+  skills: string;
   projectSize: string;
   duration: string;
   expertise: string;
@@ -98,9 +94,8 @@ const ClientForm: React.FC<Inputs> = () => {
   const [previousStep, setPreviousStep] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedSkills, setSelectedSkills] = useState<{ value: string; label: string }[]>([]);
-
-  const [selectedCategory, setSelectedCategory] = useState<null | MultiValue<{ value: string; label: string; }>>(null);
+  const [selectedSkills, setSelectedSkills] = useState<Skill[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<null | MultiValue<{ value: string; label: string }>>(null);
   const delta = currentStep - previousStep;
   const [isPending, startTransition] = useTransition();
   const router = useRouter()
@@ -111,7 +106,7 @@ const ClientForm: React.FC<Inputs> = () => {
       country: "",
       jobs: [{
 
-      }]
+      }],
 
     },
   });
@@ -122,6 +117,7 @@ const ClientForm: React.FC<Inputs> = () => {
     reset,
     trigger,
     control,
+    setValue,
     formState: { errors },
   } = methods;
 
@@ -130,12 +126,13 @@ const ClientForm: React.FC<Inputs> = () => {
     name: "jobs",
   });
 
-
+  //console.log(watch("skills"))
   const processForm: SubmitHandler<Inputs> = (
     values: z.infer<typeof ClientSchema>
   ) => {
     setError("");
     setSuccess("");
+    console.log("vaue befor transition", values)
     startTransition(() => {
       clientProfile(values).then((data) => {
         setError(data?.error);
@@ -144,7 +141,7 @@ const ClientForm: React.FC<Inputs> = () => {
 
       });
     });
-    reset();
+    // reset();
     console.log(values);
   };
 
@@ -188,30 +185,37 @@ const ClientForm: React.FC<Inputs> = () => {
 
 
   useEffect(() => {
+
+    console.log("Selected categories:", selectedCategory);
+
+
     const fetchSkills = async () => {
-      if (selectedCategory) {
+      if (selectedCategory && selectedCategory.length > 0) {
         try {
           const categoryIds = selectedCategory.map(cat => cat.value).join(',');
-          const response = await axios.get(`/api/skills/getskill?categoryIds=${categoryIds}`);
-          ;
+          const apiUrl = `/api/skills/getskill?categoryIds=${categoryIds}`;
+          //console.log("Fetching skills from:", apiUrl);
+          const response = await axios.get(apiUrl);
           setSelectedSkills(response.data);
         } catch (error) {
-          console.error('Error fetching categories:', error);
+          console.error('Error fetching skills:', error);
         }
-      }
+      } else {
 
+        setSelectedSkills([]);
+      }
     };
 
     fetchSkills();
   }, [selectedCategory]);
 
-  console.log({ selectedSkills })
+
+  //console.log({ selectedSkills })
 
 
-  const handleCategoryChange = (newValue: MultiValue<{ value: string; label: string; }>, actionMeta: ActionMeta<{ value: string; label: string; }>) => {
-    setSelectedCategory(newValue);
+  const handleCategoryChange = (selectedOption: MultiValue<{ value: string; label: string }>) => {
+    setSelectedCategory(selectedOption);
   };
-
   return (
     <ProfileWrapper
       headerLabel="Create a Client profile"
@@ -345,7 +349,7 @@ const ClientForm: React.FC<Inputs> = () => {
                 <h2 className="mt-1 text-sm leading-6 text-gray-600 py-2">Category</h2>
                 <Select
                   isMulti
-                  name="skills"
+                  name="category"
                   options={categories.map((category) => ({ value: category.id, label: category.title }))}
                   className="basic-multi-select"
                   onChange={handleCategoryChange}
@@ -354,80 +358,41 @@ const ClientForm: React.FC<Inputs> = () => {
                 <div>
 
                   <h2 className="text-base font-semibold leading-7 text-gray-900">
-                    Selected skills
+                    Select skills
                   </h2>
+                  <p className="mt-1 text-sm leading-6 text-gray-600">
+                    Add 3 skills for best result
+                  </p>
+
+                  {fields.map((field, index) => (
+
+
+                    <Select
+                      isMulti
+                      key={field.id}
+                      options={selectedSkills.map(skill => ({ value: skill.id, label: skill.title }))}
+                      id={`skill${index}`}
+                      {...register(`jobs.${index}.skills`)}
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      onChange={(selectedOption: any, actionMeta: any) => {
+                        setValue(`jobs.${index}.skills`, selectedOption.map((sk: any) => ({ skill: sk.value })));
+                      }}
+                    />
+                  ))}
                 </div>
                 <div>
                   <h2 className="text-base font-semibold leading-7 text-gray-900">
                     Popular skills
                   </h2>
                   <div className="flex gap-3">
-                    <ul>
-                      {selectedSkills.map((skill) => (
-                        <li key={skill.value}>{skill.label}</li>
-                      ))}
-                    </ul>
+
                   </div>
                 </div>
 
 
 
 
-
-
-
-
-
-
-
-                <div className="col-span-full py-4">
-                  <label
-                    htmlFor="skill"
-                    className="block text-sm font-medium leading-6 text-gray-900">
-                    Skills
-                  </label>
-                  <div className="mt-2">
-                    <p className="mt-1 text-sm leading-6 text-gray-600">
-                      Add 3 skills for best result
-                    </p>
-
-                    {fields.map((field, index) => (
-                      <input
-                        key={field.id}
-                        type="text"
-                        id={`skills1${index}`}
-                        {...register(`jobs.${index}.skills1`)}
-                        autoComplete="web"
-                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
-                      />
-                    ))}
-
-                  </div>
-                  <div className="mt-2">
-                    {fields.map((field, index) => (
-                      <input
-                        key={field.id}
-                        type="text"
-                        id={`skills2${index}`}
-                        {...register(`jobs.${index}.skills2`)}
-                        autoComplete="web"
-                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
-                      />
-                    ))}
-                  </div>
-                  <div className="mt-2">
-                    {fields.map((field, index) => (
-                      <input
-                        key={field.id}
-                        type="text"
-                        id={`skills3${index}`}
-                        {...register(`jobs.${index}.skills3`)}
-                        autoComplete="web"
-                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
-                      />
-                    ))}
-                  </div>
-                </div>
               </motion.div>
             )}
 

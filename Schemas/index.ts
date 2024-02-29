@@ -98,9 +98,6 @@ export const ClientSchema = z.object({
    country: z.string().min(1, 'Country is required'),
    jobs: z.array(z.object({
     post: z.string().min(1, 'Post is required'),
-  skills1: z.string(),
-  skills2: z.string(),
-  skills3: z.string(),
   projectSize: z.string().min(1, { message: "Please select a value" }).max(260, { message: "The name is too long" }),
   duration: z.string().min(1, { message: "Please select a value" }).max(260, { message: "The name is too long" }),
   expertise: z.string().min(1, { message: "Please select a value" }).max(260, { message: "The name is too long" }),
@@ -108,6 +105,9 @@ export const ClientSchema = z.object({
   to: z.string().regex(amountRegex, "Fixed must be a positive number"),
   fixed: z.string().regex(amountRegex, "Fixed must be a positive number"),
   jobDescription: z.string().min(60, 'Minimum 60 words are required'),
+  skills:z.array(z.object({
+    skill:z.string().min(1),
+   })),
   }),) 
 });
 

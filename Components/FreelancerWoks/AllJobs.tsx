@@ -5,7 +5,9 @@ const prisma = new PrismaClient();
 
 const Alljobs = async () => {
     const alljobs = await prisma.job.findMany();
-    ///////console.log("all jobs", alljobs)
+    /////console.log("all jobs", alljobs)
+
+    console.log("all jobs", alljobs)
     return (
         <div>
             {alljobs.map((alljob) => (
