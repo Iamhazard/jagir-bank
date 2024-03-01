@@ -20,6 +20,8 @@ import {
 import Jobs from "./Jobs";
 import { Separator } from "../ui/separator";
 import { format } from "date-fns";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 
 
@@ -50,30 +52,12 @@ export interface JobSheetProps {
 
 const JobSheet: React.FC<JobSheetProps> = ({ title, jobdescription, from, to, Place, fixed, duration, expertise, projectSize, id, skills, createdAt, country }: JobSheetProps) => {
     const [showMore, setShowMore] = useState(false);
-    const [clientdata, setClientData] = useState<JobSheetProps[]>([]);
-    const [loading, setLoading] = useState(true)
-    useEffect(() => {
-        const fetchClient = async () => {
-            try {
-                //const response = await fetch(`/api/skill/${id}`);
-                const response = await fetch(`/api/profile/clientProfile`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch client');
-                }
-                const data = await response.json();
-                setClientData(data);
-                setLoading(false);
-            } catch (error) {
-                console.log(error)
-                setLoading(false);
-            }
-        };
+    // const [clientdata, setClientData] = useState<JobSheetProps[]>([]);
+    // const [loading, setLoading] = useState(true)
 
 
-        fetchClient();
-    }, []);
 
-    //console.log("first", clientdata)
+
     return (
         <Sheet>
             <SheetTrigger asChild>
@@ -204,9 +188,12 @@ const JobSheet: React.FC<JobSheetProps> = ({ title, jobdescription, from, to, Pl
                         <div className="w-[200px] mt-4 items-center">
                             <div className=" space-y-4">
                                 <SheetClose asChild>
-                                    <Button type="submit" variant="btn_green">
-                                        Apply Now
-                                    </Button>
+                                    <Link href={`/proposal/job/${id}`}>
+                                        <Button type="submit" variant="btn_green">
+                                            Apply Now
+                                        </Button>
+                                    </Link>
+
                                 </SheetClose>
 
                                 <Button type="submit" variant="outline">
@@ -265,3 +252,7 @@ const JobSheet: React.FC<JobSheetProps> = ({ title, jobdescription, from, to, Pl
 };
 
 export default JobSheet;
+function getClientDetails(arg0: string | null) {
+    throw new Error("Function not implemented.");
+}
+

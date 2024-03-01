@@ -1,5 +1,6 @@
+'use client'
 /* eslint-disable react/no-unescaped-entities */
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import MaxWidthWrapper from "@/app/(protected)/_components/maxwidthWrappers";
 import { Card, CardFooter } from "@/Components/ui/card";
@@ -10,9 +11,13 @@ import { Separator } from "@/Components/ui/separator";
 import { Label } from "@/Components/ui/label";
 import { Textarea } from "@/Components/ui/textarea";
 import { Button } from "@/Components/ui/button";
+import { JobSheetProps } from "@/Components/FreelancerWoks/jobsSheet";
 
-const ProposalForm = () => {
+
+const ProposalForm = ({ post, to, from, expertise, duration, id }: JobSheetProps) => {
     const fixed = 1
+    //const [jobs, setJob] = useState<JobSheetProps[]>([]);
+
     return (
         <MaxWidthWrapper className={cn("gap-6 pb-10")}>
             <h1 className="py-4 px-6 text-3xl font-bold">Submit a new proposal</h1>
@@ -33,13 +38,15 @@ const ProposalForm = () => {
             <Card className="py-3  mt-6">
                 <div className="px-6 space-y-4">
                     <h1 className="font-bold text-2xl">job details</h1>
+
                     <div className=" flex ">
+
                         <div className="flex-1 space-y-2">
-                            <h2>UI Developer need for react project</h2>
+                            <h2>{post}</h2>
                             <Badge variant="success" className="p-2 ">
                                 Front-End Development
                             </Badge>
-                            <small className="px-4">Posted </small>
+                            <small className="px-4"> {`Hourly:$${from}-$${to}-Fixed:$${fixed}-${expertise} `} </small>
                             <p className="py-4">ad</p>
                         </div>
 
@@ -47,11 +54,13 @@ const ProposalForm = () => {
                             <Separator orientation="vertical" />
                         </div>
                         <div className="w-[400px] px-6">
-                            <h1 className="mr-6">Entry</h1>
-                            <h1>Price</h1>
-                            <h1>duration</h1>
+                            <h1 className="mr-6">{expertise}</h1>
+                            <h1>{`Hourly:$${from}-$${to}-Fixed:$${fixed}`} </h1>
+                            <h1>{duration}</h1>
                         </div>
                     </div>
+
+
                 </div>
             </Card>
             <Card className="mt-6 py-3">
@@ -221,7 +230,7 @@ const ProposalForm = () => {
                     <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
                         <div className="flex flex-col items-center justify-center pt-5 pb-6">
                             <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                             </svg>
                             <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
                             <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>

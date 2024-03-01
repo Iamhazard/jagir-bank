@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ClientCard from "./clientCard";
 
 import MaxWidthWrapper from "./maxwidthWrappers";
@@ -8,15 +8,17 @@ import { Separator } from "@/Components/ui/separator";
 import Link from "next/link";
 import { Card } from "@/Components/ui/card";
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
 
 const Clientdata = () => {
+
     return (
         <>
             <div className=" py-10 px-6 flex justify-between">
                 <div className="flex">
                     <h1 className="text-4xl items-center font-medium ">Your workspace</h1>
                     <div className=" flex items-center px-4 gap-3">
-                        <Link href="/clientdashboard/allPost">
+                        <Link href="/clientdashboard/allJobsPost">
                             <Button variant='link' className="text-Green">All Job Post</Button>
                         </Link>
 

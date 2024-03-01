@@ -148,6 +148,12 @@ model Job {
   clientProfile   ClientProfile  @relation(fields: [clientProfileId], references: [id])
   clientProfileId String         @db.ObjectId
   SkillsOnJobs    SkillsOnJobs[]
+  status          JobStatus      @default(posted)
+}
+
+enum JobStatus {
+  posted
+  draft
 }
 
 model SkillsOnJobs {
