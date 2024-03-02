@@ -1,9 +1,9 @@
 import React from 'react'
-import ProposalForm from '../jobs/_components/ProposalForm'
+//import ProposalForm from '../jobs/_components/ProposalForm'
 
 const Page = () => {
     return (
-        <ProposalForm />
+        <>div</>
     )
 }
 

@@ -50,4 +50,25 @@ export type FormData = {
   | "skill"
  
   
+
+  export type ProposalForms={
+    id: string,
+    title: string,
+    country: string,
+    jobdescription?: string;
+    jobsbudget?: string;
+    duration: string,
+    expertise: string,
+    projectSize: string,
+    fixed: string,
+    Place: string,
+    from: string,
+    to: string,
+    post: string,
+    jobDescription: string,
+    createdAt: string,
+    skills: Array<{ title: string }>;
+
+}
+
   

@@ -1,6 +1,6 @@
 'use client'
 /* eslint-disable react/no-unescaped-entities */
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 
 import MaxWidthWrapper from "@/app/(protected)/_components/maxwidthWrappers";
 import { Card, CardFooter } from "@/Components/ui/card";
@@ -11,12 +11,29 @@ import { Separator } from "@/Components/ui/separator";
 import { Label } from "@/Components/ui/label";
 import { Textarea } from "@/Components/ui/textarea";
 import { Button } from "@/Components/ui/button";
-import { JobSheetProps } from "@/Components/FreelancerWoks/jobsSheet";
+import { ProposalForms } from "@/@types/enum";
 
 
-const ProposalForm = ({ post, to, from, expertise, duration, id }: JobSheetProps) => {
+const ProposalForm = ({ post, to, from, expertise, duration, jobDescription }: ProposalForms) => {
     const fixed = 1
     //const [jobs, setJob] = useState<JobSheetProps[]>([]);
+    const [rate, setRate] = useState<number>(0);
+    const [serviceFee, setServiceFee] = useState<number>(0);
+    const [amountReceived, setAmountReceived] = useState<number>(0);
+
+
+    const handleRateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const enteredRate = parseFloat(event.target.value);
+        console.log("Entered Rate:", enteredRate);
+        setRate(enteredRate);
+        const calculatedServiceFee = enteredRate * 0.02;
+        setServiceFee(calculatedServiceFee);
+        setAmountReceived(enteredRate - calculatedServiceFee);
+    };
+
+
+
+
 
     return (
         <MaxWidthWrapper className={cn("gap-6 pb-10")}>
@@ -43,11 +60,18 @@ const ProposalForm = ({ post, to, from, expertise, duration, id }: JobSheetProps
 
                         <div className="flex-1 space-y-2">
                             <h2>{post}</h2>
-                            <Badge variant="success" className="p-2 ">
-                                Front-End Development
-                            </Badge>
-                            <small className="px-4"> {`Hourly:$${from}-$${to}-Fixed:$${fixed}-${expertise} `} </small>
-                            <p className="py-4">ad</p>
+                            <small className="px-4 line-clamp-4"> {jobDescription}</small>
+                            <div className=" flex gap-0.5">
+                                <Badge variant="success" className="p-2 ">
+                                    Front-End Development
+                                </Badge>
+                                <Badge variant="success" className="p-2 ">
+                                    Next js
+                                </Badge>
+                            </div>
+
+
+                            <p className="py-4">{ }</p>
                         </div>
 
                         <div>
@@ -69,7 +93,7 @@ const ProposalForm = ({ post, to, from, expertise, duration, id }: JobSheetProps
 
                     <div className="flex justify-between items-center">
                         <h2>What is the rate you'd like to bid for this job?</h2>
-                        {fixed ? (<small>Client’s budget: $35.00 - $75.00</small>) : (<></>)}
+                        {fixed ? (<small>Client’s budget:{`Hourly:$${from}-$${to}-Fixed:$${fixed}`}</small>) : (<></>)}
                     </div>
                     <small>Your profile rate: $7.00/hr</small>
                     {!fixed ? (
@@ -88,6 +112,8 @@ const ProposalForm = ({ post, to, from, expertise, duration, id }: JobSheetProps
                                     <input
                                         type="text"
                                         id="hourlyrate"
+                                        value={rate}
+                                        onChange={handleRateChange}
                                         autoComplete=""
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
                                     />
@@ -106,11 +132,12 @@ const ProposalForm = ({ post, to, from, expertise, duration, id }: JobSheetProps
                                 <div className="mt-2 flex gap-0.5 items-center">
                                     <input
                                         type="text"
-                                        id="disabled-input"
-                                        aria-label="disabled input"
+                                        id="  readOnly-input"
+                                        aria-label="  readOnly input"
                                         className="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                         placeholder="$2"
-                                        disabled
+                                        value={serviceFee.toFixed(2)}
+                                        readOnly
                                     />
                                     <span className="text-gray-500">/hr</span>
                                 </div>
@@ -128,6 +155,9 @@ const ProposalForm = ({ post, to, from, expertise, duration, id }: JobSheetProps
                                         id="estimatedamount"
                                         type="text"
                                         autoComplete=""
+                                        value={amountReceived.toFixed(2)}
+                                        readOnly
+                                        onChange={() => { }}
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
                                     />
                                     <span className="text-gray-500">/hr</span>

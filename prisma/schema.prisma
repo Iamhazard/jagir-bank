@@ -149,11 +149,31 @@ model Job {
   clientProfileId String         @db.ObjectId
   SkillsOnJobs    SkillsOnJobs[]
   status          JobStatus      @default(posted)
+  proposals       Proposal[]
 }
 
 enum JobStatus {
   posted
   draft
+}
+
+model Proposal {
+  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  duration        String?
+  hourlyRate      String?
+  coverLetter     String?
+  userId          String         @db.ObjectId
+  JobId           String         @db.ObjectId
+  attachments     String
+  estimatedAmount String
+  status          ProposalStatus
+  job             Job            @relation(fields: [JobId], references: [id])
+}
+
+enum ProposalStatus {
+  ACCEPTED
+  REJECTED
+  PENDING
 }
 
 model SkillsOnJobs {
