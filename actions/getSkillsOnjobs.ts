@@ -9,7 +9,7 @@ async function getSkillsOnJobs() {
     
     const skillsOnJobs = await prisma.skillsOnJobs.findMany()
 
-    console.log('SkillsOnJobs:', skillsOnJobs);
+    //console.log('SkillsOnJobs:', skillsOnJobs);
 
     return skillsOnJobs;
   } catch (error) {

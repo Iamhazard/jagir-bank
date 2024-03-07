@@ -46,7 +46,7 @@ export const POST = async (req: CustomNextApiRequest, res: NextResponse) => {
         imageInput,
       } = await req.json();
 
-      console.log("req.body:", req.body);
+      //console.log("req.body:", req.body);
       // Image upload
 
       upload.fields([
@@ -59,12 +59,12 @@ export const POST = async (req: CustomNextApiRequest, res: NextResponse) => {
             status: 400,
           });
         }
-        console.log("req.body routes:", req.body);
+        //console.log("req.body routes:", req.body);
 
         let fileData = {};
 
         const documentFile = req.files;
-        console.log("req.files routes:", req.files);
+        //console.log("req.files routes:", req.files);
         if (!documentFile) {
           return new Response(JSON.stringify({ error: "no_files" }), {
             status: 422,

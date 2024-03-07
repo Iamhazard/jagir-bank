@@ -16,7 +16,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ currentUser }) => {
     const routes = useRoutes();
     const [isOpen, setisOpen] = useState(false);
 
-    console.log("curent user", currentUser)
+    // console.log("curent user", currentUser)
     return (
         <>
 

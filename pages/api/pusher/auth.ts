@@ -10,7 +10,7 @@ export default async function handler(
   response: NextApiResponse
 ) {
   const session = await auth();
-  console.log("pages/pusher",session)
+  //console.log("pages/pusher",session)
 
   if (!session?.user?.email) {
     return response.status(401);

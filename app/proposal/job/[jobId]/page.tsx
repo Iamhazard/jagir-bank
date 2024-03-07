@@ -32,6 +32,7 @@ const ProposalForm = ({ params }: { params: IParams }) => {
     const jobId = params.jobId;
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
     const watchHourlyRate = watch("hourlyRate", 0);
+    const [imageUrl, setImageUrl] = useState<string | null>(null);
     const servicesFee = 0.05;
     const estimatedAmount = watchHourlyRate * (1 - servicesFee);
     //console.log(estimatedAmount)
@@ -45,7 +46,7 @@ const ProposalForm = ({ params }: { params: IParams }) => {
         try {
             const fetchJobs = async () => {
                 try {
-                    const response = await fetch(`/api/job/${jobId}`);
+                    const response = await fetch(`/api/jobapply/${jobId}`);
                     //console.log("response", response)
                     if (!response.ok) {
                         throw new Error("Failed to fetch jobs");
@@ -65,24 +66,52 @@ const ProposalForm = ({ params }: { params: IParams }) => {
         }
     }, [jobId]);
 
+    const handleUpload = (result: any) => {
+
+        try {
+            const imageUrl = result?.info?.secure_url;
+            console.log({ imageUrl })
+
+            if (imageUrl) {
+                setImageUrl(imageUrl);
+                // axios.post(`/api/job/jobapply/${jobId}`, {
+                //     image: imageUrl,
+
+
+                // })
+
+            }
+            else {
+                console.error("Image URL is null or undefined");
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    };
+
     const onSubmit = (data: any) => {
         data.estimatedAmount = estimatedAmount.toFixed(2);
         data.jobId = jobId;
-        console.log(data);
+
+
+        if (imageUrl) {
+            data.imageUrl = imageUrl;
+        }
+
+        console.log("Data to be submitted:", data);
 
         try {
             const fetchJobs = async () => {
                 try {
-                    const response = await axios.post(`/api/job/jobapply`, {
+                    const response = await fetch(`/api/job/jobapply/${jobId}`, {
                         method: "POST",
                         headers: {
-                            "Content-Type": "application/json"
                         },
                         body: JSON.stringify(data),
                     })
-                    console.log("response", response)
-
-
+                    console.log("response", { response })
                     setLoading(false);
                 } catch (error) {
                     console.log(error);
@@ -97,12 +126,7 @@ const ProposalForm = ({ params }: { params: IParams }) => {
     };
 
 
-    const handleUpload = (result: any) => {
-        axios.post('/api/job/jobapply', {
-            image: result?.info?.secure_url,
-            jobId
-        })
-    };
+
 
     return (
         <MaxWidthWrapper className={cn("gap-6 pb-10")}>
@@ -161,7 +185,7 @@ const ProposalForm = ({ params }: { params: IParams }) => {
                     )}
                 </Card>
                 <Card className="mt-6 py-3">
-                    <div className="px-6 space-y-4 w-[900px]">
+                    <div className="px-6 space-y-4 sm:w-full md:w-[700px] lg:w-[900px] lg:ml-8">
                         <h1 className="font-bold text-2xl">Terms</h1>
                         {job && (
                             <div className="flex justify-between items-center">
@@ -179,7 +203,7 @@ const ProposalForm = ({ params }: { params: IParams }) => {
 
                         <small>Your profile rate: $7.00/hr</small>
 
-                        <div>
+                        <div className="sm:block">
                             <div className="flex pb-4 justify-between gap-4 items-center">
                                 <div>
                                     {" "}
@@ -251,7 +275,7 @@ const ProposalForm = ({ params }: { params: IParams }) => {
                         <h4 className="font-bold text-xl">
                             How long will this project take?
                         </h4>
-                        <div className="w-[220px]">
+                        <div className="w-[220px] ">
                             <select
                                 id="duration"
                                 {...register("duration", { required: true })}
@@ -304,12 +328,15 @@ const ProposalForm = ({ params }: { params: IParams }) => {
                             <CldUploadButton
                                 options={{ maxFiles: 1 }}
                                 onUpload={handleUpload}
-                                uploadPreset="fvcxqaz4">
+                                uploadPreset="i1ziapfw"
+
+                            >
                                 <input
                                     id="dropzone-file"
                                     type="file"
                                     className="hidden"
                                     multiple
+
                                 />
                             </CldUploadButton>
                         </label>
@@ -323,7 +350,7 @@ const ProposalForm = ({ params }: { params: IParams }) => {
                         </small>
                     </CardFooter>
                 </Card>
-                <div className="flex px-6 py-4 gap-2">
+                <div className="flex flex-col sm:flex-row  px-6 py-4 gap-2">
                     <Button variant="btn_green">Apply</Button>
                     <Button variant="outline" type="submit">
                         Cancel

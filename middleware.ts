@@ -25,12 +25,7 @@ export default auth((req) => {
   const isDashboardRoute = authRoutes.includes(nextUrl.pathname);
   const isJobsRoute = jobRoutes.includes(nextUrl.pathname);
 
-  if (isDashboardRoute) {
-    if(UserRole !=='ADMIN'){
- return Response.redirect(new URL(DEFAULT_LOGIN, nextUrl));
-    }
-   
-  }
+  
 
   if (isApiAuthRoute) {
     return null;

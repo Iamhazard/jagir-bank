@@ -31,7 +31,7 @@ const BestmatchesPage = () => {
 
 
 
-  console.log("jib0", { jobs })
+  //console.log("jib0", { jobs })
   return (
     <div className="mt-4">
       {jobs.map((job, inx) => (

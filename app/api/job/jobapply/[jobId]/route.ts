@@ -3,24 +3,43 @@ import getCurrentUser from "@/actions/getCurrentUser";
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
-export async function POST(request:Request){
+
+
+interface IParams {
+  jobId?: string;
+}
+
+export async function POST(request:Request,{params}:{params:IParams}) {
 
   try {
       const currentUser = await getCurrentUser();
     const userId= currentUser?.id
+     const jobId=params.jobId
      const body = await request.json();
+     
+      const existingApplication = await db.proposal.findFirst({
+      where: {
+        jobId: jobId
+      }
+    });
+     if (existingApplication) {
+      return new NextResponse('You have already applied for this job', { status: 400 });
+    }
+
     const {
 duration,
 estimatedAmount,
+imageUrl,
 hourlyRate,
 message,
-attachments,
-JobId
 }=body;
 
+console.log({body})
  if (!currentUser?.id || !currentUser?.email) {
             return new NextResponse('Unauthorized', { status: 401 });
         }
+
+      
 
 const proposal=await db.proposal.create({
     data:{
@@ -28,13 +47,11 @@ const proposal=await db.proposal.create({
         hourlyRate,
         coverLetter:message,
         userId:userId || "",
-        JobId,
+        jobId:jobId||"" ,
         estimatedAmount,
          status: 'PENDING',
-         attachments,
-
-
-
+         image:imageUrl,
+         
     }
     
 })

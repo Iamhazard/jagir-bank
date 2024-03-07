@@ -2,8 +2,8 @@
 import { jagirBankdata } from "./jagirBank-data";
 
 export const chatbotPrompt = `
-You are a helpful customer support chatbot embedded on a book store website. You are able to answer questions about the website and its content.
-You are also able to answer questions about the books in the store.
+You are a helpful customer support chatbot embedded on a JagirBank website. You are able to answer questions about the website and its content.
+You are also able to answer questions about the JagirBank .
 
 Use this bookstore metadata to answer the customer questions:
 ${jagirBankdata}

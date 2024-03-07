@@ -1,44 +1,67 @@
+
+
 export const jagirBankdata = `
-<url>
-<loc>https://books.toscrape.com/</loc>
-<desc>Your book store</desc>
-</url>
-<url>
-<loc>https://books.toscrape.com/catalogue/category/books_1/index.html</loc>
-<desc>An overview about our book collection</desc>
-</url>
-<url>
-<loc>https://books.toscrape.com/catalogue/category/books/travel_2/index.html</loc>
-<content>
-    <book>
-    <url>https://books.toscrape.com/catalogue/its-only-the-himalayas_981/index.html</url>
-    <desc>A book about travelling the himalayas</desc>
-    <price>45.17</price>
-    <availability>in stock</availability>
-    </book>
-    <book>
-    <url>https://books.toscrape.com/catalogue/full-moon-over-noahs-ark-an-odyssey-to-mount-ararat-and-beyond_811/index.html</url>
-    <desc>A book by Rick Ansonson about his journey to Mount Ararat</desc>
-    <price>49.43</price>
-    <availability>in stock</availability>
-    </book>
-</content>
-</url>
-<url>
-<loc>https://books.toscrape.com/catalogue/category/books/mystery_3/index.html</loc>
-<content>
-    <book>
-    <url>https://books.toscrape.com/catalogue/sharp-objects_997/index.html</url>
-    <desc>A book about by Gillian Flynn about Camille Preaker's troubled past</desc>
-    <price>47.87</price>
-    <availability>in stock</availability>
-    </book>
-    <book>
-    <url>https://books.toscrape.com/catalogue/the-past-never-ends_942/index.html</url>
-    <desc>A book by Jackson Burnett about the attourney Chester Morgan. His friend died in an unexplained accidental death.</desc>
-    <price>56.50</price>
-    <availability>in stock</availability>
-    </book>
-</content>
-</url>
+<upworkData>
+    <jobCategory>
+        <name>Software Development</name>
+        <url>https://www.upwork.com/o/jobs/browse/c/web-mobile-software-dev/</url>
+        <jobs>
+            <job>
+                <title>Full Stack Developer</title>
+                <url>https://www.upwork.com/job/full-stack-developer_123456</url>
+                <description>A position for a full stack developer with experience in React and Node.js</description>
+                <budget>$1000 - $1500</budget>
+                <duration>3 weeks</duration>
+                <skills>
+                    <skill>React</skill>
+                    <skill>Node.js</skill>
+                    <skill>JavaScript</skill>
+                </skills>
+            </job>
+            <job>
+                <title>Mobile App Developer</title>
+                <url>https://www.upwork.com/job/mobile-app-developer_789012</url>
+                <description>Developing a cross-platform mobile app using Flutter framework</description>
+                <budget>$800 - $1000</budget>
+                <duration>2 weeks</duration>
+                <skills>
+                    <skill>Flutter</skill>
+                    <skill>Dart</skill>
+                    <skill>Mobile App Development</skill>
+                </skills>
+            </job>
+        </jobs>
+    </jobCategory>
+    <jobCategory>
+        <name>Graphic Design</name>
+        <url>https://www.upwork.com/o/jobs/browse/c/design-creative/</url>
+        <jobs>
+            <job>
+                <title>Logo Designer</title>
+                <url>https://www.upwork.com/job/logo-designer_345678</url>
+                <description>Creating a new logo for a startup company</description>
+                <budget>$200 - $300</budget>
+                <duration>1 week</duration>
+                <skills>
+                    <skill>Logo Design</skill>
+                    <skill>Graphic Design</skill>
+                    <skill>Adobe Illustrator</skill>
+                </skills>
+            </job>
+            <job>
+                <title>UI/UX Designer</title>
+                <url>https://www.upwork.com/job/ui-ux-designer_901234</url>
+                <description>Designing user interfaces for a web application</description>
+                <budget>$400 - $600</budget>
+                <duration>2 weeks</duration>
+                <skills>
+                    <skill>UI Design</skill>
+                    <skill>UX Design</skill>
+                    <skill>Adobe XD</skill>
+                </skills>
+            </job>
+        </jobs>
+    </jobCategory>
+</upworkData>
+
 `

@@ -26,7 +26,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
 
-    console.log(currentUser, "&TEST_CURRENT_USER");
+    //console.log(currentUser, "&TEST_CURRENT_USER");
 
     const {
         register,

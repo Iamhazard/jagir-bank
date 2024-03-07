@@ -163,11 +163,11 @@ model Proposal {
   hourlyRate      String?
   coverLetter     String?
   userId          String         @db.ObjectId
-  JobId           String         @db.ObjectId
-  attachments     String
+  jobId           String         @db.ObjectId
+  image           String
   estimatedAmount String
   status          ProposalStatus
-  job             Job            @relation(fields: [JobId], references: [id])
+  job             Job            @relation(fields: [jobId], references: [id])
 }
 
 enum ProposalStatus {

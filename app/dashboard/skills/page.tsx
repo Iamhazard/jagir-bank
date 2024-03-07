@@ -56,7 +56,7 @@ const Skills = () => {
                 body: JSON.stringify(data),
             })
             if (!response.ok) throw new Error("HTTP error " + response.status);
-            console.log(response)
+            // console.log(response)
 
             setSuccessMessage('skills added successfully');
             reset();

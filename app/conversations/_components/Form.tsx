@@ -23,6 +23,7 @@ const Form = () => {
     });
 
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
+        //console.log(data, "data from message upload")
         setValue("message", "", { shouldValidate: true });
         axios.post("/api/messages", {
             ...data,
@@ -77,6 +78,7 @@ const Form = () => {
             hover:bg-sky-600 
             transition
           ">
+
                     <HiPaperAirplane size={18} className="text-white" />
                 </button>
             </form>

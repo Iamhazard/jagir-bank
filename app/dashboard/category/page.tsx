@@ -27,7 +27,7 @@ const Category = () => {
                 body: JSON.stringify(data),
             })
             if (!response.ok) throw new Error("HTTP error " + response.status);
-            console.log(response)
+            //console.log(response)
 
             setSuccessMessage('Category added successfully');
             reset();
