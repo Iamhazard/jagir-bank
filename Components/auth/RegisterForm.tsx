@@ -20,13 +20,14 @@ import { FormError } from "./form-error";
 import { FormSuccess } from "./form-success";
 import { useRouter, useSearchParams } from "next/navigation";
 import { register } from "@/actions/registerAction";
+import { UserRole } from "@prisma/client";
 
 const RegisterForm = () => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const params = useSearchParams();
-  const type = params.get("type")?.trim();
+  const type = params?.get("type")?.trim();
   const route = useRouter()
   const role = type === "Freelancer" ? "Freelancer" : "Client";
   const form = useForm<z.infer<typeof RegisterSchema>>({
@@ -36,6 +37,7 @@ const RegisterForm = () => {
       password: "",
       name: "",
       lastName: "",
+      role: role as UserRole,
     },
   });
 
@@ -46,10 +48,14 @@ const RegisterForm = () => {
       register(values).then((data) => {
         setError(data.error);
         setSuccess(data.success);
-        if (data.success || role === 'Client') {
-          route.push("/clientProfile")
-        } else {
-          route.push("/")
+        if (data.success) {
+          if (values.role === 'Client') {
+            route.push("/clientProfile");
+          } else if (values.role === 'Freelancer') {
+            route.push("/freelancerprofile");
+          } else {
+            route.push("/");
+          }
         }
       });
     });

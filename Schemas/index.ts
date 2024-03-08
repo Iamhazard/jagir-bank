@@ -43,6 +43,7 @@ export const LoginSchema = z.object({
   email: z.string().email({ message: "Email is required" }),
   password: z.string().min(1, { message: "password is required" }),
   code: z.optional(z.string()),
+  
 });
 
 export const RegisterSchema = z.object({
@@ -50,6 +51,7 @@ export const RegisterSchema = z.object({
   password: z.string().min(6, { message: "Minium 6 character required" }),
   name: z.string().min(1, { message: "Name  is required" }),
   lastName: z.string().min(1, { message: "Last Name  is required" }),
+  role: z.enum([UserRole.ADMIN, UserRole.Client, UserRole.Freelancer]),
 });
 export const ResetSchema = z.object({
   email: z.string().email({ message: "Email is required" }),

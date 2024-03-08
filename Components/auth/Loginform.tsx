@@ -26,9 +26,9 @@ import { login } from "@/actions/loginAction";
 
 const LoginForm = () => {
   const params = useSearchParams();
-  const callbackUrl = params.get("callbackUrl");
+  const callbackUrl = params?.get("callbackUrl");
   const urlError =
-    params.get("error") === "OAuthAccountNotLinked"
+    params?.get("error") === "OAuthAccountNotLinked"
       ? "Email already used by different providers!"
       : "";
   const [error, setError] = useState<string | undefined>("");

@@ -3,6 +3,7 @@
 
 import { LoginSchema } from "@/Schemas";
 import { signIn } from "@/auth";
+import { getUserRoleByEmail } from "@/data/role";
 import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmations";
 import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
 import { getUserByEmail } from "@/data/user";
@@ -10,13 +11,15 @@ import { db } from "@/lib/db";
 import { sendTwoFactorTokenEmail, sendVerificationEmail } from "@/lib/mail";
 import { generateTwoFactorToken, generateVerificationToken } from "@/lib/token";
 import { DEFAULT_LOGIN_REDIRECT } from "@/route";
+import { UserRole } from "@prisma/client";
 import { AuthError } from "next-auth";
 import * as z from "zod";
 
 
 export const login = async (
   values: z.infer<typeof LoginSchema>,
-  callbackUrl?: string | null
+  callbackUrl?: string | null,
+  role?:UserRole
 ) => {
   try {
     const validatedFields = LoginSchema.safeParse(values);
@@ -27,7 +30,10 @@ export const login = async (
    
 
     const { email, password, code } = validatedFields.data;
-
+    const existingRole= await getUserRoleByEmail(email)
+     if (!existingRole) {
+      return { error: "role does not exist!" };
+    }
     const existingUser = await getUserByEmail(email);
 
     if (!existingUser) {
@@ -100,6 +106,7 @@ export const login = async (
     try {
       await signIn("credentials", {
         email,
+        role:existingRole,
         password,
         redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
       });

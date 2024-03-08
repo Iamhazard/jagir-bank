@@ -4,6 +4,7 @@ import { LoginSchema } from "./Schemas";
 import { getUserByEmail } from "./data/user";
 import bcrypt from "bcryptjs";
 import Google from "next-auth/providers/google";
+import { getUserRoleByEmail } from "./data/role";
 
 export default {
   providers: [
@@ -14,10 +15,11 @@ export default {
     Credentials({
       async authorize(credentials) {
         const validatedFields = LoginSchema.safeParse(credentials);
-
+          
         if (validatedFields.success) {
           const { email, password } = validatedFields.data;
-
+             const role=getUserRoleByEmail(email);
+             if (!role) return null;
           const user = await getUserByEmail(email);
           if (!user || !user.password) return null;
 
