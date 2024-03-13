@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 
 
 
+
 interface IParams {
   jobId?: string;
 }
@@ -18,13 +19,14 @@ export async function POST(request:Request,{params}:{params:IParams}) {
      const body = await request.json();
      
       const existingApplication = await db.proposal.findFirst({
-      where: {
+    where: {
         jobId: jobId
-      }
-    });
-     if (existingApplication) {
-      return new NextResponse('You have already applied for this job', { status: 400 });
     }
+});
+
+if (existingApplication) {
+    return new NextResponse('You have already applied for this job', { status: 400 });
+}
 
     const {
 duration,

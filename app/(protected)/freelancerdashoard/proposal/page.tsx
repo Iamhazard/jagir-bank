@@ -1,21 +1,46 @@
-"use client"
+'use client'
 import React, { useEffect, useState } from 'react'
 import MaxWidthWrapper from '../../_components/maxwidthWrappers'
 import { Card } from '@/Components/ui/card'
-import { format } from 'date-fns'
 import Link from 'next/link'
-import { Proposalprops } from '../../freelancerdashoard/proposal/page'
 import axios from 'axios'
+import { format } from 'date-fns'
 
+export interface Proposalprops {
+    coverLetter: string;
+    duration: string;
+    estimatedAmount: string;
+    hourlyRate: string;
+    id: string;
+    image: string;
+    createdAt: string;
+    job: {
+        clientProfileId: string;
+        createdAt: string;
+        duration: string;
+        expertise: string;
+        fixed: string;
+        from: string;
+        id: string;
+        jobDescription: string;
+        post: string;
+        projectSize: string;
+        status: string;
+        to: string;
+        updatedAt: string;
+    };
+    jobId: string;
+    status: string;
+    userId: string;
+}
 
-
-const AllContracts = () => {
+const Page = () => {
     const [proposals, setProposals] = useState<Proposalprops[]>([]);
 
     useEffect(() => {
         const fetchProposals = async () => {
             try {
-                const response = await axios.get('/api/job/client');
+                const response = await axios.get('/api/job/jobapply');
                 const data = response.data;
                 setProposals(data);
             } catch (error) {
@@ -26,13 +51,14 @@ const AllContracts = () => {
         fetchProposals();
     }, []);
 
-    console.log({ proposals })
     return (
         <>
-            <h1 className='text-xl my-2 px-4 mx-auto text-Green font-semibold'>My Job Proposal</h1>
+            <h1 className='text-xl my-2 px-4 mx-auto text-Green font-semibold'>My Proposal</h1>
             <MaxWidthWrapper className='my-6'>
                 <h1 className="tex-2xl font-bold text-gray-700 px-2 py-2" id='contact'>Active proposal</h1>
-
+                <Card>
+                    <h1 className='py-2 px-2 text-xl font-semibold '>Offers (0)</h1>
+                </Card>
                 <Card className='mt-3'>
                     <h1 className='py-2 px-2 text-xl font-semibold '>Invitations to interview (0)</h1>
                 </Card>
@@ -40,8 +66,7 @@ const AllContracts = () => {
                     <h1 className='py-2 px-2 text-xl font-semibold '>Active proposals  (0)</h1>
                 </Card>
                 <Card className='mt-3'>
-                    <h1 className='py-2 px-2 text-xl font-semibold '>Offers Received  ({1})</h1>
-
+                    <h1 className='py-2 px-2 text-xl font-semibold '>Submitted proposals  ({proposals.length})</h1>
                     {proposals.map((proposal, index) => (
                         <div key={index} className='flex  flex-col sm:flex-row justify-between items-center pt-5  py-3'>
                             <div>
@@ -60,7 +85,7 @@ const AllContracts = () => {
                 </Card>
             </MaxWidthWrapper>
         </>
-    )
+    );
 }
 
-export default AllContracts
+export default Page;

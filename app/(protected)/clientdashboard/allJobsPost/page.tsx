@@ -7,6 +7,7 @@ import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { FiMapPin } from 'react-icons/fi'
 import { MdOutlineCircle } from 'react-icons/md'
+import MaxWidthWrapper from '../../_components/maxwidthWrappers'
 
 const AllPost = () => {
     const [clientData, setClientData] = useState<JobSheetProps>()
@@ -33,8 +34,9 @@ const AllPost = () => {
 
 
     return (
-        <div>
-            <div>
+        <MaxWidthWrapper>
+            <h1 className='text-2xl font-mono text-Green py-2 px-2'>All job post</h1>
+            <div className='py-2'>
 
                 {Array.isArray(clientData) && clientData.length > 0 ? (
                     clientData.map((client, index) => (
@@ -45,7 +47,7 @@ const AllPost = () => {
                             <small className="text-gray-400 ">Posted {""}
                                 Posted {format(new Date(client.createdAt), 'MMM dd, yyyy')}
                             </small>
-                            <Link href="#">
+                            <Link href={`/allJobsPost/${userId}`}>
                                 <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
                                     {client.post}
 
@@ -104,7 +106,7 @@ const AllPost = () => {
 
 
             </div>
-        </div>
+        </MaxWidthWrapper>
     )
 }
 

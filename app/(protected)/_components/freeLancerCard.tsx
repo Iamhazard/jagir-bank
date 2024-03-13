@@ -8,27 +8,25 @@ import { cn } from '@/lib/utils'
 const FreeLancerCard = () => {
     return (
         <>
-            <div className=" py-10 px-6 flex justify-between">
-                <div className="flex">
-                    <h1 className="text-4xl items-center font-medium ">Your workspace</h1>
-                    <div className=" flex items-center px-4 gap-3">
-                        <Link href="/clientdashboard/allPost">
-                            <Button variant='link' className="text-Green">My Reports</Button>
-                        </Link>
-
-                        <Separator orientation="vertical" />
-                        <Link href='/'>
-                            <Button variant="link" className="text-Green">My Status</Button>
-                        </Link>
-
-
-
-                    </div>
-
+            <div className="py-10 px-6 flex flex-col sm:flex-row justify-between items-center">
+                <h1 className="text-4xl font-medium mb-4 sm:mb-0">Your workspace</h1>
+                <div className="flex gap-3">
+                    <Link href="/freelancerdashoard/allPost">
+                        <Button variant='link' className="text-Green">My Reports</Button>
+                    </Link>
+                    <Separator orientation="vertical" />
+                    <Link href='/freelancerdashoard/reports'>
+                        <Button variant="link" className="text-Green">My Status</Button>
+                    </Link>
+                    <Separator orientation="vertical" />
+                    <Link href='/freelancerdashoard/proposal'>
+                        <Button variant="link" className="text-Green">My Proposal</Button>
+                    </Link>
                 </div>
-                <Button variant='btn_green'>find  a job</Button>
+                <Button variant='btn_green' className="mt-4 sm:mt-0">Find a job</Button>
             </div>
-            <section className="border-t border-slate-400 bg-emerald-200 px-6 py-2">
+
+            <Card className="border-t border-slate-400 bg-emerald-200 px-6 py-2 mx-auto">
 
                 <h1 className='text-2xl font-medium pb-3'>
                     My Jobs
@@ -37,7 +35,7 @@ const FreeLancerCard = () => {
                     $0.00
                 </p>
 
-            </section>
+            </Card>
             <div className="px-6 py-5">
                 <h2 className="text-2xl font-medium pb-3">Active contracts</h2>
                 <div className="flex gap-4 space-x-5 justify-center items-center ">

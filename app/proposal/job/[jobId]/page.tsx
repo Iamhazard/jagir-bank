@@ -14,6 +14,8 @@ import { ProposalForms } from "@/@types/enum";
 import { CldUploadButton } from "next-cloudinary";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 interface IParams {
     jobId?: string;
@@ -28,6 +30,7 @@ interface FormData {
 const ProposalForm = ({ params }: { params: IParams }) => {
     const fixed = 1;
     const [job, setJob] = useState<ProposalForms | null>(null);
+    const routes = useRouter()
     const [loading, setLoading] = useState(true);
     const jobId = params.jobId;
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
@@ -46,14 +49,13 @@ const ProposalForm = ({ params }: { params: IParams }) => {
         try {
             const fetchJobs = async () => {
                 try {
-                    const response = await fetch(`/api/jobapply/${jobId}`);
+                    const response = await axios.get(`/api/job/getjob/${jobId}`)
+                    const data = response.data
+
                     //console.log("response", response)
-                    if (!response.ok) {
-                        throw new Error("Failed to fetch jobs");
-                    }
-                    const data = await response.json();
                     setJob(data);
                     setLoading(false);
+
                 } catch (error) {
                     console.log(error);
                     setLoading(false);
@@ -64,7 +66,10 @@ const ProposalForm = ({ params }: { params: IParams }) => {
         } catch (error) {
             console.log(error);
         }
-    }, [jobId]);
+    }, [jobId,])
+
+
+
 
     const handleUpload = (result: any) => {
 
@@ -111,9 +116,23 @@ const ProposalForm = ({ params }: { params: IParams }) => {
                         },
                         body: JSON.stringify(data),
                     })
+
+                    if (!response.ok) {
+                        toast.success("Proposalsubmited")
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+
+                    }
+
+                    if (response.ok) {
+
+                        toast.success("Job submitted successfully");
+                        routes.push('/jobs/bestmatches')
+                    }
+
                     console.log("response", { response })
                     setLoading(false);
                 } catch (error) {
+                    toast.error('Something went wrong! Please try again later.');
                     console.log(error);
                     setLoading(false);
                 }

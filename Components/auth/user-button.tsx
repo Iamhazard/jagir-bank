@@ -14,10 +14,11 @@ import { LogoutButton } from "./logout-button";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import Link from "next/link";
 import { SettingsIcon } from "lucide-react";
+import { IconDropdown } from "react-day-picker";
 
 export const UserButton = () => {
   const user = useCurrentUser();
-
+  //console.log({ user })
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -29,6 +30,10 @@ export const UserButton = () => {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-40" align="end">
+        <DropdownMenuItem>
+          <IconDropdown className="h-4 w-4 mr-2" />
+          {user?.role || 'Client' || 'FreeLancee'} profile
+        </DropdownMenuItem>
         <LogoutButton>
           <DropdownMenuItem>
             <ExitIcon className="h-4 w-4 mr-2" />

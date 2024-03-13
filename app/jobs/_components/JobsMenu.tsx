@@ -48,12 +48,12 @@ export function JobsMenu() {
 
 
                             <ListItem
-                                href="/"
+                                href="freelancerdashoard/proposal"
                                 title="Proposal" />
 
 
                             <ListItem
-                                href="/"
+                                href="/settings"
                                 title="Profile" />
 
                             <ListItem
@@ -75,7 +75,7 @@ export function JobsMenu() {
                             <ListItem href="" title="Articles & blog posts">
                                 Post Articles & blog posts .
                             </ListItem>
-                            <ListItem href="/docs/primitives/typography" title="SEO">
+                            <ListItem href="/" title="SEO">
                                 Find a job related to SEO.
                             </ListItem>
 
@@ -111,7 +111,7 @@ export function JobsMenu() {
                     </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                    <Link href="/users" legacyBehavior passHref>
+                    <Link href="/messages" legacyBehavior passHref>
                         <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                             Messages
                         </NavigationMenuLink>

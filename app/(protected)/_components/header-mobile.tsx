@@ -45,9 +45,8 @@ const HeaderMobile = () => {
       initial={false}
       animate={isOpen ? "open" : "closed"}
       custom={height}
-      className={`fixed inset-0 z-50 w-full md:hidden ${
-        isOpen ? "" : "pointer-events-none"
-      }`}
+      className={`fixed inset-0 z-50 w-full md:hidden ${isOpen ? "" : "pointer-events-none"
+        }`}
       ref={containerRef}>
       <motion.div
         className="absolute inset-0 right-0 w-full bg-white"
@@ -68,9 +67,8 @@ const HeaderMobile = () => {
                   <Link
                     href={item.path}
                     onClick={() => toggleOpen()}
-                    className={`flex w-full text-2xl ${
-                      item.path === pathname ? "font-bold" : ""
-                    }`}>
+                    className={`flex w-full text-2xl ${item.path === pathname ? "font-bold" : ""
+                      }`}>
                     {item.title}
                   </Link>
                 </MenuItem>
@@ -158,7 +156,7 @@ const MenuItemWithSubMenu: React.FC<MenuItemWithSubMenuProps> = ({
           onClick={() => setSubMenuOpen(!subMenuOpen)}>
           <div className="flex flex-row justify-between w-full items-center">
             <span
-              className={`${pathname.includes(item.path) ? "font-bold" : ""}`}>
+              className={`${pathname?.includes(item.path) ? "font-bold" : ""}`}>
               {item.title}
             </span>
             <div className={`${subMenuOpen && "rotate-180"}`}>
@@ -176,9 +174,8 @@ const MenuItemWithSubMenu: React.FC<MenuItemWithSubMenuProps> = ({
                   <Link
                     href={subItem.path}
                     onClick={() => toggleOpen()}
-                    className={` ${
-                      subItem.path === pathname ? "font-bold" : ""
-                    }`}>
+                    className={` ${subItem.path === pathname ? "font-bold" : ""
+                      }`}>
                     {subItem.title}
                   </Link>
                 </MenuItem>

@@ -52,7 +52,7 @@ const RegisterForm = () => {
           if (values.role === 'Client') {
             route.push("/clientProfile");
           } else if (values.role === 'Freelancer') {
-            route.push("/freelancerprofile");
+            route.push("/freelancerProfile");
           } else {
             route.push("/");
           }

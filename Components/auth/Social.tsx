@@ -9,7 +9,7 @@ import { useSearchParams } from "next/navigation";
 
 export const Social = () => {
   const params = useSearchParams();
-  const callbackUrl = params.get("callbackUrl");
+  const callbackUrl = params?.get("callbackUrl");
   const onClick = (provider: "google" | "apple") => {
     signIn(provider, {
       callbackUrl: callbackUrl || DEFAULT_LOGIN_REDIRECT,
