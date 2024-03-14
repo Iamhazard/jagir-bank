@@ -71,6 +71,11 @@ const ProposalForm = ({ params }: { params: IParams }) => {
 
 
 
+    //console.log({ job })
+    const clientProfileId = job?.clientProfileId
+    //console.log(clientProfileId)
+
+
     const handleUpload = (result: any) => {
 
         try {
@@ -99,6 +104,7 @@ const ProposalForm = ({ params }: { params: IParams }) => {
     const onSubmit = (data: any) => {
         data.estimatedAmount = estimatedAmount.toFixed(2);
         data.jobId = jobId;
+        data.clientProfileId = clientProfileId;
 
 
         if (imageUrl) {
@@ -194,6 +200,7 @@ const ProposalForm = ({ params }: { params: IParams }) => {
                                 </div>
                                 <div className="w-[400px] px-6">
                                     <h1 className="mr-6">{job.expertise}</h1>
+
                                     <h1>
                                         {`Hourly:$${job.from}-$${job.to}-Fixed:$${job.fixed}`}{" "}
                                     </h1>

@@ -55,6 +55,7 @@ export type FormData = {
     id: string,
     title: string,
     country: string,
+    clientProfileId: string,
     jobdescription?: string;
     jobsbudget?: string;
     duration: string,

@@ -16,12 +16,13 @@ export async function GET(
 if (!userId) {
       return new Response('UID is missing', { status: 400 });
     }
-    const clientProposal = await db.clientProfile.findMany({
-   where: {
-        userId,
-        },
+    const clientProposal = await db.proposal.findMany({
      include: {
-       Jobs:true
+      job:{
+        select: { post : true} 
+      },
+       
+    
        
       },
       

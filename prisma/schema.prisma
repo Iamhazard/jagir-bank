@@ -121,13 +121,14 @@ model FreelancerProfile {
 }
 
 model ClientProfile {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String   @db.ObjectId
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String     @db.ObjectId
   country   String?
   Jobs      Job[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Proposals Proposal[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId])
 }
@@ -168,7 +169,9 @@ model Proposal {
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
   status          ProposalStatus
-  job              Job            @relation(fields: [jobId], references: [id])
+  job             Job            @relation(fields: [jobId], references: [id])
+  clientProfile   ClientProfile  @relation(fields: [clientProfileId], references: [id])
+  clientProfileId String         @db.ObjectId
 }
 
 enum ProposalStatus {

@@ -1,23 +1,23 @@
-
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 
-
-const getCurrentUser = async () => {
+const getCurrentJobId = async () => {
   try {
     const session = await auth();
 
-    if (!session?.user?.email) {
+    if (!session?.user?.id) {
       return null;
     }
 
-    const currentUser = await db.user.findUnique({
+    const currentUser = await db.clientProfile.findUnique({
       where: {
-        email: session.user.email as string
+        id: session.user.id as string
+      },include:{
+        
       }
     });
 
-    //console.log("current user",{currentUser})
+    console.log("current clientProfile",{currentUser})
 
     if (!currentUser) {
       return null;
@@ -30,4 +30,4 @@ const getCurrentUser = async () => {
   }
 };
 
-export default getCurrentUser;
+export default getCurrentJobId;

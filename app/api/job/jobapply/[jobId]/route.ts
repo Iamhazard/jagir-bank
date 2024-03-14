@@ -34,6 +34,7 @@ estimatedAmount,
 imageUrl,
 hourlyRate,
 message,
+clientProfileId,
 }=body;
 
 console.log({body})
@@ -53,6 +54,7 @@ const proposal=await db.proposal.create({
         estimatedAmount,
          status: 'PENDING',
          image:imageUrl,
+        clientProfileId,
          
     }
     
