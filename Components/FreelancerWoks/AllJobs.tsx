@@ -12,7 +12,7 @@ const Alljobs = async () => {
         <div>
             {alljobs.map((alljob) => (
 
-                <Jobs key={alljob.id} id={alljob?.id} title={alljob?.post || ""} jobsbudget={''} jobsdescription={''} Place={''} />
+                <Jobs key={alljob.id} id={alljob?.id} title={alljob?.post || ""} jobsdescription={''} Place={''} from={''} country={''} to={''} duration={''} expertise={''} projectSize={''} fixed={''} createdAt={''} skills={[]} />
 
             ))}
 

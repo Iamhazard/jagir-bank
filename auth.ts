@@ -1,11 +1,13 @@
 import NextAuth from "next-auth";
 import authConfig from "./auth.config";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+
 import { UserRole } from "@prisma/client";
 import { db } from "./lib/db";
 import { getUserById } from "./data/user";
 import { getTwoFactorConfirmationByUserId } from "./data/two-factor-confirmations";
 import { getAccountByUserId } from "./data/account";
+
 
 export const {
   handlers: { GET, POST },
@@ -88,7 +90,7 @@ export const {
       return token;
     },
   },
-  adapter: PrismaAdapter(db),
+
   session: { strategy: "jwt" },
   ...authConfig,
 });

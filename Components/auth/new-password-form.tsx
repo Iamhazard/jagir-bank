@@ -36,7 +36,7 @@ const NewPasswordForm = () => {
     },
   });
 
-  const token = searchParams.get("token");
+  const token = searchParams?.get("token");
   const onSubmit = (values: z.infer<typeof NewPasswordSchema>) => {
     setError("");
     setSuccess("");

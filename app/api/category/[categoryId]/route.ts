@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 interface IParams {
   categoryId?: string;
 }
-export  async function getCategoryById(req: NextRequest, res: NextResponse,{params}:{params:IParams}) {
+export  async function GET(req: NextRequest,{params}:{params:IParams}) {
   const { categoryId } =params;
   if (req.method === "GET") {
     try {

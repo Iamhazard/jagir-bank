@@ -38,7 +38,7 @@ export function JobsMenu() {
                     <NavigationMenuContent>
                         <ul className="col gap-2  md:w-[150px] lg:w-[200px] lg:grid-cols-[.75fr_1fr]">
 
-                            <ListItem href="/" title="Find work" />
+                            <ListItem href="/jobs/bestmatches" title="Find work" />
 
                             <ListItem href="" title=" Yours Network" />
 
@@ -48,7 +48,7 @@ export function JobsMenu() {
 
 
                             <ListItem
-                                href="freelancerdashoard/proposal"
+                                href="/freelancerdashoard/proposal"
                                 title="Proposal" />
 
 

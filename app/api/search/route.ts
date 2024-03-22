@@ -1,6 +1,6 @@
 
 import { db } from "@/lib/db";
-import { NextApiRequest } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 
 import { NextResponse } from "next/server";
 
@@ -10,34 +10,33 @@ export interface IQuery {
 }
 
 
+
+
 export async function GET(
-  request: NextApiRequest,
+  request: Request,
+  
 ) {
   try {
-    const { q } = request.query as IQuery;
+      const body = await request.json();
+    const { q } = body;
+    console.log({q})
      const searchResults = await db.job.findMany({
       where: {
-        OR: [
-          { post: { contains: q as string, mode: 'insensitive' } }, 
-          { jobDescription: { contains: q as string, mode: 'insensitive' } }, 
-        ],
-        SkillsOnJobs: {
+        SkillsOnJobs:{
           some: {
-            skill: {
-              title: { contains: q || '', mode: 'insensitive' }, 
-            },
-          },
-        },
+         skill:{
+             title: { contains: q || "", mode: 'insensitive' },
+         }
+          }
+        }
+
       },
-      include: {
-        SkillsOnJobs: {
-          include: {
-            skill: true,
-          },
-        },
-        clientProfile: true, 
-      },
-    });
+       include: {
+        SkillsOnJobs: true,
+        clientProfile: true 
+      }
+       
+      })
 
     return NextResponse.json(searchResults)
   } catch (error) {

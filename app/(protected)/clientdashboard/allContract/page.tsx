@@ -6,6 +6,7 @@ import { format } from 'date-fns'
 import Link from 'next/link'
 //import { Proposalprops } from '../../freelancerdashoard/proposal/page'
 import axios from 'axios'
+import { Button } from '@/Components/ui/button'
 
 interface ProposalProps {
     clientProfileId: string;
@@ -42,7 +43,6 @@ export interface Contractprops {
         from: string;
         id: string;
         jobDescription: string;
-        userId: string;
         post: string;
         projectSize: string;
         status: string;
@@ -50,10 +50,6 @@ export interface Contractprops {
         updatedAt: string;
 
     }
-
-
-
-
 }
 
 const AllContracts = () => {
@@ -69,7 +65,6 @@ const AllContracts = () => {
                 console.log(error);
             }
         };
-
         fetchProposals();
     }, []);
 
@@ -98,20 +93,31 @@ const AllContracts = () => {
                                     <small className='block sm:inline-block px-2'>
                                         Initiated: {format(new Date(proposal.createdAt), "MMM d, yyyy")}
                                     </small>
-                                    <small className='block sm:inline-block px-2'>
-                                        Job Id: {proposal.jobId}
-                                    </small>
+                                </div>
+                                <div className='flex-col'>
+                                    <div>
+                                        <Link href={`/freelancerdashoard/proposal/${proposal.id}`} className=''>
+                                            <h1 className=" sm:text-2xl font-medium inline-block border-b border-transparent hover:border-green-500 text-gray-700 hover:text-Green">
+                                                {proposal.job.post}
+                                            </h1>
+                                        </Link>
+                                    </div>
+                                    <div>
 
+                                        <small className='block sm:inline-block px-2'>
+                                            Job Id: {proposal.jobId}
+                                        </small>
+                                        <small className='px-2 text-gray-600'>UserId:{proposal.userId}</small>
+                                    </div>
 
                                 </div>
-                                <Link href={`/freelancerdashoard/proposal/${proposal.id}`} className=''>
-                                    <h1 className="text-xl sm:text-2xl font-medium inline-block border-b border-transparent hover:border-green-500 text-gray-700 hover:text-Green">
+                                <div className='flex gap-2' >
+                                    <Button variant='outline' size='sm' className='text-gray-600 '>Interview</Button>
+                                    <Button variant='outline' size='sm' className=' text-gray-600'>Reject</Button>
+                                </div>
 
-                                        {proposal.job.post}
-                                    </h1>
-                                </Link>
-                                <small className='px-2 text-gray-600'>Frontend Devs</small>
-                                <small className='px-2 text-gray-600'>UserId:{getproposals.userId}</small>
+
+
                             </div>
                         ))}
                     </>

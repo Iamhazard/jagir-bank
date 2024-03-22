@@ -10,8 +10,8 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@auth/mongodb-adapter": "^2.4.0",
-    "@auth/prisma-adapter": "^1.4.0",
+    "@auth/mongodb-adapter": "^2.5.0",
+    "@auth/prisma-adapter": "^1.5.0",
     "@auth/upstash-redis-adapter": "^1.4.0",
     "@headlessui/react": "^1.7.18",
     "@hookform/resolvers": "^3.3.4",
@@ -54,7 +54,7 @@
     "framer-motion": "^11.0.3",
     "lodash": "^4.17.21",
     "lucide-react": "^0.309.0",
-    "mongodb": "^6.3.0",
+    "mongodb": "^6.5.0",
     "multer": "^1.4.5-lts.1",
     "nanoid": "^5.0.4",
     "next": "14.0.4",
