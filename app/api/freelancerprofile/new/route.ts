@@ -1,7 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import { db } from "@/lib/db";
 import { fileSizeFormatter, upload } from "@/lib/multer";
-import { NextApiResponse } from "next";
+
 import { NextRequest, NextResponse } from 'next/server';
 
 interface MulterFile {
