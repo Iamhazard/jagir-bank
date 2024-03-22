@@ -54,34 +54,35 @@ const ProposalDetails = ({ params }: { params: IParams }) => {
     return (
         <MaxWidthWrapper>
             <Card className="py-3  mt-6">
-                {proposals && proposals.map((proposal, index) => (
-                    <div key={index} className="px-6 space-y-4">
-                        <h1 className="font-bold text-xl sm:text-2xl">Job Details</h1>
-                        <div className="flex flex-col sm:flex-row">
-                            <div className="flex-1 space-y-2 sm:mr-4">
-                                <h2>{proposal.job.post}</h2>
-                                <small className="px-4 line-clamp-4">{proposal.job.jobDescription}</small>
-                                <div className="flex gap-0.5">
-                                    <Badge variant="success" className="p-2">
-                                        Front-End Development
-                                    </Badge>
-                                    <Badge variant="success" className="p-2">
-                                        Next.js
-                                    </Badge>
+                {proposals
+                    && proposals.map((proposal, index) => (
+                        <div key={index} className="px-6 space-y-4">
+                            <h1 className="font-bold text-xl sm:text-2xl">Job Details</h1>
+                            <div className="flex flex-col sm:flex-row">
+                                <div className="flex-1 space-y-2 sm:mr-4">
+                                    <h2>{proposal.job.post}</h2>
+                                    <small className="px-4 line-clamp-4">{proposal.job.jobDescription}</small>
+                                    <div className="flex gap-0.5">
+                                        <Badge variant="success" className="p-2">
+                                            Front-End Development
+                                        </Badge>
+                                        <Badge variant="success" className="p-2">
+                                            Next.js
+                                        </Badge>
+                                    </div>
+                                    <p className="py-4">{/* Additional details */}</p>
                                 </div>
-                                <p className="py-4">{/* Additional details */}</p>
-                            </div>
-                            <div className="sm:hidden">
-                                <Separator orientation="vertical" />
-                            </div>
-                            <div className="w-full sm:w-[400px] px-6 mt-4 sm:mt-0">
-                                <h1 className="mr-6">{proposal.job.expertise}</h1>
-                                <h1>{`Hourly: $${proposal.job.from}-$${proposal.job.to} - Fixed: $${proposal.job.fixed}`}</h1>
-                                <h1>{proposal.job.duration}</h1>
+                                <div className="sm:hidden">
+                                    <Separator orientation="vertical" />
+                                </div>
+                                <div className="w-full sm:w-[400px] px-6 mt-4 sm:mt-0">
+                                    <h1 className="mr-6">{proposal.job.expertise}</h1>
+                                    <h1>{`Hourly: $${proposal.job.from}-$${proposal.job.to} - Fixed: $${proposal.job.fixed}`}</h1>
+                                    <h1>{proposal.job.duration}</h1>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
                 <h1 className='px-6 font-mono text-gray-900 hover:text-Green border-b border-transparent hover:border-green-500'>
                     <Link href={`/jobs/bestmatches/${jobId}`}>View Job Posting</Link>
                 </h1>

@@ -16,11 +16,15 @@ export async function POST(request:Request,{params}:{params:IParams}) {
       const currentUser = await getCurrentUser();
     const userId= currentUser?.id
      const jobId=params.jobId
+     
      const body = await request.json();
      
       const existingApplication = await db.proposal.findFirst({
     where: {
-        jobId: jobId
+        jobId: jobId,
+        
+        userId:userId,
+      
     }
 });
 

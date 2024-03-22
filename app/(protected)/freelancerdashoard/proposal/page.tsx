@@ -50,7 +50,7 @@ const Page = () => {
 
         fetchProposals();
     }, []);
-
+    console.log(proposals)
     return (
         <>
             <h1 className='text-xl my-2 px-4 mx-auto text-Green font-semibold'>My Proposal</h1>
