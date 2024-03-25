@@ -11,7 +11,7 @@ const BestmatchesPage = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        //const response = await fetch(`/api/skill/${id}`);
+
         const response = await fetch(`/api/job`);
         if (!response.ok) {
           throw new Error('Failed to fetch jobs');

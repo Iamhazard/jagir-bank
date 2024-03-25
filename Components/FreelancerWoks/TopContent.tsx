@@ -1,35 +1,51 @@
-import { useSession } from "next-auth/react";
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import SearchedJob from "./SearchedJob"; // Import the SearchedJob component
 
 const TopContent = () => {
   const { data: session } = useSession();
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
-
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      handleSearch();
+    }, 300);
 
-    const handleSearch = async () => {
-      try {
-        const response = await fetch(`/api/search/${searchTerm}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch search results');
-        }
-        const data = await response.json();
-        console.log({ data })
-        setSearchResults(data);
-      } catch (error) {
-        console.error('Error fetching search results:', error);
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm]);
 
+  const handleSearch = async () => {
+    if (!searchTerm) {
+      setSearchResults([]);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Fetch jobs data
+      const jobsResponse = await fetch('/api/job');
+      if (!jobsResponse.ok) {
+        throw new Error('Failed to fetch job');
       }
-    };
-    handleSearch()
-  }, [searchTerm])
+      const jobsData = await jobsResponse.json();
 
-  const onsearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let text = e.target.value
-    console.log(text)
-    setSearchTerm(text);
+      const filteredJobs = jobsData.filter((job: any) =>
+        job.post.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+      setSearchResults(filteredJobs);
+    } catch (error) {
+      console.error('Error fetching jobs:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
   };
 
   return (
@@ -44,18 +60,38 @@ const TopContent = () => {
             className="w-full p-2  ps-10 text-sm text-gray-900 border rounded-3xl border-gray-300  bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="Search for jobs..."
             required
-            onChange={onsearch}
+            onChange={onSearchChange}
             value={searchTerm}
           />
-
         </form>
       </div>
-      <ul>
-        {searchResults.map((result) => (
-          <li key={result.id}>{result.post}</li>
-
-        ))}
-      </ul>
+      {loading && <p>Loading...</p>}
+      {searchResults.length > 0 && (
+        <>
+          <h1 className="text-2xl font-serif font-semibold py-4">
+            Search Results
+          </h1>
+          <div>
+            {searchResults.map((result) => (
+              <SearchedJob
+                key={result.id}
+                id={result.id}
+                title={result.post}
+                jobdescription={result.jobDescription}
+                from={result.from}
+                to={result.to}
+                duration={result.duration}
+                expertise={result.expertise}
+                projectSize={result.projectSize}
+                fixed={result.fixed}
+                skills={result.skills}
+                createdAt={result.createdAt}
+                country={result.country}
+              />
+            ))}
+          </div>
+        </>
+      )}
       <h1 className="text-2xl font-serif font-semibold py-4">
         Jobs recommended for you
       </h1>

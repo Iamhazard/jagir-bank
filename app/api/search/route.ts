@@ -22,21 +22,14 @@ export async function GET(
     console.log({q})
      const searchResults = await db.job.findMany({
       where: {
-        SkillsOnJobs:{
-          some: {
-         skill:{
-             title: { contains: q || "", mode: 'insensitive' },
-         }
+        post:{
+          contains: q || "",
+         
           }
         }
 
-      },
-       include: {
-        SkillsOnJobs: true,
-        clientProfile: true 
-      }
+     })
        
-      })
 
     return NextResponse.json(searchResults)
   } catch (error) {

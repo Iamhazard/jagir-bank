@@ -1,17 +1,22 @@
 "use client";
-import { useState } from "react";
+import getUsers from "@/actions/getUser";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const SearchFrom = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string>("project");
+  const [searchResults, setSearchResults] = useState([]);
+  const [initialData, setInitialData] = useState([]);
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
   };
 
-  const handleSearch = () => {
-    console.log(`Searching for ${searchQuery} in ${selectedCategory}`);
-  };
+
+
+
+
 
   return (
     <div className="flex">
@@ -21,13 +26,14 @@ const SearchFrom = () => {
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+
           placeholder="Search.."
         />
         <div className="absolute right-2 top-2 flex items-center">
           <select
             className="inline-flex px-1 rounded-2xl py-1  border  border-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
             onChange={(e) => handleCategoryChange(e.target.value)}
-            onClick={handleSearch}
+
             value={selectedCategory}>
             <option value="project">Project</option>
             <option value="talent">Talent</option>

@@ -52,8 +52,7 @@ export interface JobSheetProps {
 
 const JobSheet: React.FC<JobSheetProps> = ({ title, jobdescription, from, to, Place, fixed, duration, expertise, projectSize, id, skills, createdAt, country }: JobSheetProps) => {
     const [showMore, setShowMore] = useState(false);
-    // const [clientdata, setClientData] = useState<JobSheetProps[]>([]);
-    // const [loading, setLoading] = useState(true)
+
 
 
 

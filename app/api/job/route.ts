@@ -26,7 +26,22 @@ export async function GET(
       const  {SkillsOnJobs,...rest}= item;
       return{...rest, skills : SkillsOnJobs.map((skillsOnJob)=>skillsOnJob.skill)}
     })
-    return NextResponse.json(jobs)
+ const currentDate = new Date();
+    const oneMonthAgo = new Date(currentDate.getTime() - 30 * 24 * 60 * 60 * 1000); 
+    const filteredJobs = jobs.filter((job) => {
+      const jobDate = new Date(job.createdAt);
+      return jobDate >= oneMonthAgo;
+    });
+
+    // Sort filtered jobs based on createdAt date in descending order
+    const sortedJobs = filteredJobs.sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return dateB - dateA;
+    });
+
+    return NextResponse.json(sortedJobs);
+    //return NextResponse.json(jobs)
   } catch (error) {
     console.error(error)
     return new Response("Method Not Allowed", { status: 405 });
