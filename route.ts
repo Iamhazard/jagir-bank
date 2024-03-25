@@ -24,6 +24,9 @@ export const adminRoutes = ["/dashboard/users"];
 export const clientRoutes = ["/clientProfile"];
 export const dashboardRoutes= ["/dashboard"];
 export const freeLancerRoutes= ["/freeLancerProfile"];
+export const freelancerdahboard= ["/freelancerdashoard"];
+export const clientdashboard= ["/clientdashboard"];
+
 export const jobRoutes= ["/jobs/bestmatches"];
 
 /**
