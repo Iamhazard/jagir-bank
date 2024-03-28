@@ -1,4 +1,5 @@
-import React from "react";
+'use client'
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -10,11 +11,49 @@ import {
 } from "../../ui/table";
 import { Card } from "@/Components/ui/card";
 import { PrismaClient } from "@prisma/client";
+
+import UserDelete from "./UserDelete";
+import axios from "axios";
+import { User } from "@/@types/enum";
+
 const prisma = new PrismaClient();
 
-const UsersTable = async () => {
-  const users = await prisma.user.findMany();
+const UsersTable = () => {
 
+  const [users, setUsers] = useState<User[]>([]);
+  const [isDeleting, setIsDeleting] = useState(false);
+  console.log({ users })
+
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get(`/api/users`);
+        const fetchedUsers: User[] = response.data;
+        setUsers(fetchedUsers);
+        //console.log("Fetched users:", fetchedUsers);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  const handleDeleteUser = async (userId: string) => {
+    try {
+      setIsDeleting(true);
+
+      const response = await axios.delete(`/api/users/${userId}`);
+      console.log("User deleted:", response.data);
+      setUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
+
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
   return (
     <Card className="w-[600px]  shadow-md my-6">
       <Table>
@@ -39,7 +78,7 @@ const UsersTable = async () => {
                 <TableCell>
                   {" "}
                   {user.emailVerified
-                    ? user.emailVerified.toDateString()
+                    ? new Date(user.emailVerified).toDateString()
                     : "Not Verified"}
                 </TableCell>
                 <TableCell className=" items-center">
@@ -48,6 +87,8 @@ const UsersTable = async () => {
                     : "Not enabled"}
                 </TableCell>
                 <TableCell className="text-right">{user.role}</TableCell>
+                <TableCell className="text-right">   <UserDelete userId={user.id} onDelete={() => handleDeleteUser(user.id)} /></TableCell>
+
               </TableRow>
             ))}
         </TableBody>

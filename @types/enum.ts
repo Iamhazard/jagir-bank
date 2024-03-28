@@ -1,6 +1,6 @@
 import { FieldElement, UseFormRegister } from "react-hook-form";
 
-import {  Conversation, Message, User } from "@prisma/client";
+import {  Account, ClientProfile, Conversation, FreelancerProfile, Message, UserRole } from "@prisma/client";
 
 export type FullMessageType = Message & {
   sender: User, 
@@ -50,6 +50,28 @@ export type FormData = {
   | "skill"
  
   
+export interface User {
+  id: string;
+  name?: string | null;
+  lastName?: string | null;
+  email?: string | null;
+ emailVerified?: Date | null;
+  image?: string | null;
+  password?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  role: UserRole;
+  accounts?: Account[];
+  isTwoFactorEnabled: boolean;
+  twoFactorConfirmation?: boolean | null;
+  profile?: FreelancerProfile[];
+  clientProfile?: ClientProfile[];
+  conversationIds?: string[];
+  conversations?: Conversation[];
+ seenMessageIds?: string[];
+  seenMessages?: Message[];
+  messages?: Message[];
+}
 
   export type ProposalForms={
     id: string,
