@@ -36,7 +36,7 @@ const Category = () => {
   ]);
   const imageLink: ImageLink[] = [
     {
-      href: "/",
+      href: "/jobs/bestmatches",
       k: "work",
       label: "Find a Job and Hire a pro",
       btn: "Talent MarketPlace",

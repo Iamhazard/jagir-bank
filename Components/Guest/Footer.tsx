@@ -67,7 +67,7 @@ const Footer: React.FC = () => {
         {/* copyright */}
         <div className=" mx-auto">
           <h4 className=" text-sm">&copy; 2023 jagirBank </h4>
-          <h5 className="text-sm text-gray-300">Cloned by Hazard</h5>
+          <h5 className="text-sm text-gray-300">Cloned by JagirBank</h5>
         </div>
       </div>
     </div>

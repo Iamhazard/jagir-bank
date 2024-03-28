@@ -57,14 +57,17 @@ const LoginForm = () => {
           if (data?.success) {
             form.reset();
             setSuccess(data.success);
+
           }
           if (data?.twoFactor) {
             setShowTwoFactor(true);
           }
+
         })
         .catch(() => setError("Something went wrong"));
     });
   };
+  // console.log({ success })
   return (
     <CardWrapper
       headerLabel="Welcome Back"

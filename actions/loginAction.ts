@@ -30,6 +30,7 @@ export const login = async (
    
 
     const { email, password, code } = validatedFields.data;
+
     const existingRole= await getUserRoleByEmail(email)
      if (!existingRole) {
       return { error: "role does not exist!" };
@@ -108,7 +109,7 @@ export const login = async (
         email,
         role:existingRole,
         password,
-        redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
+        redirectTo: callbackUrl || getRedirectUrl(existingRole) || DEFAULT_LOGIN_REDIRECT,
       });
     } catch (error) {
       if (error instanceof AuthError) {
@@ -124,5 +125,17 @@ export const login = async (
     }
   } catch (error) {
     throw error;
+  }
+};
+const getRedirectUrl = (role: UserRole): string | undefined => {
+  switch (role) {
+     case "ADMIN":
+      return "/dashboard/users"; 
+    case "Client":
+      return "/clientdashboard"; 
+    case "Freelancer":
+      return "/freelancerdashoard";
+    default:
+      return undefined; 
   }
 };

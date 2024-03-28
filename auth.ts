@@ -54,7 +54,7 @@ export const {
     },
 
     async session(params) {
-      const { session, token } = params as any;
+      const { session, token} = params as any;
       // console.log({ sessionToken: token });
       if (token.sub && session.user) {
         session.user.id = token.sub;
@@ -70,6 +70,7 @@ export const {
       if (session.user) {
         session.user.name = token.name;
         session.user.email = token.email;
+        session.user.role = token.role;
         session.user.isOAuth = token.isOAuth as boolean;
       }
       return session;

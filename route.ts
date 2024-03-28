@@ -42,5 +42,6 @@ export const apiAuthPrefix = "/api/auth";
  */
 
 export const DEFAULT_LOGIN_REDIRECT = "/jobs/bestmatches";
+//export const DEFAULT_CLIENT_REDIRECT = "/clientdashboard";
 export const DEFAULT_LOGIN = "/login";
 

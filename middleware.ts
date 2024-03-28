@@ -1,8 +1,9 @@
 import authConfig from "./auth.config";
 import NextAuth from "next-auth"
 import { UserRole } from "@prisma/client";
+
+
 import {
-  DEFAULT_LOGIN,
   DEFAULT_LOGIN_REDIRECT,
   apiAuthPrefix,
   authRoutes,
@@ -14,20 +15,19 @@ import {
   dashboardRoutes
 } from "@/route";
 
+
+
 const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
   const { nextUrl } = req;
-  const isLoggedIn = !!req.auth;
-  // console.log("Route",req.nextUrl.pathname)
-  //   console.log("Login state",isLoggedIn)
-  // req.auth
 
+  const isLoggedIn = !!req.auth;
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
   const isDashboardRoute = dashboardRoutes.includes(nextUrl.pathname);
- const isJobsRoute = jobRoutes.includes(nextUrl.pathname);
+ //const isJobsRoute = jobRoutes.includes(nextUrl.pathname);
   const isAdminRoute = adminRoutes.includes(nextUrl.pathname);
   const isClientRoute = clientRoutes.includes(nextUrl.pathname);
   const isFreelancerRoute = freeLancerRoutes.includes(nextUrl.pathname);
@@ -40,10 +40,18 @@ export default auth((req) => {
   }
 
   if (isAuthRoute) {
-
-    //console.log("auth route",isAuthRoute)
+  //console.log("auth route",isAuthRoute)
     if (isLoggedIn) {
-      return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
+     
+       const userRole = req.auth?.user?.role || null;
+         console.log('User Role:', userRole); 
+        if (userRole === UserRole.Freelancer) {
+    return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
+  }
+  else if (userRole === UserRole.Client) {
+    return Response.redirect(new URL("/clientdashboard", nextUrl));
+  }
+   
     }
     return null;
   }
@@ -65,31 +73,32 @@ export default auth((req) => {
     return Response.redirect(new URL("/jobs/bestmatches", nextUrl));
   }
 
-  // Redirect to the client dashboard when visiting the root URL and the user is a client
+
   if (isLoggedIn && nextUrl.pathname === "/" && req.auth?.user.role === UserRole.Client) {
     return Response.redirect(new URL("/clientdashboard", nextUrl));
   }
 
   if(isLoggedIn){
      const userRole = req.auth?.user.role;
+     console.log(req.auth?.user.role)
 
- if (isPublicRoute) {
-      return null;
-    }
-    if(
-      (
-        isAdminRoute || isDashboardRoute
-      ) && userRole !== UserRole.ADMIN
-    ){
-       return Response.redirect(new URL("/", nextUrl));
-    }
+//  if (isPublicRoute) {
+//       return null;
+//     }
+//     if(
+//       (
+//         isAdminRoute || isDashboardRoute
+//       ) && userRole !== UserRole.ADMIN
+//     ){
+//        return Response.redirect(new URL("/dashboard/users", nextUrl));
+//     }
     
-    if (isClientRoute && userRole === UserRole.Client) {
-      return Response.redirect(new URL("/clientdashboard", nextUrl));
-    }
-     if (isFreelancerRoute && userRole !== UserRole.Freelancer) {
-      return Response.redirect(new URL("/", nextUrl));
-    }
+//     if (isClientRoute && userRole === UserRole.Client) {
+//       return Response.redirect(new URL("/clientdashboard", nextUrl));
+//     }
+//      if (isFreelancerRoute && userRole !== UserRole.Freelancer) {
+//       return Response.redirect(new URL("/", nextUrl));
+//     }
 
   }
 

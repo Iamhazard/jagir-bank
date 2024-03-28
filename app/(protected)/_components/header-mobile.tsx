@@ -9,6 +9,8 @@ import { Icon } from "@iconify/react";
 import { motion, useCycle } from "framer-motion";
 import { SideNavItem } from "@/@types/enum";
 import SIDENAV_ITEMS from "./constant";
+import { useSession } from "next-auth/react";
+;
 
 type MenuItemWithSubMenuProps = {
   item: SideNavItem;
@@ -39,6 +41,7 @@ const HeaderMobile = () => {
   const containerRef = useRef(null);
   const { height } = useDimensions(containerRef);
   const [isOpen, toggleOpen] = useCycle(false, true);
+
 
   return (
     <motion.nav
@@ -80,6 +83,7 @@ const HeaderMobile = () => {
             </div>
           );
         })}
+
       </motion.ul>
       <MenuToggle toggle={toggleOpen} />
     </motion.nav>

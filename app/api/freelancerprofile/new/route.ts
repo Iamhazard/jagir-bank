@@ -3,6 +3,9 @@ import { db } from "@/lib/db";
 import { fileSizeFormatter, upload } from "@/lib/multer";
 
 import { NextRequest, NextResponse } from 'next/server';
+import { getUserRoleByEmail } from "@/data/role";
+import { currentRole } from "@/lib/auth";
+import { UserRole } from "@prisma/client";
 
 interface MulterFile {
   fieldname: string;

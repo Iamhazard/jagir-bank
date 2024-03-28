@@ -1,8 +1,6 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from "react";
-
-import styles from "../../styles/styles.module.css";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -17,6 +15,8 @@ import { useSession } from "next-auth/react";
 import { IoNotifications } from "react-icons/io5";
 import Pusher from 'pusher-js';
 import { pusherClient } from "@/lib/pusher";
+
+import NavMobile from "./NavHeaders";
 
 interface NotificationDataProps {
   id: string;
@@ -71,13 +71,15 @@ const NavBar = () => {
     }
 
   }, []);
+
+  //console.log({ session })
   return (
     <section className="border-b border-gray-300 mb-3 sticky top-0 bg-white z-50">
       <div className="max-w-[1400px] mx-auto">
         <div className="px-3 flex items-center justify-between h-16">
           {/*mbl nav icon */}
           <div className="flex items-center">
-            <button
+            {/* <button
               onClick={handleToggleDropdown}
               aria-controls="mobile-menu"
               aria-expanded="false"
@@ -89,10 +91,13 @@ const NavBar = () => {
                 height={32}
                 className="inline-block cursor-pointer lg:hidden"
               />
-            </button>
+            </button> */}
 
             <Link href="/">
-              <img src="/assets/logo.svg" alt="logo" className={styles.logo} />
+              <Image src="/assets/jagirbank.png"
+                alt="logo" className=' px-4 inline-block'
+                width={220}
+                height={140} />
             </Link>
 
             {/* desktop*/}
@@ -164,39 +169,53 @@ const NavBar = () => {
             {!session?.user ? (
               <ul className="flex space-x-4 text-sm">
                 <li>
-                  <Link href="/login">
+                  <Link href="/auth/login">
                     <p>Log In</p>
                   </Link>
                 </li>
               </ul>
             ) : (
-              <></>
+              <> <UserButton /></>
             )}
           </div>
         </div>
         {/* mbl */}
-        {dropDownMenu ? (
+        <NavMobile />
+
+        {/* {dropDownMenu ? (
           <div className="fixed w-full h-full lg:hidden bg-white z-50 ">
             <div className="flex flex-col justify-between ">
               <div className="p-3 relative mb-4 mt-2">
                 <SearchFrom />
               </div>
               <div className="space-y-8 font-bold p-3 mb-4">
-                <NavMenu />
+                <HeaderMobile />
               </div>
             </div>
 
             <div className="flex mx-auto items-center">
-              <Link href="">
-                <LoginButton mode="modal" asChild>
-                  <Button variant="btn_green" size="lg">
-                    sign up
-                  </Button>
-                </LoginButton>
-              </Link>
+              <div className="flex-col space-x-2">
+                {session?.user ? (
+                  <UserButton />
+                ) : (
+                  <>
+                    <Link href="/auth/login">
+                      {" "}
+                      <Button variant="outline" size="lg">
+                        Login
+                      </Button>
+                    </Link>
+                    <LoginButton mode="modal" asChild>
+                      <Button variant="btn_green" size="lg">
+                        sign up
+                      </Button>
+                    </LoginButton>
+                  </>
+                )}
+              </div>
             </div>
           </div>
-        ) : null}
+        ) : null} */}
       </div>
     </section>
   );
