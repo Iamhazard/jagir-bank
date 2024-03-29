@@ -10,11 +10,11 @@ import {
   TableRow,
 } from "../../ui/table";
 import { Card } from "@/Components/ui/card";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 
 import UserDelete from "./UserDelete";
 import axios from "axios";
-import { User } from "@/@types/enum";
+//import { User } from "@/@types/enum";
 
 const prisma = new PrismaClient();
 
