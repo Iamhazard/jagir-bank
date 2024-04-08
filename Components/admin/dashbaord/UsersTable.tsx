@@ -55,45 +55,45 @@ const UsersTable = () => {
     }
   };
   return (
-    <Card className="w-[600px]  shadow-md my-6">
-      <Table>
-        <TableCaption>A list of Users.</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[100px]">S.N</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>emailVerified</TableHead>
-            <TableHead>TwoFactorEnabled</TableHead>
-            <TableHead className="text-right">Role</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {users &&
-            users.map((user, index) => (
-              <TableRow key={index}>
-                <TableCell className="font-medium">{index + 1}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.name}</TableCell>
-                <TableCell>
-                  {" "}
-                  {user.emailVerified
-                    ? new Date(user.emailVerified).toDateString()
-                    : "Not Verified"}
-                </TableCell>
-                <TableCell className=" items-center">
-                  {user.isTwoFactorEnabled
-                    ? user.isTwoFactorEnabled.toString()
-                    : "Not enabled"}
-                </TableCell>
-                <TableCell className="text-right">{user.role}</TableCell>
-                <TableCell className="text-right">   <UserDelete userId={user.id} onDelete={() => handleDeleteUser(user.id)} /></TableCell>
 
-              </TableRow>
-            ))}
-        </TableBody>
-      </Table>
-    </Card>
+    <Table>
+      <TableCaption>A list of Users.</TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead className="w-[100px] sm:w-auto">S.N</TableHead>
+          <TableHead className="hidden sm:table-cell">Email</TableHead>
+          <TableHead className="hidden sm:table-cell">Name</TableHead>
+          <TableHead className="hidden sm:table-cell">emailVerified</TableHead>
+          <TableHead className="hidden sm:table-cell">TwoFactorEnabled</TableHead>
+          <TableHead className="text-right sm:text-left">Role</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {users &&
+          users.map((user, index) => (
+            <TableRow key={index}>
+              <TableCell className="font-medium ">{index + 1}</TableCell>
+              <TableCell className="sm:w-1/6 w-fit">{user.email}</TableCell>
+              <TableCell>{user.name}</TableCell>
+              <TableCell>
+                {" "}
+                {user.emailVerified
+                  ? new Date(user.emailVerified).toDateString()
+                  : "Not Verified"}
+              </TableCell>
+              <TableCell className=" items-center">
+                {user.isTwoFactorEnabled
+                  ? user.isTwoFactorEnabled.toString()
+                  : "Not enabled"}
+              </TableCell>
+              <TableCell className="text-right">{user.role}</TableCell>
+              <TableCell className="text-right">   <UserDelete userId={user.id} onDelete={() => handleDeleteUser(user.id)} /></TableCell>
+
+            </TableRow>
+          ))}
+      </TableBody>
+    </Table>
+
   );
 };
 
