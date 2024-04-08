@@ -80,7 +80,7 @@ export default auth((req) => {
 
   if(isLoggedIn){
      const userRole = req.auth?.user.role;
-     console.log(req.auth?.user.role)
+     //console.log(req.auth?.user.role)
 
 //  if (isPublicRoute) {
 //       return null;

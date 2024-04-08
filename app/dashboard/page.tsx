@@ -5,10 +5,40 @@ import {
   CardDescription,
   CardHeader,
 } from "@/Components/ui/card";
-import React from "react";
+import React, { useEffect } from "react";
 import ChartData from "@/Components/admin/LineChart/ChartData";
+import { admin } from "@/actions/admin";
+import toast from "react-hot-toast";
 
 const DefaultDashboard = () => {
+  const onServerActionClick = () => {
+    admin()
+      .then((data) => {
+        if (data.error) {
+          toast.error(data.error);
+        }
+
+        if (data.success) {
+          toast.success(data.success);
+        }
+      })
+  }
+  useEffect(() => {
+    const onApiRouteClick = () => {
+      fetch("/api/admin")
+        .then((response) => {
+          if (response.ok) {
+            toast.success("Allowed API Route!");
+          } else {
+            toast.error("Forbidden API Route!");
+          }
+        })
+    }
+    onApiRouteClick()
+  }, [])
+
+
+
   return (
     <>
       <header className="bg-white shadow">

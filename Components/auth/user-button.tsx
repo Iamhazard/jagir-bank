@@ -32,7 +32,7 @@ export const UserButton = () => {
       <DropdownMenuContent className="w-40" align="end">
         <DropdownMenuItem>
           <IconDropdown className="h-4 w-4 mr-2" />
-          {user?.role || 'Client' || 'FreeLancee'} profile
+          {user?.role || 'Client' || 'FreeLancee || "Admin'} profile
         </DropdownMenuItem>
         <LogoutButton>
           <DropdownMenuItem>

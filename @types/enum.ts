@@ -49,7 +49,15 @@ export type FormData = {
   export type ValidFieldNames =
   | "skill"
  
-  
+
+  export type LoginResponse = {
+  success?: string;
+  error?: string;
+  twoFactor?: boolean;
+  role?: UserRole; // Add the user's role to the response
+};
+
+
 export interface Users {
   user:User[]
   id: string;

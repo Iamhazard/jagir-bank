@@ -17,6 +17,7 @@ import Pusher from 'pusher-js';
 import { pusherClient } from "@/lib/pusher";
 
 import NavMobile from "./NavHeaders";
+import { UserRole } from "@prisma/client";
 
 interface NotificationDataProps {
   id: string;
@@ -146,6 +147,12 @@ const NavBar = () => {
 
           <div className="hidden lg:block ">
             <div className="flex space-x-2">
+              {session && session?.user.role === UserRole.ADMIN && (
+
+                <Link href="/dashboard"><Button variant='btn_green'>Dashboard</Button></Link>
+
+              )}
+
               {session?.user ? (
                 <UserButton />
               ) : (
