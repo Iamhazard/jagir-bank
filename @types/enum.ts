@@ -1,6 +1,6 @@
 import { FieldElement, UseFormRegister } from "react-hook-form";
 
-import {  Account, ClientProfile, Conversation, FreelancerProfile, Message, User, UserRole } from "@prisma/client";
+import {  Account, ClientProfile, Conversation, FreelancerProfile, JobStatus, Message, Proposal, SkillsOnJobs, User, UserRole } from "@prisma/client";
 
 export type FullMessageType = Message & {
   sender: User, 
@@ -104,3 +104,34 @@ export interface Users {
 }
 
   
+
+
+export interface AuthState {
+    user: User | null; 
+    status: 'idle' | 'loading' | 'succeeded' | 'failed';
+    error: string | null;
+    sessionToken: string | null;
+    isLoggedIn: boolean;
+    isAdmin: boolean;
+    success: string | null;
+    users: User[];
+}
+
+export interface Job{
+  id: string;
+  post?: string;
+  projectSize?: string;
+  duration?: string;
+  expertise: string;
+  from: string;
+  to: string;
+  fixed: string;
+  createdAt: Date;
+  updatedAt: Date;
+  jobDescription?: string;
+  clientProfile: ClientProfile;
+  clientProfileId: string;
+  SkillsOnJobs: SkillsOnJobs[];
+  status: JobStatus;
+  proposals: Proposal[];
+}

@@ -6,6 +6,7 @@ import { auth } from "@/auth";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "sonner";
 import Providers from "@/Components/AIbot/Providers";
+import StoreProvider from "@/Redux/provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,13 +25,15 @@ export default async function RootLayout({
   return (
     <SessionProvider session={session}>
       <html lang="en">
-        <Providers>
-          <body className={inter.className}>
-            <div className="main" />
-            <Toaster />
-            <div className="flex-grow flex-1">{children}</div>
-          </body>
-        </Providers>
+        <StoreProvider>
+          <Providers>
+            <body className={inter.className}>
+              <div className="main" />
+              <Toaster />
+              <div className="flex-grow flex-1">{children}</div>
+            </body>
+          </Providers>
+        </StoreProvider>
       </html>
     </SessionProvider>
   );

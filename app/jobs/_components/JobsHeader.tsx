@@ -8,8 +8,8 @@ import { usePathname } from "next/navigation";
 import { Icon } from "@iconify/react";
 import { motion, useCycle } from "framer-motion";
 import { SideNavItem } from "@/@types/enum";
-import NAV_ITEMS from "./NavItems";
 import { useSession } from "next-auth/react";
+import NAV_ITEMS from "@/Components/Navbar/NavItems";
 
 
 
@@ -37,7 +37,7 @@ const sidebar = {
     },
 };
 
-const NavMobile = () => {
+const JobsMobile = () => {
     const pathname = usePathname();
     const containerRef = useRef(null);
     const { height } = useDimensions(containerRef);
@@ -90,7 +90,7 @@ const NavMobile = () => {
     );
 };
 
-export default NavMobile;
+export default JobsMobile;
 
 const MenuToggle = ({ toggle }: { toggle: any }) => (
     <button

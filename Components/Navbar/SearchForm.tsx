@@ -22,7 +22,7 @@ const SearchFrom = () => {
     <div className="flex">
       <div className="relative flex-grow items-center">
         <input
-          className="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-400 border-s-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
+          className="block p-3 w-full  text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-400 border-s-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
