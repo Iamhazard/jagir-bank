@@ -26,7 +26,6 @@ import Link from "next/link";
 
 
 
-
 export interface JobSheetProps {
     id: string,
     title: string,
@@ -60,7 +59,7 @@ const JobSheet: React.FC<JobSheetProps> = ({ title, jobdescription, from, to, Pl
                         <Jobs id={id} title={title} to={to} from={from} jobsdescription={jobdescription || ""} Place={Place} duration={duration || ""} expertise={expertise} projectSize={projectSize} fixed={fixed} skills={skills} createdAt={createdAt} country={country} />
                     </div>
                 </SheetTrigger>
-                <SheetContent>
+                <SheetContent >
                     <SheetHeader>
                         <SheetTitle>
                             <div>
@@ -179,7 +178,7 @@ const JobSheet: React.FC<JobSheetProps> = ({ title, jobdescription, from, to, Pl
                             <div>
                                 <Separator orientation="vertical" />
                             </div>
-                            <div className="w-[200px] mt-4 items-center">
+                            <div className="w-full sm:w-[200px] mt-4 items-center">
                                 <div className=" space-y-4">
                                     <SheetClose asChild>
                                         <Link href={`/proposal/job/${id}`}>

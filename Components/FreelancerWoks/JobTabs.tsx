@@ -30,7 +30,7 @@ const JobTabs = ({ children }: JobsComponentProps) => {
   return (
     <div className="max-w-[1400px] flex mx-auto gap-6 px-4 sm:px-6">
       <div className="flex-1">
-        <div className="sm:flex hidden md:hidden ">
+        <div className="hidden lg:block">
           <TopContent />
         </div>
 
