@@ -7,10 +7,14 @@ import SideBars from "./_components/Sidebars";
 const ProtectedLayout = ({ children }: { children: ReactNode }) => {
   return (
     <main className="relative flex flex-col">
+
       <SideBars />
-      <JobTabs>
-        <div>{children}</div>
-      </JobTabs>
+      <div className="flex-1">
+        <JobTabs>
+          <div>{children}</div>
+        </JobTabs>
+      </div>
+
     </main>
   );
 };

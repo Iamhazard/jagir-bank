@@ -13,7 +13,7 @@ const images = [
 const ProgresSlider = () => {
   return (
     <div className="flex">
-      <Card className="w-[280px]">
+      <Card className="w-[250px] max-w-sm ">
         <ImageSlider images={images} />
       </Card>
     </div>

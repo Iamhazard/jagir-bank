@@ -82,7 +82,7 @@ const JobsNavBar = () => {
                         )}
                     </div>
 
-                    <div className="hidden lg:block ">
+                    <div className="hidden lg:block sm:hidden ">
                         <div className="flex space-x-2">
                             {session?.user ? (
                                 <UserButton />

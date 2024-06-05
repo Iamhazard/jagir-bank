@@ -15,7 +15,7 @@ import AlertDialogs from "./AlertDialog";
 
 const FreelancerWrapper = () => {
   return (
-    <Card className="w-[280px] px-2">
+    <Card className="w-[250px] px-2">
       <Accordion type="single" collapsible>
         <AccordionItem value="item-1">
           <AccordionTrigger>Promote with ads</AccordionTrigger>

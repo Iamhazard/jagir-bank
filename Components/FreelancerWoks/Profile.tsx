@@ -7,7 +7,7 @@ import { Card } from "../ui/card";
 
 const Profile = () => {
   return (
-    <Card className=" w-[280px] mb-6 ">
+    <Card className=" w-[250px] mb-6 ">
       <div className="flex flex-col items-center">
         <img
           className="w-24 h-24 mb-3 rounded-full shadow-lg"

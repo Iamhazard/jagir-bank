@@ -28,19 +28,19 @@ const JobTabs = ({ children }: JobsComponentProps) => {
 
 
   return (
-    <div className="max-w-[1400px] flex mx-auto gap-6">
+    <div className="max-w-[1400px] flex mx-auto gap-6 px-4 sm:px-6">
       <div className="flex-1">
-        <div className="sm:flex hidden">
+        <div className="sm:flex hidden md:hidden ">
           <TopContent />
         </div>
-        <div className="lg:hidden">
-          <div className="">
-            {items.map((item, index) => (
-              <MobileAccording key={index} title={item.title} path={item.path} />
-            ))}
-          </div>
 
+        <div className="lg:hidden">
+          {items.map((item, index) => (
+            <MobileAccording key={index} title={item.title} path={item.path} />
+          ))}
         </div>
+
+
         <div className="text-sm font-medium text-center text-green-600 border-b border-gray-300 dark:text-gray-400 dark:border-gray-700">
           <ul className="flex flex-wrap mb-px">
             <li className="me-2">
@@ -79,16 +79,16 @@ const JobTabs = ({ children }: JobsComponentProps) => {
         </div>
         {children}
       </div>
-      <div className="w-[280px] mt-6 sm:flex hidden">
+      <div className="mt-6 mx-auto w-full lg:w-1/3 lg:mx-0 hidden lg:block ">
         <div className="">
-          <div className="">
+          <div className="md:flex hidden  ">
             <Profile />
           </div>
 
-          <div className="mb-6">
+          <div className="mb-6 md:flex hidden ">
             <ProgresSlider />
           </div>
-          <div className="mb-6">
+          <div className="mb-6 md:flex hidden lg:mx-auto">
             <FreelancerWrapper />
           </div>
         </div>
