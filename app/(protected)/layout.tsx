@@ -1,10 +1,11 @@
 import React, { ReactNode } from "react";
 import Headers from "./_components/header";
-import Headermobile from "./_components/header-mobile";
+import Headermobile from "../admin/_component/header-mobile";
 
 import MarginWidthWrapper from "./_components/margin-width-wrapper";
 import PageWrapper from "./_components/page-wrapper";
 import SideNav from "./_components/Sidebar";
+
 
 const ProtectedLayout = ({ children }: { children: ReactNode }) => {
   return (

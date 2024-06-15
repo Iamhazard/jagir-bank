@@ -1,179 +1,241 @@
 "use client";
-/* eslint-disable @next/next/no-img-element */
-import { Menu, Disclosure, Transition } from "@headlessui/react";
-import { FaBars, FaRegBell, FaRegWindowClose } from "react-icons/fa";
+
+import React, { ReactNode, useEffect, useRef, useState } from "react";
+
 import Link from "next/link";
-import { useCurrentUser } from "@/hooks/use-current-user";
-import { logout } from "@/actions/logout";
-import { UserButton } from "@/Components/auth/user-button";
+import { usePathname } from "next/navigation";
 
-interface NavigationItem {
-  name: string;
-  href?: string;
-  current: boolean;
-}
+import { Icon } from "@iconify/react";
+import { motion, useCycle } from "framer-motion";
+import { SideNavItem } from "@/@types/enum";
+import { useSession } from "next-auth/react";
+import NAV_ITEMS from "@/Components/Navbar/NavItems";
 
-interface UserNavigationItem {
-  name: string;
-  href: string;
-  onClick?: () => void;
-}
 
-const navigation: NavigationItem[] = [
-  { name: "Dashboard", href: "/dashboard", current: true },
-  { name: "User", href: "/dashboard/users", current: false },
-  { name: "Add Category", href: "/dashboard/category", current: false },
-  { name: "Add Skills", href: "/dashboard/skills", current: false },
-];
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
+type MenuItemWithSubMenuProps = {
+  item: SideNavItem;
+  toggleOpen: () => void;
+};
 
-const DefaultLayout = () => {
-  const handleSignOutClick = () => {
-    logout();
-  };
-  const userNavigation: UserNavigationItem[] = [
-    { name: "Your Profile", href: "/settings", onClick: () => { } },
-    { name: "Settings", href: "/settings", onClick: () => { } },
-    { name: "Sign out", href: "", onClick: handleSignOutClick },
-  ];
-  const user = useCurrentUser();
+const sidebar = {
+  open: (height = 1000) => ({
+    clipPath: `circle(${height * 2 + 200}px at 100% 0)`,
+    transition: {
+      type: "spring",
+      stiffness: 20,
+      restDelta: 2,
+    },
+  }),
+  closed: {
+    clipPath: "circle(0px at 100% 0)",
+    transition: {
+      type: "spring",
+      stiffness: 400,
+      damping: 40,
+    },
+  },
+};
+
+const NavMobile = () => {
+  const pathname = usePathname();
+  const containerRef = useRef(null);
+  const { height } = useDimensions(containerRef);
+  const { data: session } = useSession();
+  const [isOpen, toggleOpen] = useCycle(false, true);
+
+  return (
+    <motion.nav
+      initial={false}
+      animate={isOpen ? "open" : "closed"}
+      custom={height}
+      className={`fixed inset-0 z-50 w-full md:hidden ${isOpen ? "" : "pointer-events-none"
+        }`}
+      ref={containerRef}>
+      <motion.div
+        className="absolute inset-0 right-0 w-full bg-white"
+        variants={sidebar}
+      />
+      <motion.ul variants={variants} className="absolute grid w-full gap-3 px-10 py-16">
+        {NAV_ITEMS.map((item, idx) => {
+          const isLastItem = idx === NAV_ITEMS.length - 1;
+          return (
+            <div key={idx}>
+              {item.submenu ? (
+                <MenuItemWithSubMenu item={item} toggleOpen={toggleOpen} />
+              ) : (
+                <MenuItem>
+                  <Link
+                    href={item.path}
+                    onClick={() => toggleOpen()}
+                    className={`flex w-full text-2xl ${item.path === pathname ? "font-bold" : ""
+                      }`}
+                  >
+                    {item.title}
+                  </Link>
+
+                </MenuItem>
+              )}
+              {!isLastItem && <MenuItem className="my-3 h-px w-full bg-gray-300" />}
+            </div>
+          );
+        })}
+
+
+
+      </motion.ul>
+
+      <MenuToggle toggle={toggleOpen} />
+    </motion.nav>
+  );
+};
+
+export default NavMobile;
+
+const MenuToggle = ({ toggle }: { toggle: any }) => (
+  <button
+    onClick={toggle}
+    className="pointer-events-auto absolute left-1 top-[14px] z-30">
+    <svg width="26" height="25" viewBox="0 0 23 23">
+      <Path
+        variants={{
+          closed: { d: "M 2 2.5 L 20 2.5" },
+          open: { d: "M 3 16.5 L 17 2.5" },
+        }}
+      />
+      <Path
+        d="M 2 9.423 L 20 9.423"
+        variants={{
+          closed: { opacity: 1 },
+          open: { opacity: 0 },
+        }}
+        transition={{ duration: 0.1 }}
+      />
+      <Path
+        variants={{
+          closed: { d: "M 2 16.346 L 20 16.346" },
+          open: { d: "M 3 2.5 L 17 16.346" },
+        }}
+      />
+    </svg>
+  </button>
+);
+
+const Path = (props: any) => (
+  <motion.path
+    fill="transparent"
+    strokeWidth="2"
+    stroke="hsl(0, 0%, 18%)"
+    strokeLinecap="round"
+    {...props}
+  />
+);
+
+const MenuItem = ({
+  className,
+  children,
+}: {
+  className?: string;
+  children?: ReactNode;
+}) => {
+  return (
+    <motion.li variants={MenuItemVariants} className={className}>
+      {children}
+    </motion.li>
+  );
+};
+
+const MenuItemWithSubMenu: React.FC<MenuItemWithSubMenuProps> = ({
+  item,
+  toggleOpen,
+}) => {
+  const pathname = usePathname();
+  const [subMenuOpen, setSubMenuOpen] = useState(false);
+  const { data: session } = useSession();
 
   return (
     <>
-      <div className="min-h-full">
-        <Disclosure as="nav" className="bg-gray-300 text-black">
-          {({ open }) => (
-            <>
-              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="flex h-16 items-center justify-between ">
-                  <div className="flex items-center justify-between gap-28">
-                    <div className=" flex-shrink-0  ">
-                      <Link href="/">
-                        <img
-                          src="../../assets/jb.svg"
-                          alt="logo"
-                          className=" h-16 w-16 m-auto"
-                        />
-                      </Link>
-                    </div>
-                    <div className="hidden md:block">
-                      <div className="ml-10 flex items-baseline space-x-4">
-                        {navigation.map((item) => (
-                          <a
-                            key={item.name}
-                            href={item.href}
-                            className={classNames(
-                              item.current
-                                ? "bg-blue-300 text-black"
-                                : "text-black hover:bg-primary-green hover:text-white",
-                              "rounded-md px-3 py-2 text-sm font-medium"
-                            )}
-                            aria-current={item.current ? "page" : undefined}>
-                            {item.name}
-                          </a>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="hidden md:block">
-                    <div className="ml-4 flex items-center md:ml-6">
-                      <button
-                        type="button"
-                        className="relative rounded-full bg-green-800 p-1 text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                        <span className="absolute -inset-1.5" />
-                        <span className="sr-only">View notifications</span>
-                        <FaRegBell className="h-6 w-6" aria-hidden="true" />
-                      </button>
+      <MenuItem>
 
-                      {/* Profile dropdown */}
-                      <div className="relative ml-3">
-                        <UserButton />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="-mr-2 flex md:hidden">
-                    {/* Mobile menu button */}
-                    <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-600 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                      <span className="absolute -inset-0.5" />
-                      <span className="sr-only">Open main menu</span>
-                      {open ? (
-                        <FaRegWindowClose
-                          className="block h-6 w-6"
-                          aria-hidden="true"
-                        />
-                      ) : (
-                        <FaBars className="block h-6 w-6" aria-hidden="true" />
-                      )}
-                    </Disclosure.Button>
-                  </div>
-                </div>
-              </div>
+        <button
+          className="flex w-full text-2xl"
+          onClick={() => setSubMenuOpen(!subMenuOpen)}>
+          <div className="flex flex-row justify-between w-full items-center">
+            <span
+              className={`${pathname?.includes(item.path) ? "font-bold" : ""}`}>
+              {item.title}
+            </span>
+            <div className={`${subMenuOpen && "rotate-180"}`}>
+              <Icon icon="lucide:chevron-down" width="24" height="24" />
+            </div>
+          </div>
 
-              <Disclosure.Panel className="md:hidden">
-                <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
-                  {navigation.map((item) => (
-                    <Disclosure.Button
-                      key={item.name}
-                      as="a"
-                      href={item.href}
-                      className={classNames(
-                        item.current
-                          ? "bg-white text-black"
-                          : "text-gray-800 hover:bg-primary-green hover:text-white",
-                        "block rounded-md px-3 py-2 text-base font-medium"
-                      )}
-                      aria-current={item.current ? "page" : undefined}>
-                      {item.name}
-                    </Disclosure.Button>
-                  ))}
-                </div>
-                <div className="border-t border-gray-700 pb-3 pt-4">
-                  <div className="flex items-center px-5">
-                    <div className="flex-shrink-0">
-                      <img
-                        className="h-10 w-10 rounded-full"
-                        src={user?.image as string}
-                        alt=""
-                      />
-                    </div>
-                    <div className="ml-3">
-                      <div className="text-base font-medium leading-none text-gray-800">
-                        {user?.name}
-                      </div>
-                      <div className="text-sm font-medium leading-none text-gray-600">
-                        {user?.email}
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      className="relative ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                      <span className="absolute -inset-1.5" />
-                      <span className="sr-only">View notifications</span>
-                      <FaRegBell className="h-6 w-6" aria-hidden="true" />
-                    </button>
-                  </div>
-                  <div className="mt-3 space-y-1 px-2">
-                    {userNavigation.map((item) => (
-                      <Disclosure.Button
-                        key={item.name}
-                        as="a"
-                        href={item.href}
-                        className="block rounded-md px-3 py-2 text-base font-medium text-gray-800 hover:bg-slate-700 hover:text-black">
-                        {item.name}
-                      </Disclosure.Button>
-                    ))}
-                  </div>
-                </div>
-              </Disclosure.Panel>
-            </>
-          )}
-        </Disclosure>
+
+        </button>
+
+      </MenuItem>
+
+      <div className="mt-2 ml-2 flex flex-col space-y-2">
+        {subMenuOpen && (
+          <>
+            {item.subMenuItems?.map((subItem, subIdx) => {
+              return (
+                <MenuItem key={subIdx}>
+                  <Link
+                    href={subItem.path}
+                    onClick={() => toggleOpen()}
+                    className={` ${subItem.path === pathname ? "font-bold" : ""
+                      }`}>
+                    {subItem.title}
+                  </Link>
+                </MenuItem>
+              );
+            })}
+          </>
+        )}
       </div>
+
     </>
   );
 };
 
-export default DefaultLayout;
+const MenuItemVariants = {
+  open: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      y: { stiffness: 1000, velocity: -100 },
+    },
+  },
+  closed: {
+    y: 50,
+    opacity: 0,
+    transition: {
+      y: { stiffness: 1000 },
+      duration: 0.02,
+    },
+  },
+};
+
+const variants = {
+  open: {
+    transition: { staggerChildren: 0.02, delayChildren: 0.15 },
+  },
+  closed: {
+    transition: { staggerChildren: 0.01, staggerDirection: -1 },
+  },
+};
+
+const useDimensions = (ref: any) => {
+  const dimensions = useRef({ width: 0, height: 0 });
+
+  useEffect(() => {
+    if (ref.current) {
+      dimensions.current.width = ref.current.offsetWidth;
+      dimensions.current.height = ref.current.offsetHeight;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ref]);
+
+  return dimensions.current;
+};

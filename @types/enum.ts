@@ -135,3 +135,27 @@ export interface Job{
   status: JobStatus;
   proposals: Proposal[];
 }
+export interface CategoryState {
+   id: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CategoryPageProps {
+    category: CategoryState| null;
+    status: 'idle' | 'loading' | 'succeeded' | 'failed';
+    error: string | null;
+    success: string | null;
+
+}
+export interface ProfessionState {
+   id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+export interface DeleteButtonPros {
+    label:string, 
+    onDelete: ()=>{}
+}

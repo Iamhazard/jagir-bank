@@ -9,7 +9,7 @@ const ProtectedLayout = ({ children }: { children: ReactNode }) => {
     <main className="relative flex flex-col">
 
       <SideBars />
-      <div className="flex-1">
+      <div className="">
         <JobTabs>
           <div>{children}</div>
         </JobTabs>

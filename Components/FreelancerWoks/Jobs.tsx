@@ -54,9 +54,9 @@ const Jobs = ({ title, id, from, to, jobsdescription, Place, duration, expertise
   //console.log("data", skill)
   return (
 
-    <div className="w-full max-w-full px-2 sm:px-4 lg:px-8">
+    <div className="w-full  px-2 sm:px-4 lg:px-8">
       <div
-        className={`w-full max-w-sm md:max-w-[800px] lg:max-w-[950px] max-h-[500px] p-4 sm:p-6 md:p-8 bg-white hover:bg-[#F2F7F2] border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 ${showMore ? "expanded" : ""}`}>
+        className={`p-4 sm:p-6 md:p-8 bg-white hover:bg-[#F2F7F2] border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 ${showMore ? "expanded" : ""}`}>
         <small className="text-gray-400 block mb-2">
           Posted {format(new Date(createdAt), "E h a ")}
         </small>

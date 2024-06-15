@@ -16,16 +16,16 @@ const Headers = () => {
   return (
     <div
       className={cn(
-        `sticky inset-x-0 top-0 z-30 w-full transition-all border-b border-gray-200`,
+        ` inset-x-0 top-0 z-30 w-full transition-all h-12`,
         {
-          "border-b border-gray-200 bg-white/75 backdrop-blur-lg": scrolled,
-          "border-b border-gray-200 bg-white": selectedLayout,
+          "border-b border-gray-100 ": scrolled,
+          "border-b border-gray-100": selectedLayout,
         }
       )}
     >
-      <div className="flex h-[47px] items-center justify-between px-4">
+      <div className="flex items-center justify-between px-4">
         <div className="flex items-center space-x-4">
-          <Link href="/" className="flex flex-row space-x-3 items-center justify-center md:hidden">
+          <Link href="/" className="flex flex-row space-x-3 px-6 items-center justify-center md:hidden">
             <span className="h-7 w-7 bg-green-600 rounded-lg" />
             <span className="font-bold text-xl flex ">JAGIRBANK</span>
           </Link>

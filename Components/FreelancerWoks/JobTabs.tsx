@@ -77,9 +77,13 @@ const JobTabs = ({ children }: JobsComponentProps) => {
             </li>
           </ul>
         </div>
-        {children}
+        <div>
+          {children}
+        </div>
       </div>
-      <div className="mt-6 mx-auto w-full lg:w-1/3 lg:mx-0 hidden lg:block ">
+
+
+      <div className="mt-6 mx-auto w-full lg:w-[400px] lg:mx-0 hidden lg:block ">
         <div className="">
           <div className="md:flex hidden  ">
             <Profile />

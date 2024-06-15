@@ -140,3 +140,15 @@ export const MessageSchema = z.object({
 export const MessageArraySchema = z.array(MessageSchema)
 
 export type Message = z.infer<typeof MessageSchema>
+
+
+
+export const CategorySchema = z.object({
+  title: z.string(),
+  
+})
+
+export const ProfileSchema = z.object({
+  name: z.string(),
+  
+})

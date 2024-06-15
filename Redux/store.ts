@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
 import authReducer from './Features/authSlice'
 import jobReducer from './Features/JobSlice'
+import categoryReducer from './Features/JobSlice'
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
         auth:authReducer,
         job:jobReducer,
+        category:categoryReducer,
         
        
     }

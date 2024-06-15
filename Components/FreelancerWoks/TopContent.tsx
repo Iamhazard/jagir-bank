@@ -49,7 +49,7 @@ const TopContent = () => {
   };
 
   return (
-    <div className="w-full max-w-full lg:max-w-xl md:max-w-md px-4 sm:px-6 lg:px-8">
+    <div className="px-4 sm:px-6 lg:px-8">
       <h1 className="text-xl sm:text-2xl md:text-3xl font-sans font-extrabold py-4">
         Hi {session?.user.name}! 👋
       </h1>
