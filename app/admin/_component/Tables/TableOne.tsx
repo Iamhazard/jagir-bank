@@ -1,5 +1,6 @@
-import { BRAND } from "@/types/brand";
+
 import Image from "next/image";
+import { BRAND } from "../types/brand";
 
 const brandData: BRAND[] = [
   {
@@ -82,11 +83,10 @@ const TableOne = () => {
 
         {brandData.map((brand, key) => (
           <div
-            className={`grid grid-cols-3 sm:grid-cols-5 ${
-              key === brandData.length - 1
-                ? ""
-                : "border-b border-stroke dark:border-strokedark"
-            }`}
+            className={`grid grid-cols-3 sm:grid-cols-5 ${key === brandData.length - 1
+              ? ""
+              : "border-b border-stroke dark:border-strokedark"
+              }`}
             key={key}
           >
             <div className="flex items-center gap-3 p-2.5 xl:p-5">

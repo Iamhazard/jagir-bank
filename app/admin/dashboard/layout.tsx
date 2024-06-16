@@ -1,7 +1,7 @@
 "use client";
 import "jsvectormap/dist/jsvectormap.css";
 import "flatpickr/dist/flatpickr.min.css";
-import "../dashboard/css/satoshi.css"
+import "../_component/css/satoshi.css"
 //import "../dashboard/css/style.css"
 import React, { useEffect, useState } from "react";
 import Loader from "@/Components/common/Loader";

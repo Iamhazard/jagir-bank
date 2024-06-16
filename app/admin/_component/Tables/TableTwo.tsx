@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Product } from "../../_component/types/product";
+import { Product } from "../types/product";
 
 
 const productData: Product[] = [

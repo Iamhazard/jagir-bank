@@ -2,7 +2,7 @@
 import jsVectorMap from "jsvectormap";
 import "jsvectormap/dist/jsvectormap.css";
 import React, { useEffect } from "react";
-import "../../_component/js/us-aea-en";
+import "../js/us-aea-en";
 
 const MapOne: React.FC = () => {
   useEffect(() => {

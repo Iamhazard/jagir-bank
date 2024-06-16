@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import CardWrapper from '@/Components/auth/card-wrapper';
-import { SkillSchema } from '@/Schemas';
+import { SalarySchema, SkillSchema } from '@/Schemas';
 import axios from 'axios';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/Components/ui/form'
 import React, { useEffect, useState, useTransition } from 'react';
@@ -11,15 +11,15 @@ import { Input } from '@/Components/ui/input';
 import { FormError } from '@/Components/auth/form-error';
 import { FormSuccess } from '@/Components/auth/form-success';
 import { Button } from '@/Components/ui/button';
-import { SkillState } from '@/@types/enum';
+import { SalaryState, SkillState } from '@/@types/enum';
 import { Header } from '@/Components/auth/header';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/Redux/store';
 import { editCategory, viewCategories } from '@/Redux/Features/CategorySlice';
 import { DeleteButton } from '@/app/admin/_component/DeleteButton';
 
-interface Profession {
-    name: string,
+interface Salary {
+    salary: string,
 }
 
 const ProfessionPage = () => {
@@ -30,17 +30,17 @@ const ProfessionPage = () => {
         reset,
     } = useForm();
 
-    const form = useForm<z.infer<typeof SkillSchema>>({
+    const form = useForm<z.infer<typeof SalarySchema>>({
         defaultValues: {
-            skill: "",
+            salary: "",
 
         }
     })
     const [error, setError] = useState<string | null>("");
-    const [skillName, setSkillName] = useState('');
+    const [salaryName, setSalaryName] = useState('');
     const [success, setSuccess] = useState<string | null>("");
-    const [categories, setCategories] = useState<Profession | null>(null)
-    const [editSkills, setEditSkills] = useState<SkillState | null>(null);
+    const [salaries, setSalaries] = useState<Salary | null>(null)
+    const [editSalary, setEditSalary] = useState<SalaryState | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -58,7 +58,7 @@ const ProfessionPage = () => {
         try {
             dispatch(viewCategories()).then((res: any) => {
                 if (res.payload) {
-                    setCategories(res.payload);
+                    setSalaries(res.payload);
                 }
             });
 
@@ -67,12 +67,12 @@ const ProfessionPage = () => {
 
         }
     }
-    console.log("all category", categories)
+    console.log("all category", salaries)
     const submitCategory = async (data: any) => {
 
         setSubmitting(true);
 
-        if (editSkills) {
+        if (editSalary) {
             await dispatch(editCategory({
                 categoryId,
                 category: data.title
@@ -107,15 +107,15 @@ const ProfessionPage = () => {
     };
     const resetForm = () => {
         form.reset({
-            skill: "",
+            salary: "",
         });
-        setEditSkills(null);
+        setSalaries(null);
         setCategoryId('');
     };
 
     const handleCancelClick = () => {
         resetForm();
-        setEditSkills(null); // Clear the edit state
+        setSalaries(null); // Clear the edit state
     };
 
     const handleDeleteClick = () => {
@@ -126,7 +126,7 @@ const ProfessionPage = () => {
 
         <main className="flex mx-auto max-w-[800px] justify-center items-center">
             <CardWrapper
-                headerLabel='Skills'
+                headerLabel='Organization Types '
                 blackButtonHref='/admin/dashboard'
                 backButtonLabel='Back home'
             >
@@ -136,18 +136,18 @@ const ProfessionPage = () => {
                             <div className='space-y-4'>
                                 <FormField
                                     control={form.control}
-                                    name="skill"
+                                    name="salary"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <label>{editSkills ? "Update Skill" : "New Skills"}
-                                                {editSkills && (
-                                                    <b>:{editSkills.skill}</b>
+                                            <label>{editSalary ? "Update Salary Types " : "New Salary Types "}
+                                                {editSalary && (
+                                                    <b>:{editSalary.salary}</b>
                                                 )}
                                             </label>
                                             <FormControl>
                                                 <Input
                                                     type="text"
-                                                    placeholder="Enter Skills"
+                                                    placeholder="Enter Salary Types "
                                                     {...field}
                                                     disabled={isPending}
                                                 />
@@ -164,7 +164,7 @@ const ProfessionPage = () => {
                                     type="submit"
                                     className='py-4'
                                     variant="default">
-                                    {editSkills ? 'Update' : 'Create'}
+                                    {editSalary ? 'Update' : 'Create'}
                                 </Button>
                                 <Button variant='destructive' type='submit' onClick={() => handleCancelClick}>Cancel</Button>
                             </div>
@@ -174,19 +174,19 @@ const ProfessionPage = () => {
                     </Form>
                     <div className='mt-4'>
                         <Header label='Existing Profession'></Header>
-                        {Array.isArray(categories) && categories.length > 0 ? (
-                            categories.map((c: SkillState) => (
+                        {Array.isArray(salaries) && salaries.length > 0 ? (
+                            salaries.map((c: SalaryState) => (
                                 <div className='bg-gray-100 rounded-xl p-2 px-4 flex gap-1 mb-1 items-center' key={c.id}>
                                     <div className='grow'>
-                                        {c.skill}
+                                        {c.salary}
 
                                     </div>
                                     <div className="flex gap-1">
 
                                         <Button type="button"
                                             onClick={() => {
-                                                setEditSkills(c)
-                                                setSkillName(c.skill);
+                                                setEditSalary(c)
+                                                setSalaryName(c.salary);
                                                 setCategoryId(c.id)
                                             }}
                                         >
@@ -203,7 +203,7 @@ const ProfessionPage = () => {
 
                                 </div>
                             ))
-                        ) : (<p className='px-4 '>No Profession Available</p>)}
+                        ) : (<p className='px-4 '>No Organization Types  Available</p>)}
 
                     </div>
 

@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import React from 'react'
 import Adminlogin from './_component/Adminlogin'
-import withAdmin from './AdminOrder'
+import withAdmin from './_component/AdminOrder'
 
 const AdminPage: React.FC = () => {
     return (

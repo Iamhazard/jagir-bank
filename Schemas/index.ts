@@ -152,3 +152,32 @@ export const ProfileSchema = z.object({
   name: z.string(),
   
 })
+
+export const SkillSchema = z.object({
+  skill: z.string(),
+  
+})
+
+export const SalarySchema = z.object({
+  salary: z.string(),
+  
+})
+
+
+export const CountrySchema = z.object({
+  district: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+})
+
+export const StateSchema = z.object({
+  stateName: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+})
+
+export const StreetSchema = z.object({
+  username: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+})

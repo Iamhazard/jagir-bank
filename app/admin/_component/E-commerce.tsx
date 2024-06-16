@@ -1,12 +1,13 @@
 "use client";
 import React from "react";
-import CardDataStats from "../dashboard/CardDataStats";
-import ChartOne from "../dashboard/Charts/ChartOne";
-import ChartTwo from "../dashboard/Charts/ChartTwo";
-import ChartThree from "../dashboard/Charts/ChartThree";
-import MapOne from "../dashboard/Maps/MapOne";
-import TableOne from "../dashboard/Tables/TableOne";
-import ChatCard from "../dashboard/Chat/ChatCard";
+
+import ChartOne from "./Charts/ChartOne";
+import ChartTwo from "./Charts/ChartTwo";
+import ChartThree from "./Charts/ChartThree";
+import MapOne from "./Maps/MapOne";
+import TableOne from "./Tables/TableOne";
+import ChatCard from "./Chat/ChatCard";
+import CardDataStats from "./CardDataStats";
 
 
 const ECommerce: React.FC = () => {
@@ -55,7 +56,7 @@ const ECommerce: React.FC = () => {
                         />
                     </svg>
                 </CardDataStats>
-                <CardDataStats title="Total Product" total="2.450" rate="2.59%" levelUp>
+                <CardDataStats title="Total Jobs" total="2.450" rate="2.59%" levelUp>
                     <svg
                         className="fill-primary dark:fill-white"
                         width="22"

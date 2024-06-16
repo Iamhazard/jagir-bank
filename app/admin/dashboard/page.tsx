@@ -41,6 +41,6 @@ const DefaultDashboard = () => {
         </>
     );
 };
-0;
+
 
 export default DefaultDashboard;

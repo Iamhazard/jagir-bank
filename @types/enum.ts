@@ -159,3 +159,25 @@ export interface DeleteButtonPros {
     label:string, 
     onDelete: ()=>{}
 }
+
+
+
+
+export interface SkillState {
+   id: string;
+  skill: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SalaryState {
+   id: string;
+  salary: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DistrictState {
+   id: string;
+  district: string;
+}

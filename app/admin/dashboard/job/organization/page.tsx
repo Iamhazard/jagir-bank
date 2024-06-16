@@ -126,7 +126,7 @@ const ProfessionPage = () => {
 
         <main className="flex mx-auto max-w-[800px] justify-center items-center">
             <CardWrapper
-                headerLabel='Skills'
+                headerLabel='Organization Types '
                 blackButtonHref='/admin/dashboard'
                 backButtonLabel='Back home'
             >
@@ -139,7 +139,7 @@ const ProfessionPage = () => {
                                     name="skill"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <label>{editSkills ? "Update Skill" : "New Skills"}
+                                            <label>{editSkills ? "Update Organization Types " : "New Organization Types "}
                                                 {editSkills && (
                                                     <b>:{editSkills.skill}</b>
                                                 )}
@@ -147,7 +147,7 @@ const ProfessionPage = () => {
                                             <FormControl>
                                                 <Input
                                                     type="text"
-                                                    placeholder="Enter Skills"
+                                                    placeholder="Enter Organization Types "
                                                     {...field}
                                                     disabled={isPending}
                                                 />
@@ -203,7 +203,7 @@ const ProfessionPage = () => {
 
                                 </div>
                             ))
-                        ) : (<p className='px-4 '>No Profession Available</p>)}
+                        ) : (<p className='px-4 '>No Organization Types  Available</p>)}
 
                     </div>
 

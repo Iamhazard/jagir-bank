@@ -126,7 +126,7 @@ const ProfessionPage = () => {
 
         <main className="flex mx-auto max-w-[800px] justify-center items-center">
             <CardWrapper
-                headerLabel='Skills'
+                headerLabel='Education'
                 blackButtonHref='/admin/dashboard'
                 backButtonLabel='Back home'
             >
@@ -139,7 +139,7 @@ const ProfessionPage = () => {
                                     name="skill"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <label>{editSkills ? "Update Skill" : "New Skills"}
+                                            <label>{editSkills ? "Update Education" : "New Education"}
                                                 {editSkills && (
                                                     <b>:{editSkills.skill}</b>
                                                 )}
@@ -147,7 +147,7 @@ const ProfessionPage = () => {
                                             <FormControl>
                                                 <Input
                                                     type="text"
-                                                    placeholder="Enter Skills"
+                                                    placeholder="Enter Education"
                                                     {...field}
                                                     disabled={isPending}
                                                 />
@@ -173,7 +173,7 @@ const ProfessionPage = () => {
                         </form>
                     </Form>
                     <div className='mt-4'>
-                        <Header label='Existing Profession'></Header>
+                        <Header label='Existing Education'></Header>
                         {Array.isArray(categories) && categories.length > 0 ? (
                             categories.map((c: SkillState) => (
                                 <div className='bg-gray-100 rounded-xl p-2 px-4 flex gap-1 mb-1 items-center' key={c.id}>
@@ -203,7 +203,7 @@ const ProfessionPage = () => {
 
                                 </div>
                             ))
-                        ) : (<p className='px-4 '>No Profession Available</p>)}
+                        ) : (<p className='px-4 '>No Team Available</p>)}
 
                     </div>
 
