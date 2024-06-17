@@ -134,27 +134,77 @@ model ClientProfile {
 }
 
 model Job {
-  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  id              String             @id @default(auto()) @map("_id") @db.ObjectId
   post            String?
   projectSize     String?
   duration        String?
-  expertise       String
-  from            String
-  to              String
-  fixed           String
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
   jobDescription  String?
-  clientProfile   ClientProfile  @relation(fields: [clientProfileId], references: [id])
-  clientProfileId String         @db.ObjectId
+  clientProfile   ClientProfile      @relation(fields: [clientProfileId], references: [id])
+  clientProfileId String             @db.ObjectId
   SkillsOnJobs    SkillsOnJobs[]
-  status          JobStatus      @default(posted)
+  status          JobStatus          @default(posted)
   proposals       Proposal[]
+  jobType         JobType[]
+  jobCategory     Jobcategory[]
+  organization    OrganizationType[]
+  profession      Profession[]
+  experience      Experience[]
+  jobtime         Jobtime[]
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
 }
 
 enum JobStatus {
   posted
   draft
+}
+
+model JobType {
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
+  fulltime   String?
+  parttime   String?
+  contract   String?
+  internship String?
+  freelance  String?
+  jobId      String  @db.ObjectId
+  job        Job     @relation(fields: [jobId], references: [id])
+}
+
+model Jobcategory {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  category String?
+  jobId    String  @db.ObjectId
+  job      Job     @relation(fields: [jobId], references: [id])
+}
+
+model OrganizationType {
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId
+  organization String?
+  jobId        String  @db.ObjectId
+  job          Job     @relation(fields: [jobId], references: [id])
+}
+
+model Profession {
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
+  profession String?
+  jobId      String  @db.ObjectId
+  job        Job     @relation(fields: [jobId], references: [id])
+}
+
+model Experience {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  expertise String?
+  jobId     String  @db.ObjectId
+  job       Job     @relation(fields: [jobId], references: [id])
+}
+
+model Jobtime {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  from  String
+  to    String
+  fixed String
+  jobId String @db.ObjectId
+  job   Job    @relation(fields: [jobId], references: [id])
 }
 
 model Proposal {

@@ -22,8 +22,6 @@ const UsersTable = () => {
 
   const [users, setUsers] = useState<User[]>([]);
   const [isDeleting, setIsDeleting] = useState(false);
-  //console.log({ users })
-
 
   useEffect(() => {
     const fetchUsers = async () => {
