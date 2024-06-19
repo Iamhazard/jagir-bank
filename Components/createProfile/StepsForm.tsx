@@ -8,17 +8,17 @@ import ProfileWrapper from "./ProfileWrapper";
 import { string, z } from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { FormDataSchema } from "@/Schemas";
+import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import { useSession } from "next-auth/react";
+import { FreeLancerSchema } from "@/Schemas";
 
-type Inputs = z.infer<typeof FormDataSchema>;
+type Inputs = z.infer<typeof FreeLancerSchema>;
 
 const steps = [
   {
     id: "Step 1",
     name: "Address",
-    fields: ["country", "state", "city", "contact", "street", "zip"],
+    fields: ["name", "country"],
   },
   {
     id: "Step 2",
@@ -28,7 +28,7 @@ const steps = [
   {
     id: "Step 3",
     name: "bio",
-    fields: ["message", "program", "profession"],
+    fields: ["message", "skills", "profession"],
   },
   {
     id: "Step 4",
@@ -55,12 +55,42 @@ export default function Form() {
     register,
     handleSubmit,
     watch,
+    control,
     reset,
     trigger,
     formState: { errors },
   } = useForm<Inputs>({
-    resolver: zodResolver(FormDataSchema),
+    resolver: zodResolver(FreeLancerSchema),
+    defaultValues: {
+      skills: [{
+
+      }],
+
+      country: [
+        { name: '', zip: '', Statename: '', cityname: '', address: '' }
+      ],
+      profession: [{
+
+      }],
+    }
   });
+
+  const { fields: skillFields, append: appendSkill, remove: removeSkill } = useFieldArray({
+    control,
+    name: 'skills',
+  });
+
+  const { fields: professionFields, append: appendProfession, remove: removeProfession } = useFieldArray({
+    control,
+    name: 'profession',
+  });
+
+  const { fields: countryFields, append: appendCountry, remove: removeCountry } = useFieldArray({
+    control,
+    name: "country"
+  });
+
+
 
   const onChange = (files: any) => {
     setSelectedImage(selectedImage);
@@ -76,26 +106,40 @@ export default function Form() {
     // console.log("Selected edu", files);
   };
   const processForm: SubmitHandler<Inputs> = async (data) => {
+    console.log(data, "data from form")
+    // const addCountry = () => {
+    //   appendCountry({ name: '', zip: '', Statename: '', cityname: '', address: '' })
+    // }
     try {
+      //console.log(addCountry,"inside form submit")
       const formData = new FormData();
       formData.append("userId", userid as string);
-      formData.append("country", data.country);
-      formData.append("street", data.street);
-      formData.append("city", data.city);
+      formData.append("name", data.name);
       formData.append("contact", data.contact);
-      formData.append("state", data.state);
-      formData.append("zip", data.zip);
       formData.append("hourlyrate", data.hourlyrate);
       formData.append("estimatedamount", data.estimatedamount);
       formData.append("message", data.message);
-      formData.append("program", data.program);
-      formData.append("profession", data.profession);
+      data.skills.forEach((skill, Skillindex) => {
+        formData.append(`country[${Skillindex}][skill]`, skill.skill);
+
+      });
+      data.profession.forEach((profession, Professionindex) => {
+        formData.append(`country[${Professionindex}][profession]`, profession.profession);
+
+      });
       formData.append("language", data.language);
       formData.append("imageInput", selectedImage);
       formData.append("educationfile", selectefiles);
       formData.append("experiencefile", selecteexpfiles);
       // console.log(...formData);
       console.log("Selected image ", selectedImage);
+      data.country.forEach((country, index) => {
+        formData.append(`country[${index}][name]`, country.name);
+        formData.append(`country[${index}][zip]`, country.zip);
+        formData.append(`country[${index}][Statename]`, country.Statename);
+        formData.append(`country[${index}][cityname]`, country.cityname);
+        formData.append(`country[${index}][address]`, country.address);
+      });
       const formDataObject: any = {};
       for (const pair of formData.entries()) {
         formDataObject[pair[0]] = pair[1];
@@ -124,6 +168,7 @@ export default function Form() {
       setError("An error occurred while processing the request");
     }
   };
+
 
   type FieldName = keyof Inputs;
 
@@ -242,35 +287,64 @@ export default function Form() {
                   </div>
                 )}
               </div>
+              <div className="mt-2 sm:col-span-3 w-[220px]">
+                <label
+                  htmlFor='Name'
+                  className="block text-sm font-medium leading-6 text-gray-900">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  {...register("name")}
+                  autoComplete="Name"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                />
+                {errors.name?.message && (
+                  <p className="mt-2 text-sm text-red-400">
+                    {errors.name.message}
+                  </p>
+                )}
+              </div>
               <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+
+
                 <div className="sm:col-span-3">
                   <label
                     htmlFor="country"
                     className="block text-sm font-medium leading-6 text-gray-900">
                     Country
                   </label>
-                  <div className="mt-2">
-                    <select
-                      id="country"
-                      {...register("country")}
-                      autoComplete="country-name"
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:max-w-xs sm:text-sm sm:leading-6">
-                      <option>Nepal</option>
-                      <option>India</option>
-                      <option>China</option>
-                      <option>Srilanka</option>
-                      <option>United States</option>
-                      <option>Canada</option>
-                      <option>Mexico</option>
-                      <option>Austraia</option>
-                    </select>
-                    {errors.country?.message && (
-                      <p className="mt-2 text-sm text-red-400">
-                        {errors.country.message}
-                      </p>
-                    )}
-                  </div>
+                  {
+                    countryFields.map((country, countryIndex) => (
+                      <div className="mt-2" key={country.id}>
+
+                        <select
+                          id="country"
+                          {...register(`country.${countryIndex}.name`)}
+                          autoComplete="country-name"
+                          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                          <option>Nepal</option>
+                          <option>India</option>
+                          <option>China</option>
+                          <option>Srilanka</option>
+                          <option>United States</option>
+                          <option>Canada</option>
+                          <option>Mexico</option>
+                          <option>Austraia</option>
+                        </select>
+                        {errors.country?.message && (
+                          <p className="mt-2 text-sm text-red-400">
+                            {errors.country.message}
+                          </p>
+                        )}
+                      </div>
+                    ))
+                  }
+
                 </div>
+
+
 
                 <div className="col-span-full">
                   <label
@@ -278,20 +352,23 @@ export default function Form() {
                     className="block text-sm font-medium leading-6 text-gray-900">
                     Street address
                   </label>
-                  <div className="mt-2">
-                    <input
-                      type="text"
-                      id="street"
-                      {...register("street")}
-                      autoComplete="street-address"
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
-                    />
-                    {errors.street?.message && (
-                      <p className="mt-2 text-sm text-red-400">
-                        {errors.street.message}
-                      </p>
-                    )}
-                  </div>
+                  {countryFields.map((streetfield, streetindex) => (
+                    <div className="mt-2" key={streetfield.id}>
+                      <input
+                        type="text"
+                        id="street"
+                        {...register(`country.${streetindex}.address`)}
+                        autoComplete="street-address"
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                      />
+                      {/* {errors.couaddress?.message && (
+                        <p className="mt-2 text-sm text-red-400">
+                          {errors.address.message}
+                        </p>
+                      )} */}
+                    </div>
+                  ))}
+
                 </div>
 
                 <div className="col-span-full">
@@ -300,21 +377,25 @@ export default function Form() {
                     className="block text-sm font-medium leading-6 text-gray-900">
                     City
                   </label>
-                  <div className="mt-2">
-                    <input
-                      type="text"
-                      id="city"
-                      {...register("city")}
-                      autoComplete="address-level2"
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
-                    />
-                    {errors.city?.message && (
-                      <p className="mt-2 text-sm text-red-400">
-                        {errors.city.message}
-                      </p>
-                    )}
-                  </div>
+                  {countryFields.map((cityFields, cityIndex: any) => (
+                    <div className="mt-2" key={cityFields.id}>
+                      <input
+                        type="text"
+                        id="city"
+                        {...register(`country.${cityIndex}.cityname`)}
+                        autoComplete="address-level2"
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                      />
+                      {/* {errors.cityname?.message && (
+                        <p className="mt-2 text-sm text-red-400">
+                          {errors.cityname.message}
+                        </p>
+                      )} */}
+                    </div>
+                  ))}
+
                 </div>
+
                 <div className="sm:col-span-2 sm:col-start-1">
                   <label
                     htmlFor="contact"
@@ -336,50 +417,58 @@ export default function Form() {
                     )}
                   </div>
                 </div>
-
                 <div className="sm:col-span-2">
                   <label
                     htmlFor="state"
                     className="block text-sm font-medium leading-6 text-gray-900">
                     State / Province
                   </label>
-                  <div className="mt-2">
-                    <input
-                      type="text"
-                      id="state"
-                      {...register("state")}
-                      autoComplete="address-level1"
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
-                    />
-                    {errors.state?.message && (
-                      <p className="mt-2 text-sm text-red-400">
-                        {errors.state.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
+                  {countryFields.map((stateFields, stateindex) => (
+                    <div className="mt-2" key={stateFields.id}>
+                      <input
+                        type="text"
+                        id="state"
+                        {...register(`country.${stateindex}.Statename`)}
+                        autoComplete="address-level1"
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                      />
+                      {/* {errors.state?.message && (
+                        <p className="mt-2 text-sm text-red-400">
+                          {errors.state.message}
+                        </p>
+                      )} */}
+                    </div>
+                  ))}
 
+                </div>
                 <div className="sm:col-span-2">
                   <label
-                    htmlFor="zip"
+                    htmlFor='zip'
                     className="block text-sm font-medium leading-6 text-gray-900">
                     ZIP / Postal code
                   </label>
-                  <div className="mt-2">
-                    <input
-                      type="text"
-                      id="zip"
-                      {...register("zip")}
-                      autoComplete="postal-code"
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
-                    />
-                    {errors.zip?.message && (
-                      <p className="mt-2 text-sm text-red-400">
-                        {errors.zip.message}
-                      </p>
-                    )}
-                  </div>
+                  {countryFields.map((zipfields, zipIndex) => (
+                    <div className="mt-2" key={zipfields.id}>
+                      <input
+                        type="text"
+                        id="zip"
+                        {...register(`country.${zipIndex}.zip`)}
+                        autoComplete="postal-code"
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                      />
+                      {/* {errors.zip?.message && (
+                          <p className="mt-2 text-sm text-red-400">
+                            {errors.zip.message}
+                          </p>
+                        )} */}
+                    </div>
+                  ))}
+
                 </div>
+
+
+
+
               </div>
             </motion.div>
           )}
@@ -502,48 +591,24 @@ export default function Form() {
                 you do.
               </p>
               <div className="mt-3">
-                <div className="sm:col-span-3 mt-3">
-                  <div className="mt-2">
-                    <select
-                      id="program"
-                      {...register("program")}
-                      autoComplete="program"
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:max-w-xs sm:text-sm sm:leading-6">
-                      <option>Logo design</option>
-                      <option>Web, Mobile, & Software Development</option>
-                      <option>WordPress design</option>
-                      <option>Accounting and Consulting</option>
-                      <option>Data Entry</option>
-                      <option>Design and Creative</option>
-                      <option>Engineering and Architecture</option>
-                      <option>Translation</option>
-                      <option>Sales and Marketing</option>
-                    </select>
-                    {errors.program?.message && (
-                      <p className="mt-2 text-sm text-red-400">
-                        {errors.program.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="mt-6">
-                <h1 className="text-xl mt-4">Add your Main Profession?</h1>
-                <div className="mt-4">
-                  <div className="col-span-full">
-                    <label
-                      htmlFor="profession"
-                      className="block text-sm font-medium leading-6 text-gray-900">
-                      Profession
-                    </label>
+                {skillFields.map((sk, SkillInx: any) => (
+                  <div className="sm:col-span-3 mt-3" key={sk.id}>
                     <div className="mt-2">
-                      <input
-                        type="text"
-                        id="profession"
-                        {...register("profession")}
-                        autoComplete="Software Engineer |Javascript | OS"
-                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
-                      />
+                      <select
+                        id={`skill[${SkillInx}].skill`}
+                        {...register(`skills.${SkillInx}.skill`)}
+                        autoComplete="skill"
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                        <option>Logo design</option>
+                        <option>Web, Mobile, & Software Development</option>
+                        <option>WordPress design</option>
+                        <option>Accounting and Consulting</option>
+                        <option>Data Entry</option>
+                        <option>Design and Creative</option>
+                        <option>Engineering and Architecture</option>
+                        <option>Translation</option>
+                        <option>Sales and Marketing</option>
+                      </select>
                       {errors.profession?.message && (
                         <p className="mt-2 text-sm text-red-400">
                           {errors.profession.message}
@@ -551,6 +616,36 @@ export default function Form() {
                       )}
                     </div>
                   </div>
+                ))}
+
+              </div>
+              <div className="mt-6">
+                <h1 className="text-xl mt-4">Add your Main Profession?</h1>
+                <div className="mt-4">
+                  {professionFields.map((profession, jobCategoryIndex: any) => (
+                    <div className="col-span-full" key={profession.id}>
+                      <label
+                        htmlFor={`profession[${jobCategoryIndex}].profession`}
+                        className="block text-sm font-medium leading-6 text-gray-900">
+                        Profession
+                      </label>
+                      <div className="mt-2">
+                        <input
+                          type="text"
+                          id={`profession[${jobCategoryIndex}].profession`}
+                          {...register(`profession.${jobCategoryIndex}.profession`)}
+                          autoComplete="Software Engineer |Javascript | OS"
+                          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                        />
+                        {/* {errors.jobcategory?.[jobCategoryIndex]?.title && (
+                          <p className="mt-2 text-sm text-red-400">
+                            {errors?.jobcategory[jobCategoryIndex].title.message}
+                          </p>
+                        )} */}
+                      </div>
+                    </div>
+                  ))}
+
                 </div>
               </div>
             </motion.div>
@@ -602,7 +697,7 @@ export default function Form() {
                   <label
                     htmlFor="country"
                     className="block text-sm font-medium leading-6 text-gray-900">
-                    Country
+                    Language
                   </label>
                   <div className="mt-2">
                     <select
@@ -685,3 +780,63 @@ export default function Form() {
     </ProfileWrapper>
   );
 }
+
+const StateFields: React.FC<{ countryIndex: number, control: any, register: any, errors: any }> = ({ countryIndex, control, register, errors }) => {
+  const { fields: stateFields, append: appendState, remove: removeState } = useFieldArray({
+    control,
+    name: `country.${countryIndex}.state`,
+  });
+
+  return (
+    <>
+      {stateFields.map((state, stateIndex) => (
+        <div key={state.id}>
+          <input {...register(`country.${countryIndex}.state.${stateIndex}.name`)} placeholder="State Name" />
+          {errors.country?.[countryIndex]?.state?.[stateIndex]?.name && <p>{errors.country[countryIndex].state[stateIndex].name?.message}</p>}
+          <button type="button" onClick={() => removeState(stateIndex)}>Remove State</button>
+        </div>
+      ))}
+      <button type="button" onClick={() => appendState({ name: '' })}>Add State</button>
+    </>
+  );
+};
+
+const CityFields: React.FC<{ countryIndex: number, control: any, register: any, errors: any }> = ({ countryIndex, control, register, errors }) => {
+  const { fields: cityFields, append: appendCity, remove: removeCity } = useFieldArray({
+    control,
+    name: `country.${countryIndex}.city`,
+  });
+
+  return (
+    <>
+      {cityFields.map((city, cityIndex) => (
+        <div key={city.id}>
+          <input {...register(`country.${countryIndex}.city.${cityIndex}.name`)} placeholder="City Name" />
+          {errors.country?.[countryIndex]?.city?.[cityIndex]?.name && <p>{errors.country[countryIndex].city[cityIndex].name?.message}</p>}
+          <button type="button" onClick={() => removeCity(cityIndex)}>Remove City</button>
+        </div>
+      ))}
+      <button type="button" onClick={() => appendCity({ name: '' })}>Add City</button>
+    </>
+  );
+};
+
+const StreetFields: React.FC<{ countryIndex: number, control: any, register: any, errors: any }> = ({ countryIndex, control, register, errors }) => {
+  const { fields: streetFields, append: appendStreet, remove: removeStreet } = useFieldArray({
+    control,
+    name: `country.${countryIndex}.streetAddress`,
+  });
+
+  return (
+    <>
+      {streetFields.map((street, streetIndex) => (
+        <div key={street.id}>
+          <input {...register(`country.${countryIndex}.streetAddress.${streetIndex}.address`)} placeholder="Street Address" />
+          {errors.country?.[countryIndex]?.streetAddress?.[streetIndex]?.address && <p>{errors.country[countryIndex].streetAddress[streetIndex].address?.message}</p>}
+          <button type="button" onClick={() => removeStreet(streetIndex)}>Remove Street</button>
+        </div>
+      ))}
+      <button type="button" onClick={() => appendStreet({ address: '' })}>Add Street</button>
+    </>
+  );
+};

@@ -42,7 +42,7 @@ export const clientProfile = async (values: z.infer<typeof ClientSchema>) => {
  const existingClientProfile=await db.clientProfile.findFirst({where:{userId:dbUser.id}});
 
 
- let clientProfile: { id: any; userId?: string; country?: string | null; };
+ let clientProfile: { id: any; userId?: string; country?: [] | null; };
 
 
  

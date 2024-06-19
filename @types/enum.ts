@@ -181,3 +181,22 @@ export interface DistrictState {
    id: string;
   district: string;
 }
+
+export interface Country {
+  id: string;
+  name: string;
+  zip: string;
+  state: string[];
+  city: string[];
+  streetAddress: string[];
+}
+
+export interface Skill {
+  id: string; 
+  skill: string;
+}
+
+export interface Profession {
+  id: string;
+  title: string;
+}

@@ -33,15 +33,10 @@ export const POST = async (req: CustomNextApiRequest, res: NextResponse) => {
       const {
         userId,
         country,
-        street,
-        state,
-        city,
-        contact,
-        zip,
         hourlyrate,
         estimatedamount,
         message,
-        program,
+        skill,
         profession,
         language,
         experiencefile,
@@ -67,7 +62,7 @@ export const POST = async (req: CustomNextApiRequest, res: NextResponse) => {
         let fileData = {};
 
         const documentFile = req.files;
-        //console.log("req.files routes:", req.files);
+        console.log("req.files routes:", req.files);
         if (!documentFile) {
           return new Response(JSON.stringify({ error: "no_files" }), {
             status: 422,
@@ -94,7 +89,7 @@ export const POST = async (req: CustomNextApiRequest, res: NextResponse) => {
           }
 
           fileData = {
-            fileName: documentFile.originalname,
+            fileName: documentFile.name,
             filePath: uploadedFile.secure_url,
             fileType: documentFile.mimetype,
             fileSize: fileSizeFormatter(documentFile.size, 2),
@@ -105,17 +100,12 @@ export const POST = async (req: CustomNextApiRequest, res: NextResponse) => {
       // Create a profile
       const FreelancerProfile = await db.freelancerProfile.create({
         data: {
-          country: country || null,
-          street: street || null,
-          city: city || null,
-          contact: contact || null,
-          state: state || null,
-          zip: zip || null,
+        
           hourlyrate: hourlyrate || null,
           estimatedamount: estimatedamount || null,
           message: message || null,
-          program: program || null,
-          profession: profession || null,
+          
+         
           language: language || null,
           experiencefile: experiencefile
             ? JSON.stringify(experiencefile)

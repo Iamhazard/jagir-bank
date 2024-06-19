@@ -68,26 +68,26 @@ const phoneRegex = new RegExp(
 const amountRegex = /^[0-9]*\.?[0-9]+$/;
 
 
-export const FormDataSchema = z.object({
-  country: z.string().min(1, 'Country is required'),
-  street: z.string().min(1, 'Street is required'),
-  contact: z.string().regex(phoneRegex,'Invalid Number!'),
-  city: z.string().min(1, 'City is required'),
-  state: z.string().min(1, 'State is required'),
-  zip: z.string().min(1, 'Zip is required'),
-   hourlyrate: z.string().regex(amountRegex,"Hourly rate must be a positive number"),
-  estimatedamount:z.string().regex(amountRegex,"estimatedamount  must be a positive number"),
-  message: z.string().min(10, 'minium 10 words  is required'),
-  program: z.string().min(1, 'program is required'),
-  profession: z.string().min(1, 'profession is required'),
-  language: z.string().min(1, 'language is required'),
-});
+// export const FormDataSchema = z.object({
+//   country: z.string().min(1, 'Country is required'),
+//   street: z.string().min(1, 'Street is required'),
+//   contact: z.string().regex(phoneRegex,'Invalid Number!'),
+//   city: z.string().min(1, 'City is required'),
+//   state: z.string().min(1, 'State is required'),
+//   zip: z.string().min(1, 'Zip is required'),
+//    hourlyrate: z.string().regex(amountRegex,"Hourly rate must be a positive number"),
+//   estimatedamount:z.string().regex(amountRegex,"estimatedamount  must be a positive number"),
+//   message: z.string().min(10, 'minium 10 words  is required'),
+//   program: z.string().min(1, 'program is required'),
+//   profession: z.string().min(1, 'profession is required'),
+//   language: z.string().min(1, 'language is required'),
+// });
 
-const skillsSchema = z.object({
-  skills1: z.string(),
-  skills2: z.string(),
-  skills3: z.string(),
-});
+// const skillsSchema = z.object({
+//   skills1: z.string(),
+//   skills2: z.string(),
+//   skills3: z.string(),
+// });
 
 const RateSchema=z.object({
   from:z.string().regex(amountRegex,"fixed  must be a positive number"),
@@ -148,12 +148,18 @@ export const CategorySchema = z.object({
   
 })
 
+export const ProfessionSchema=z.object({
+  profession: z.string().min(2, {
+    message: "profession must be at least 2 characters.",
+  }),
+})
+
 export const ProfileSchema = z.object({
   name: z.string(),
   
 })
 
-export const SkillSchema = z.object({
+export const SkillsSchema = z.object({
   skill: z.string(),
   
 })
@@ -164,20 +170,58 @@ export const SalarySchema = z.object({
 })
 
 
-export const CountrySchema = z.object({
-  district: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
+export const CitySchema = z.object({
+  name: z.string().min(2, {
+    message: "name must be at least 2 characters.",
   }),
 })
 
 export const StateSchema = z.object({
-  stateName: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
+  name: z.string().min(2, {
+    message: "State Name must be at least 2 characters.",
   }),
 })
 
 export const StreetSchema = z.object({
-  username: z.string().min(2, {
+  address: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
+})
+
+// export const Countrychema = z.object({
+//   name: z.string().min(2, {
+//     message: "Country Name must be at least 2 characters.",
+//   }),
+
+// })
+const CountrySchema = z.object({
+  name: z.string().min(2, { message: "Country name must be at least 2 characters." }),
+  zip: z.string(),
+    Statename: z.string().min(2, {
+    message: "State Name must be at least 2 characters.",
+  }),
+   cityname: z.string().min(2, {
+    message: "name must be at least 2 characters.",
+  }),
+  address: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+});
+
+export const FreeLancerSchema=z.object({
+  name:z.string(),
+ country:z.array(CountrySchema),
+   profession: z.array(ProfessionSchema),
+   contact: z.string().regex(phoneRegex,'Invalid Number!'),
+   hourlyrate: z.string().regex(amountRegex,"Hourly rate must be a positive number"),
+estimatedamount:z.string().regex(amountRegex,"estimatedamount  must be a positive number"),
+message: z.string().min(10, 'minium 10 words  is required'),
+  skills:z.array(SkillsSchema),
+  language: z.string().min(2, {
+    message: "State Name must be at least 2 characters.",
+  }),
+  experiencefile: z.string().optional(),
+  educationfile: z.string().optional(),
+  imageInput: z.string().optional(),
+
 })
