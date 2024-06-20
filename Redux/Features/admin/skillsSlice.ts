@@ -1,18 +1,18 @@
 
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { RootState } from "../store";
-import { CategorySchema } from "@/Schemas";
-import { CategoryPageProps } from "@/@types/enum";
+import { RootState } from "../../store";
+import { CategorySchema, SkillsSchema } from "@/Schemas";
+import {  Skill, SkillPageProps } from "@/@types/enum";
 
 
-interface Category{
+interface skills{
   id:string;
-  name:string,
+  skill:string,
 }
 
-const initialState: CategoryPageProps = {
-  category: null,
+const initialState: SkillPageProps = {
+  skill: null,
   status: 'idle',
   error: null,
   success: null,
@@ -20,14 +20,14 @@ const initialState: CategoryPageProps = {
 
 
 
-export const createCategory = createAsyncThunk(
+export const createskills= createAsyncThunk(
   'category/create',
-  async (payload: { category: string,userId:string |undefined }, thunkAPI) => {
+  async (payload: { title: string, }, thunkAPI) => {
     try {
-      const response = await axios.post(`/api/category`, payload)
+      const response = await axios.post(`/api/skills/new`, payload)
       
-      const category = response.data.category;  // Ensure this is correctly spelled
-      CategorySchema.parse(category);
+      const skill = response.data.skill;  
+      SkillsSchema.parse(skill);
 
       return response.data;
     } catch (error: any) {
@@ -37,7 +37,7 @@ export const createCategory = createAsyncThunk(
 );
 
 export const editCategory = createAsyncThunk<
-  Category[], 
+  Skill[], 
   { categoryId: string;category:string },
   { state: RootState } 
 >(
@@ -50,7 +50,7 @@ export const editCategory = createAsyncThunk<
         
       });
 
-      const categories: Category[] = response.data;
+      const categories: Skill[] = response.data;
       return categories;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
@@ -65,7 +65,7 @@ export const viewCategories = createAsyncThunk < [] ,void ,{state:RootState}>(
   async (_, thunkAPI) => {
     try {
       
-      const response = await axios.get(`/api/category/getcategory`,
+      const response = await axios.get(`/api/category/getskiill`,
       );
       const categories = response.data;
       console.log("categoreies from category",categories)
@@ -97,23 +97,23 @@ export const deleteCategory  = createAsyncThunk <[] ,string  ,{state:RootState}>
 
 
 
-const categorySlice = createSlice({
+const skillsSlice = createSlice({
   name: 'category',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(createCategory.pending, (state) => {
+      .addCase(createskills.pending, (state) => {
         state.status = 'loading';
         state.success = null;
         state.error = null;
       })
-      .addCase(createCategory.fulfilled, (state, action) => {
+      .addCase(createskills.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.category = action.payload.category;
+        state.skill = action.payload.category;
         state.success = "Category created successfully";
       })
-      .addCase(createCategory.rejected, (state, action: PayloadAction<any>) => {
+      .addCase(createskills.rejected, (state, action: PayloadAction<any>) => {
         state.status = 'failed';
         state.error = action.payload;
       })
@@ -124,7 +124,7 @@ const categorySlice = createSlice({
       })
       .addCase(editCategory.fulfilled, (state, action: PayloadAction<any>) => {
         state.status = 'succeeded';
-        state.category = action.payload;
+        state.skill = action.payload;
         state.success = "Category edited successfully";
       })
       .addCase(editCategory.rejected, (state, action: PayloadAction<any>) => {
@@ -138,7 +138,7 @@ const categorySlice = createSlice({
       })
       .addCase(viewCategories.fulfilled, (state, action:PayloadAction<any>) => {
         state.status = 'succeeded';
-        state.category = action.payload;
+        state.skill = action.payload;
         state.success = "Categories fetched successfully";
       })
       .addCase(viewCategories.rejected, (state, action: PayloadAction<any>) => {
@@ -152,7 +152,7 @@ const categorySlice = createSlice({
       })
       .addCase(deleteCategory.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.category = state?.category;
+        state.skill = state?.skill;
         state.success = "Category deleted successfully";
       })
       .addCase(deleteCategory.rejected, (state, action: PayloadAction<any>) => {
@@ -163,5 +163,5 @@ const categorySlice = createSlice({
 });
 //export const selectCategory = (state:RootState) => state.category;
 
-export default categorySlice.reducer;
+export default skillsSlice.reducer;
 

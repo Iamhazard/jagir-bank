@@ -105,45 +105,101 @@ export default function Form() {
     setSelecteExpFiles(selecteexpfiles);
     // console.log("Selected edu", files);
   };
+  // const processForm: SubmitHandler<Inputs> = async (data) => {
+  //   console.log(data, "data from form")
+  //   // const addCountry = () => {
+  //   //   appendCountry({ name: '', zip: '', Statename: '', cityname: '', address: '' })
+  //   // }
+  //   try {
+  //     //console.log(addCountry,"inside form submit")
+  //     const formData = new FormData();
+  //     formData.append("userId", userid as string);
+  //     formData.append("name", data.name);
+  //     formData.append("contact", data.contact);
+  //     formData.append("hourlyrate", data.hourlyrate);
+  //     formData.append("estimatedamount", data.estimatedamount);
+  //     formData.append("message", data.message);
+  //     data.skills.forEach((skill, Skillindex) => {
+  //       formData.append(`country[${Skillindex}][skill]`, skill.skill);
+
+  //     });
+  //     data.profession.forEach((profession, Professionindex) => {
+  //       formData.append(`country[${Professionindex}][profession]`, profession.profession);
+
+  //     });
+  //     formData.append("language", data.language);
+  //     formData.append("imageInput", selectedImage);
+  //     formData.append("educationfile", selectefiles);
+  //     formData.append("experiencefile", selecteexpfiles);
+  //     // console.log(...formData);
+  //     console.log("Selected image ", selectedImage);
+  //     data.country.forEach((country, index) => {
+  //       formData.append(`country[${index}][name]`, country.name);
+  //       formData.append(`country[${index}][zip]`, country.zip);
+  //       formData.append(`country[${index}][Statename]`, country.Statename);
+  //       formData.append(`country[${index}][cityname]`, country.cityname);
+  //       formData.append(`country[${index}][address]`, country.address);
+  //     });
+  //     const formDataObject: any = {};
+  //     for (const pair of formData.entries()) {
+  //       formDataObject[pair[0]] = pair[1];
+  //     }
+
+  //     console.log("formdata obh", formDataObject);
+
+  //     const response = await fetch("api/freelancerprofile/new", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //       body: JSON.stringify(formDataObject),
+  //     });
+
+  //     if (response.ok) {
+  //       const profiledata = await response.json();
+  //       console.log("profile data", profiledata);
+  //       setProfileData(profiledata);
+  //       setSuccess("Profile created successfully");
+  //     } else {
+  //       const errorData = await response.json();
+  //       setError(errorData.message || "An error occurred");
+  //     }
+  //   } catch (error) {
+  //     setError("An error occurred while processing the request");
+  //   }
+  // };
+
   const processForm: SubmitHandler<Inputs> = async (data) => {
     console.log(data, "data from form")
     // const addCountry = () => {
     //   appendCountry({ name: '', zip: '', Statename: '', cityname: '', address: '' })
     // }
     try {
-      //console.log(addCountry,"inside form submit")
-      const formData = new FormData();
-      formData.append("userId", userid as string);
-      formData.append("name", data.name);
-      formData.append("contact", data.contact);
-      formData.append("hourlyrate", data.hourlyrate);
-      formData.append("estimatedamount", data.estimatedamount);
-      formData.append("message", data.message);
-      data.skills.forEach((skill, Skillindex) => {
-        formData.append(`country[${Skillindex}][skill]`, skill.skill);
-
-      });
-      data.profession.forEach((profession, Professionindex) => {
-        formData.append(`country[${Professionindex}][profession]`, profession.profession);
-
-      });
-      formData.append("language", data.language);
-      formData.append("imageInput", selectedImage);
-      formData.append("educationfile", selectefiles);
-      formData.append("experiencefile", selecteexpfiles);
-      // console.log(...formData);
-      console.log("Selected image ", selectedImage);
-      data.country.forEach((country, index) => {
-        formData.append(`country[${index}][name]`, country.name);
-        formData.append(`country[${index}][zip]`, country.zip);
-        formData.append(`country[${index}][Statename]`, country.Statename);
-        formData.append(`country[${index}][cityname]`, country.cityname);
-        formData.append(`country[${index}][address]`, country.address);
-      });
-      const formDataObject: any = {};
-      for (const pair of formData.entries()) {
-        formDataObject[pair[0]] = pair[1];
-      }
+      const formDataObject: any = {
+        userId: userid as string,
+        name: data.name,
+        contact: data.contact,
+        hourlyrate: data.hourlyrate,
+        estimatedamount: data.estimatedamount,
+        message: data.message,
+        language: data.language,
+        imageInput: selectedImage,  // Assuming this is a base64 string or a URL
+        educationfile: selectefiles,  // Assuming this is a base64 string or a URL
+        experiencefile: selecteexpfiles,  // Assuming this is a base64 string or a URL
+        country: data.country.map((country, index) => ({
+          name: country.name,
+          zip: country.zip,
+          Statename: country.Statename,
+          cityname: country.cityname,
+          address: country.address,
+        })),
+        skills: data.skills.map((skill, inx) => ({
+          skill: skill.skill,
+        })),
+        profession: data.profession.map((pro, ind) => ({
+          profession: pro.profession,
+        }))
+      };
 
       console.log("formdata obh", formDataObject);
 
@@ -168,8 +224,6 @@ export default function Form() {
       setError("An error occurred while processing the request");
     }
   };
-
-
   type FieldName = keyof Inputs;
 
   const next = async () => {

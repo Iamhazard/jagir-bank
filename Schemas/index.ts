@@ -152,6 +152,7 @@ export const ProfessionSchema=z.object({
   profession: z.string().min(2, {
     message: "profession must be at least 2 characters.",
   }),
+  categoryId:z.string().optional(),
 })
 
 export const ProfileSchema = z.object({
@@ -188,12 +189,7 @@ export const StreetSchema = z.object({
   }),
 })
 
-// export const Countrychema = z.object({
-//   name: z.string().min(2, {
-//     message: "Country Name must be at least 2 characters.",
-//   }),
 
-// })
 const CountrySchema = z.object({
   name: z.string().min(2, { message: "Country name must be at least 2 characters." }),
   zip: z.string(),

@@ -13,7 +13,7 @@ export  async function GET(req: NextRequest,{params}:{params:IParams}) {
         where: {
           id: categoryId
         },
-       
+       include:{professions:true}
       });
       if (!category) {
         return new Response("Category not found", { status: 404 });
@@ -23,7 +23,24 @@ export  async function GET(req: NextRequest,{params}:{params:IParams}) {
       console.error(error);
       return new Response("Internal Server Error", { status: 500 });
     }
-  } else {
+  } else if(req.method =='PATCH'){
+    const {title}=await req.json();
+
+    const updateCaegory=await db.category.update({
+      where:{
+        id:categoryId
+      },
+      data:{title}
+    })
+return new Response(JSON.stringify(updateCaegory), { status: 200 });
+     
+  }else if(req.method === 'DELETE'){
+    const deleteCategory=await db.category.delete({
+      where:{id:categoryId}
+    })
+     return new Response(JSON.stringify(deleteCategory), { status: 200 });
+  }else{
     return new Response("Method Not Allowed", { status: 405 });
   }
+  
 }

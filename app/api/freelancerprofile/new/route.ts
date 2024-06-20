@@ -1,12 +1,9 @@
-import { v2 as cloudinary } from "cloudinary";
-import { db } from "@/lib/db";
-import { fileSizeFormatter, upload } from "@/lib/multer";
-
+import { v2 as cloudinary } from 'cloudinary';
+import { db } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
-import { getUserRoleByEmail } from "@/data/role";
-import { currentRole } from "@/lib/auth";
-import { UserRole } from "@prisma/client";
-
+import multer from 'multer';
+import { Readable } from 'stream';
+import { fileSizeFormatter, upload } from '@/lib/multer'; // Adjust this import based on your actual implementation
 interface MulterFile {
   fieldname: string;
   originalname: string;
@@ -27,111 +24,139 @@ interface MulterRequest extends NextRequest {
   files: MulterFile[];
 }
 
-export const POST = async (req: CustomNextApiRequest, res: NextResponse) => {
-  if (req.method === "POST") {
-    try {
-      const {
-        userId,
-        country,
-        hourlyrate,
-        estimatedamount,
-        message,
-        skill,
-        profession,
-        language,
-        experiencefile,
-        educationfile,
-        imageInput,
-      } = await req.json();
+// Configure Cloudinary
+cloudinary.config({ 
+  cloud_name: 'dmsko6djw', 
+  api_key: '592257523636176', 
+  api_secret: 'iG5wrVWoEpkUSFntp2_ZagUKLJ8' 
+});
 
-      //console.log("req.body:", req.body);
-      // Image upload
 
-      upload.fields([
-        { name: experiencefile },
-        { name: educationfile },
-        { name: imageInput },
-      ])(req as any, res as any, async function (err) {
-        if (err) {
-          return new Response(JSON.stringify("No files received."), {
-            status: 400,
-          });
-        }
-        //console.log("req.body routes:", req.body);
 
-        let fileData = {};
-
-        const documentFile = req.files;
-        console.log("req.files routes:", req.files);
-        if (!documentFile) {
-          return new Response(JSON.stringify({ error: "no_files" }), {
-            status: 422,
-          });
-        } else {
-          documentFile.images = (req as unknown as MulterRequest).files.map(
-            (file) => file.filename
-          );
-        }
-
-        if (documentFile) {
-          let uploadedFile;
-          // Cloudinary upload
-          try {
-            uploadedFile = await cloudinary.uploader.upload(documentFile.path, {
-              folder: "jagirbank",
-              resource_type: "image",
-            });
-          } catch (error) {
-            console.error("Error uploading image to Cloudinary:", error);
-            return new Response(JSON.stringify("image couldn't be uploaded"), {
-              status: 500,
-            });
-          }
-
-          fileData = {
-            fileName: documentFile.name,
-            filePath: uploadedFile.secure_url,
-            fileType: documentFile.mimetype,
-            fileSize: fileSizeFormatter(documentFile.size, 2),
-          };
-        }
-      });
-
-      // Create a profile
-      const FreelancerProfile = await db.freelancerProfile.create({
-        data: {
-        
-          hourlyrate: hourlyrate || null,
-          estimatedamount: estimatedamount || null,
-          message: message || null,
-          
-         
-          language: language || null,
-          experiencefile: experiencefile
-            ? JSON.stringify(experiencefile)
-            : null,
-          educationfile: (educationfile && educationfile.fileData) || null,
-          imageInput: imageInput.fileData,
-          user: {
-            connect: { id: userId },
-          },
-        },
-      });
-
-      return new Response(JSON.stringify(FreelancerProfile), { status: 201 });
-    } catch (error) {
-      console.error("Error in POST /api/profile/new:", error);
-
-      return new Response(
-        JSON.stringify({ error: "Failed to create freelancer profile" }),
-        { status: 500 }
-      );
-    }
-  } else {
-    return new Response(JSON.stringify({ error: "Method Not Allowed" }), {
-      status: 405,
+const runMiddleware = (req: any, res: any, fn: any) => {
+  return new Promise((resolve, reject) => {
+    fn(req, res, (result: any) => {
+      if (result instanceof Error) {
+        return reject(result);
+      }
+      return resolve(result);
     });
+  });
+};
+
+const uploadFileToCloudinary = async (file: Express.Multer.File): Promise<string | null> => {
+  try {
+    const stream = new Readable();
+    stream.push(file.buffer);
+    stream.push(null);
+
+    const result = await new Promise((resolve, reject) => {
+      const cloudinaryStream = cloudinary.uploader.upload_stream(
+        { folder: 'jagirbank', resource_type: 'image' },
+        (error, result) => {
+          if (result) {
+            resolve(result.secure_url);
+          } else {
+            reject(error);
+          }
+        }
+      );
+      stream.pipe(cloudinaryStream);
+    });
+
+    return result as string;
+  } catch (error) {
+    console.error('Error uploading file to Cloudinary:', error);
+    return null;
   }
 };
 
+export const POST = async (req: CustomNextApiRequest, res: NextResponse) => {
+  await runMiddleware(req, res, upload.fields([
+    { name: 'imageInput', maxCount: 1 },
+    { name: 'educationfile', maxCount: 1 },
+    { name: 'experiencefile', maxCount: 1 },
+  ]));
 
+  
+
+  const {
+    userId,
+    country,
+    name,
+    contact,
+    hourlyrate,
+    estimatedamount,
+    message,
+    skills,
+    profession,
+    language,
+     imageInput, educationfile, experiencefile
+  } = await req.json();
+
+ 
+
+  const imageUpload = imageInput ? await uploadFileToCloudinary(imageInput[0]) : null;
+  const educationUpload = educationfile ? await uploadFileToCloudinary(educationfile[0]) : null;
+  const experienceUpload = experiencefile ? await uploadFileToCloudinary(experiencefile[0]) : null;
+
+  try {
+    const FreelancerProfile = await db.freelancerProfile.create({
+      data: {
+        userId,
+        name,
+        contact,
+        hourlyrate: hourlyrate || null,
+        estimatedamount: estimatedamount || null,
+        message: message || null,
+        language: language || null,
+        country: {
+          create: country.map((c: any) => ({
+            name: c.name,
+            zip: c.zip,
+            Statename: c.Statename,
+            cityname: c.cityname,
+            address: c.address,
+          })),
+        },
+        skills: {
+          create: skills.map((skill: any) => ({
+            skill: skill.skill,
+            profession: {
+              connect: {
+                id: skill.professionId,
+              },
+            },
+          })),
+        },
+        profession: {
+          create: profession.map((p: any) => ({
+            profession: p.profession,
+            jobCategory: {
+              connect: {
+                id: p.categoryId,
+              },
+            },
+          })),
+        },
+        experiencefile: experienceUpload,
+        educationfile: educationUpload,
+        imageInput: imageUpload,
+        user: {
+          connect: { id: userId },
+        },
+      },
+    });
+
+    return NextResponse.json(FreelancerProfile, { status: 201 });
+  } catch (error) {
+    console.error('Error in POST /api/profile/new:', error);
+    return NextResponse.json({ error: 'Failed to create freelancer profile' }, { status: 500 });
+  }
+};
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};

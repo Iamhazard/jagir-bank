@@ -7,7 +7,9 @@ export  const GET =async(req: NextRequest, res: NextResponse,) =>{
   
   if (req.method === "GET") {
     try {
-      const getAllcategory = await db.category.findMany();
+      const getAllcategory = await db.category.findMany({
+        include:{professions:true}
+      });
       if (!getAllcategory) {
         return new Response("Category not found", { status: 404 });
       }

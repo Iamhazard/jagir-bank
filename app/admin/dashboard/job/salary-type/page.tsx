@@ -15,7 +15,7 @@ import { SalaryState, SkillState } from '@/@types/enum';
 import { Header } from '@/Components/auth/header';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/Redux/store';
-import { editCategory, viewCategories } from '@/Redux/Features/CategorySlice';
+import { editCategory, viewCategories } from '@/Redux/Features/admin/CategorySlice';
 import { DeleteButton } from '@/app/admin/_component/DeleteButton';
 
 interface Salary {

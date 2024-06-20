@@ -151,9 +151,16 @@ export interface CategoryPageProps {
 }
 export interface ProfessionState {
    id: string;
-  name: string;
+  profession: string;
   createdAt: string;
   updatedAt: string;
+}
+export interface ProfessionPageProps {
+    category: ProfessionState| null;
+    status: 'idle' | 'loading' | 'succeeded' | 'failed';
+    error: string | null;
+    success: string | null;
+
 }
 export interface DeleteButtonPros {
     label:string, 
@@ -168,6 +175,14 @@ export interface SkillState {
   skill: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface SkillPageProps {
+    skill: SkillState| null;
+    status: 'idle' | 'loading' | 'succeeded' | 'failed';
+    error: string | null;
+    success: string | null;
+
 }
 
 export interface SalaryState {

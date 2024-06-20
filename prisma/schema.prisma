@@ -95,25 +95,45 @@ model TwoFactorConfirmation {
 }
 
 model FreelancerProfile {
-  id              String       @id @default(auto()) @map("_id") @db.ObjectId
-  userId          String       @db.ObjectId
+  id              String                          @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String                          @db.ObjectId
   name            String
   country         Country[]
   contact         String?
   hourlyrate      String?
   estimatedamount String?
   message         String
-  profession      Profession[]
-  skills          Skills[]
+  profession      FreelancerProfileToProfession[]
+  skills          FreelancerProfileToSkill[]
   language        String
   experiencefile  String?
   educationfile   String?
   imageInput      String?
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
-  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt       DateTime                        @default(now())
+  updatedAt       DateTime                        @updatedAt
+  user            User                            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId])
+}
+
+model FreelancerProfileToProfession {
+  id                  String            @id @default(auto()) @map("_id") @db.ObjectId
+  freelancerProfileId String            @db.ObjectId
+  professionId        String            @db.ObjectId
+  freelancerProfile   FreelancerProfile @relation(fields: [freelancerProfileId], references: [id])
+  profession          Profession        @relation(fields: [professionId], references: [id])
+
+  @@index([freelancerProfileId, professionId], name: "unique_freelancer_profile_profession")
+}
+
+model FreelancerProfileToSkill {
+  id                  String            @id @default(auto()) @map("_id") @db.ObjectId
+  freelancerProfileId String            @db.ObjectId
+  skillId             String            @db.ObjectId
+  freelancerProfile   FreelancerProfile @relation(fields: [freelancerProfileId], references: [id])
+  skill               Skills            @relation(fields: [skillId], references: [id])
+
+  @@index([freelancerProfileId, skillId], name: "unique_freelancer_profile_skill")
 }
 
 model Country {
@@ -190,7 +210,6 @@ model Job {
   jobtime         Jobtime[]
   createdAt       DateTime           @default(now())
   updatedAt       DateTime           @updatedAt
-  Profession      Profession[]
 }
 
 enum JobStatus {
@@ -211,25 +230,33 @@ model SkillsOnJobs {
 }
 
 model Category {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  title     String
-  createdAt DateTime @default(now())
-  Skill     Skills[]
-  updatedAt DateTime @updatedAt
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  createdAt   DateTime     @default(now())
+  professions Profession[]
+  updatedAt   DateTime     @updatedAt
+}
+
+model Profession {
+  id         String                          @id @default(auto()) @map("_id") @db.ObjectId
+  profession String?
+  category   Category                        @relation(fields: [categoryId], references: [id])
+  categoryId String                          @db.ObjectId
+  freelancer FreelancerProfileToProfession[]
+  skills     Skills[]
+  createdAt  DateTime                        @default(now())
+  updatedAt  DateTime                        @updatedAt
 }
 
 model Skills {
-  id           String            @id @default(auto()) @map("_id") @db.ObjectId
+  id           String                     @id @default(auto()) @map("_id") @db.ObjectId
   title        String?
-  f_Id         String            @db.ObjectId
-  freelancer   FreelancerProfile @relation(fields: [f_Id], references: [id], onDelete: Cascade)
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
-  category     Category          @relation(fields: [categoryId], references: [id])
-  categoryId   String            @db.ObjectId
+  profiles     FreelancerProfileToSkill[]
+  profession   Profession                 @relation(fields: [professionId], references: [id])
+  professionId String                     @db.ObjectId
   SkillsOnJobs SkillsOnJobs[]
-  profession   Profession        @relation(fields: [p_id], references: [id])
-  p_id         String            @db.ObjectId
+  createdAt    DateTime                   @default(now())
+  updatedAt    DateTime                   @updatedAt
 }
 
 model Rating {
@@ -262,18 +289,6 @@ model OrganizationType {
   job          Job      @relation(fields: [jobId], references: [id])
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-}
-
-model Profession {
-  id         String            @id @default(auto()) @map("_id") @db.ObjectId
-  profession String?
-  skill      Skills[]
-  jobId      String            @db.ObjectId
-  job        Job               @relation(fields: [jobId], references: [id])
-  f_id       String            @db.ObjectId
-  freelancer FreelancerProfile @relation(fields: [f_id], references: [id])
-  createdAt  DateTime          @default(now())
-  updatedAt  DateTime          @updatedAt
 }
 
 model Experience {

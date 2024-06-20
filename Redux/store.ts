@@ -1,7 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
 import authReducer from './Features/authSlice'
 import jobReducer from './Features/JobSlice'
-import categoryReducer from './Features/JobSlice'
+import categoryReducer from './Features/admin/CategorySlice'
+import skillsReducer from './Features/admin/skillsSlice'
+import professionReducer from './Features/admin/professionSlice'
 
 export const makeStore = () => {
   return configureStore({
@@ -9,6 +11,8 @@ export const makeStore = () => {
         auth:authReducer,
         job:jobReducer,
         category:categoryReducer,
+        profession:professionReducer,
+        skills:skillsReducer,
         
        
     }

@@ -1,8 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import CardWrapper from '@/Components/auth/card-wrapper';
-import { ProfileSchema } from '@/Schemas';
-import axios from 'axios';
+import { ProfessionSchema } from '@/Schemas';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/Components/ui/form'
 import React, { useEffect, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
@@ -11,15 +10,32 @@ import { Input } from '@/Components/ui/input';
 import { FormError } from '@/Components/auth/form-error';
 import { FormSuccess } from '@/Components/auth/form-success';
 import { Button } from '@/Components/ui/button';
-import { ProfessionState } from '@/@types/enum';
+import { CategoryState, ProfessionState } from '@/@types/enum';
 import { Header } from '@/Components/auth/header';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/Redux/store';
-import { editCategory, viewCategories } from '@/Redux/Features/CategorySlice';
+import { editCategory, viewCategories } from '@/Redux/Features/admin/CategorySlice';
 import { DeleteButton } from '@/app/admin/_component/DeleteButton';
+import Select from 'react-select';
+import { editProfessions } from '@/Redux/Features/admin/professionSlice';
 
 interface Profession {
     name: string,
+}
+interface OptionType {
+    id: string;
+    title: string;
+    createdAt: string;
+    updatedAt: string;
+    professions: string[];
+}
+
+interface Category {
+    id: string;
+    title: string;
+    createdAt: string;
+    updatedAt: string;
+    professions: string[];
 }
 
 const ProfessionPage = () => {
@@ -30,23 +46,31 @@ const ProfessionPage = () => {
         reset,
     } = useForm();
 
-    const form = useForm<z.infer<typeof ProfileSchema>>({
+    const form = useForm<z.infer<typeof ProfessionSchema>>({
         defaultValues: {
-            name: "",
+            profession: "",
+            categoryId: ""
 
         }
     })
     const [error, setError] = useState<string | null>("");
     const [professionName, setProfessionName] = useState('');
     const [success, setSuccess] = useState<string | null>("");
-    const [categories, setCategories] = useState<Profession | null>(null)
+    const [categories, setCategories] = useState<Category[]>([])
+    const [professions, setProfessions] = useState<Category | null>(null)
     const [editProfession, setEditProfession] = useState<ProfessionState | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [isPending, startTransition] = useTransition();
-    const [categoryId, setCategoryId] = useState('')
+    const [professionId, setProfessionId] = useState('')
     const dispatch = useDispatch<AppDispatch>()
+    const [isClearable, setIsClearable] = useState(true);
+    const [isSearchable, setIsSearchable] = useState(true);
+    const [isDisabled, setIsDisabled] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isRtl, setIsRtl] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 
 
     useEffect(() => {
@@ -67,23 +91,25 @@ const ProfessionPage = () => {
 
         }
     }
-    console.log("all category", categories)
-    const submitCategory = async (data: any) => {
+    //console.log("all category from profession ", categories)
+
+    const submitProfession = async (data: any) => {
+        console.log(data)
 
         setSubmitting(true);
 
         if (editProfession) {
-            await dispatch(editCategory({
-                categoryId,
-                category: data.title
+            await dispatch(editProfessions({
+                professionId,
+                profession: data.profession
             }))
-            setSuccessMessage('Category updated successfully');
+            setSuccessMessage('Profession updated successfully');
             fetchCategories()
             resetForm();
 
         } else {
             try {
-                const response = await fetch('/api/category/new', {
+                const response = await fetch('/api/profession', {
                     method: 'POST',
                     headers: {
                         "Content-Type": "multipart/form-data",
@@ -107,10 +133,11 @@ const ProfessionPage = () => {
     };
     const resetForm = () => {
         form.reset({
-            name: "",
+            profession: "",
+            categoryId: ""
         });
         setEditProfession(null);
-        setCategoryId('');
+        setProfessionId('');
     };
 
     const handleCancelClick = () => {
@@ -121,6 +148,10 @@ const ProfessionPage = () => {
     const handleDeleteClick = () => {
 
     }
+    const selectOptions = categories.map(category => ({
+        value: category.id,
+        label: category.title
+    }));
 
     return (
 
@@ -132,16 +163,40 @@ const ProfessionPage = () => {
             >
                 <div>
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(submitCategory)} className="space-y-6">
+                        <form onSubmit={form.handleSubmit(submitProfession)} className="space-y-6">
                             <div className='space-y-4'>
                                 <FormField
                                     control={form.control}
-                                    name="name"
+                                    name="categoryId"
+                                    render={({ field: { onChange, value, ref } }) => (
+                                        <FormItem>
+
+                                            <FormControl>
+                                                <Select
+                                                    className="basic-single"
+                                                    classNamePrefix="category"
+                                                    isDisabled={isDisabled}
+                                                    isLoading={isLoading}
+                                                    isClearable={isClearable}
+                                                    value={selectOptions.find((c) => c.value === value)}
+                                                    isRtl={isRtl}
+                                                    onChange={(val) => onChange(val?.value)}
+                                                    isSearchable={isSearchable}
+                                                    name="Category"
+                                                    options={selectOptions}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}></FormField>
+                                <FormField
+                                    control={form.control}
+                                    name="profession"
                                     render={({ field }) => (
                                         <FormItem>
                                             <label>{editProfession ? "Update Profession" : "New Profession"}
                                                 {editProfession && (
-                                                    <b>:{editProfession.name}</b>
+                                                    <b>:{editProfession.profession}</b>
                                                 )}
                                             </label>
                                             <FormControl>
@@ -174,11 +229,11 @@ const ProfessionPage = () => {
                     </Form>
                     <div className='mt-4'>
                         <Header label='Existing Profession'></Header>
-                        {Array.isArray(categories) && categories.length > 0 ? (
-                            categories.map((c: ProfessionState) => (
+                        {Array.isArray(professions) && professions.length > 0 ? (
+                            professions.map((c: ProfessionState) => (
                                 <div className='bg-gray-100 rounded-xl p-2 px-4 flex gap-1 mb-1 items-center' key={c.id}>
                                     <div className='grow'>
-                                        {c.name}
+                                        {c.profession}
 
                                     </div>
                                     <div className="flex gap-1">
@@ -186,8 +241,8 @@ const ProfessionPage = () => {
                                         <Button type="button"
                                             onClick={() => {
                                                 setEditProfession(c)
-                                                setProfessionName(c.name);
-                                                setCategoryId(c.id)
+                                                setProfessionName(c.profession);
+                                                setProfessionId(c.id)
                                             }}
                                         >
                                             Edit

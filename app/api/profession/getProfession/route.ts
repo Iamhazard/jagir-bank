@@ -7,13 +7,13 @@ export  const GET =async(req: NextRequest, res: NextResponse,) =>{
   
   if (req.method === "GET") {
     try {
-      const getAllcategory = await db.skills.findMany({
-       
+      const getAllProfession = await db.profession.findMany({
+        include:{category:true}
       });
-      if (!getAllcategory) {
+      if (!getAllProfession) {
         return new Response("Category not found", { status: 404 });
       }
-      return new Response(JSON.stringify(getAllcategory), { status: 200 });
+      return new Response(JSON.stringify(getAllProfession), { status: 200 });
     } catch (error) {
       console.error(error);
       return new Response("Internal Server Error", { status: 500 });

@@ -24,7 +24,7 @@ import { Header } from '@/Components/auth/header';
 import { DeleteButton } from '@/app/admin/_component/DeleteButton';
 import { AppDispatch } from '@/Redux/store';
 import { useDispatch } from 'react-redux';
-import { viewCategories } from '@/Redux/Features/CategorySlice';
+import { viewCategories } from '@/Redux/Features/admin/CategorySlice';
 import Link from 'next/link';
 import { Separator } from '@/Components/ui/separator';
 import { cn } from '@/lib/utils';
