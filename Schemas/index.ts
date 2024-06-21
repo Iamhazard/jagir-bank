@@ -161,7 +161,10 @@ export const ProfileSchema = z.object({
 })
 
 export const SkillsSchema = z.object({
-  skill: z.string(),
+   skill: z.string().min(2, {
+    message: "profession must be at least 2 characters.",
+  }),
+  professionId:z.string().optional(),
   
 })
 

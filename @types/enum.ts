@@ -155,6 +155,12 @@ export interface ProfessionState {
   createdAt: string;
   updatedAt: string;
 }
+export interface SkillState {
+   id: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+}
 export interface ProfessionPageProps {
     category: ProfessionState| null;
     status: 'idle' | 'loading' | 'succeeded' | 'failed';

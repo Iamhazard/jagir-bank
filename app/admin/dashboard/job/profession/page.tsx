@@ -17,7 +17,7 @@ import { AppDispatch } from '@/Redux/store';
 import { editCategory, viewCategories } from '@/Redux/Features/admin/CategorySlice';
 import { DeleteButton } from '@/app/admin/_component/DeleteButton';
 import Select from 'react-select';
-import { editProfessions } from '@/Redux/Features/admin/professionSlice';
+import { editProfessions, viewProfessions } from '@/Redux/Features/admin/professionSlice';
 
 interface Profession {
     name: string,
@@ -91,7 +91,26 @@ const ProfessionPage = () => {
 
         }
     }
-    //console.log("all category from profession ", categories)
+
+    useEffect(() => {
+        getprofession()
+
+    }, [])
+
+    const getprofession = async () => {
+        try {
+            dispatch(viewProfessions()).then((res: any) => {
+                if (res.payload) {
+                    setProfessions(res.payload);
+                }
+            });
+
+        } catch (error) {
+            console.log(error)
+
+        }
+    }
+    console.log("all category from profession ", professions)
 
     const submitProfession = async (data: any) => {
         console.log(data)
@@ -170,7 +189,7 @@ const ProfessionPage = () => {
                                     name="categoryId"
                                     render={({ field: { onChange, value, ref } }) => (
                                         <FormItem>
-
+                                            <label>Job Category</label>
                                             <FormControl>
                                                 <Select
                                                     className="basic-single"

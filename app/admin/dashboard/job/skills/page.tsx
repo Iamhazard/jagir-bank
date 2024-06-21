@@ -1,8 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import CardWrapper from '@/Components/auth/card-wrapper';
-import { SkillSchema } from '@/Schemas';
-import axios from 'axios';
+import { ProfessionSchema, SkillsSchema } from '@/Schemas';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/Components/ui/form'
 import React, { useEffect, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
@@ -11,18 +10,36 @@ import { Input } from '@/Components/ui/input';
 import { FormError } from '@/Components/auth/form-error';
 import { FormSuccess } from '@/Components/auth/form-success';
 import { Button } from '@/Components/ui/button';
-import { SkillState } from '@/@types/enum';
+import { CategoryState, ProfessionState, SkillState } from '@/@types/enum';
 import { Header } from '@/Components/auth/header';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/Redux/store';
 import { editCategory, viewCategories } from '@/Redux/Features/admin/CategorySlice';
 import { DeleteButton } from '@/app/admin/_component/DeleteButton';
+import Select from 'react-select';
+import { editProfessions, viewProfessions } from '@/Redux/Features/admin/professionSlice';
+import { viewSkills } from '@/Redux/Features/admin/skillsSlice';
 
 interface Profession {
     name: string,
 }
+interface OptionType {
+    id: string;
+    title: string;
+    createdAt: string;
+    updatedAt: string;
+    professions: string[];
+}
 
-const ProfessionPage = () => {
+interface Category {
+    id: string;
+    profession: string;
+    createdAt: string;
+    updatedAt: string;
+    professions: string[];
+}
+
+const SkillsPage = () => {
     const {
         register,
         handleSubmit,
@@ -30,35 +47,44 @@ const ProfessionPage = () => {
         reset,
     } = useForm();
 
-    const form = useForm<z.infer<typeof SkillSchema>>({
+    const form = useForm<z.infer<typeof SkillsSchema>>({
         defaultValues: {
             skill: "",
+            professionId: ""
 
         }
     })
     const [error, setError] = useState<string | null>("");
-    const [skillName, setSkillName] = useState('');
+    const [professionName, setProfessionName] = useState('');
     const [success, setSuccess] = useState<string | null>("");
-    const [categories, setCategories] = useState<Profession | null>(null)
-    const [editSkills, setEditSkills] = useState<SkillState | null>(null);
+    const [categories, setCategories] = useState<Category[]>([])
+    const [professions, setProfessions] = useState<Category[]>([])
+    const [skills, setSkills] = useState<Category | null>(null)
+    const [editProfession, setEditProfession] = useState<SkillState | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [isPending, startTransition] = useTransition();
-    const [categoryId, setCategoryId] = useState('')
+    const [professionId, setProfessionId] = useState('')
     const dispatch = useDispatch<AppDispatch>()
+    const [isClearable, setIsClearable] = useState(true);
+    const [isSearchable, setIsSearchable] = useState(true);
+    const [isDisabled, setIsDisabled] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isRtl, setIsRtl] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 
 
     useEffect(() => {
-        fetchCategories()
+        fetchProfession()
 
     }, [])
 
-    const fetchCategories = async () => {
+    const fetchProfession = async () => {
         try {
-            dispatch(viewCategories()).then((res: any) => {
+            dispatch(viewProfessions()).then((res: any) => {
                 if (res.payload) {
-                    setCategories(res.payload);
+                    setProfessions(res.payload);
                 }
             });
 
@@ -67,23 +93,43 @@ const ProfessionPage = () => {
 
         }
     }
-    console.log("all category", categories)
-    const submitCategory = async (data: any) => {
+
+    useEffect(() => {
+        fetchSkills()
+
+    }, [])
+
+    const fetchSkills = async () => {
+        try {
+            dispatch(viewSkills()).then((res: any) => {
+                if (res.payload) {
+                    setSkills(res.payload);
+                }
+            });
+
+        } catch (error) {
+            console.log(error)
+
+        }
+    }
+    console.log("all category from skils ", skills)
+    const submitProfession = async (data: any) => {
+        console.log(data)
 
         setSubmitting(true);
 
-        if (editSkills) {
-            await dispatch(editCategory({
-                categoryId,
-                category: data.title
+        if (editProfession) {
+            await dispatch(editProfessions({
+                professionId,
+                profession: data.profession
             }))
-            setSuccessMessage('Category updated successfully');
-            fetchCategories()
+            setSuccessMessage('Profession updated successfully');
+            fetchProfession()
             resetForm();
 
         } else {
             try {
-                const response = await fetch('/api/category/new', {
+                const response = await fetch('/api/skills/new', {
                     method: 'POST',
                     headers: {
                         "Content-Type": "multipart/form-data",
@@ -94,7 +140,7 @@ const ProfessionPage = () => {
                 //console.log(response)
 
                 setSuccessMessage('Category added successfully');
-                fetchCategories()
+                fetchProfession()
                 resetForm();
             } catch (error) {
                 setErrorMessage('Failed to add category');
@@ -108,19 +154,24 @@ const ProfessionPage = () => {
     const resetForm = () => {
         form.reset({
             skill: "",
+            professionId: ""
         });
-        setEditSkills(null);
-        setCategoryId('');
+        setEditProfession(null);
+        setProfessionId('');
     };
 
     const handleCancelClick = () => {
         resetForm();
-        setEditSkills(null); // Clear the edit state
+        setEditProfession(null); // Clear the edit state
     };
 
     const handleDeleteClick = () => {
 
     }
+    const selectOptions = professions?.map(category => ({
+        value: category.id,
+        label: category.profession
+    }));
 
     return (
 
@@ -132,16 +183,40 @@ const ProfessionPage = () => {
             >
                 <div>
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(submitCategory)} className="space-y-6">
+                        <form onSubmit={form.handleSubmit(submitProfession)} className="space-y-6">
                             <div className='space-y-4'>
+                                <FormField
+                                    control={form.control}
+                                    name="professionId"
+                                    render={({ field: { onChange, value, ref } }) => (
+                                        <FormItem>
+                                            <label>Profession</label>
+                                            <FormControl>
+                                                <Select
+                                                    className="basic-single"
+                                                    classNamePrefix="Skills"
+                                                    isDisabled={isDisabled}
+                                                    isLoading={isLoading}
+                                                    isClearable={isClearable}
+                                                    value={selectOptions.find((c) => c.value === value)}
+                                                    isRtl={isRtl}
+                                                    onChange={(val) => onChange(val?.value)}
+                                                    isSearchable={isSearchable}
+                                                    name="Category"
+                                                    options={selectOptions}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}></FormField>
                                 <FormField
                                     control={form.control}
                                     name="skill"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <label>{editSkills ? "Update Skill" : "New Skills"}
-                                                {editSkills && (
-                                                    <b>:{editSkills.skill}</b>
+                                            <label>{editProfession ? "Update Skills" : "New Skills"}
+                                                {editProfession && (
+                                                    <b>:{editProfession.title}</b>
                                                 )}
                                             </label>
                                             <FormControl>
@@ -164,7 +239,7 @@ const ProfessionPage = () => {
                                     type="submit"
                                     className='py-4'
                                     variant="default">
-                                    {editSkills ? 'Update' : 'Create'}
+                                    {editProfession ? 'Update' : 'Create'}
                                 </Button>
                                 <Button variant='destructive' type='submit' onClick={() => handleCancelClick}>Cancel</Button>
                             </div>
@@ -173,21 +248,21 @@ const ProfessionPage = () => {
                         </form>
                     </Form>
                     <div className='mt-4'>
-                        <Header label='Existing Profession'></Header>
-                        {Array.isArray(categories) && categories.length > 0 ? (
-                            categories.map((c: SkillState) => (
+                        <Header label='Existing Skills'></Header>
+                        {Array.isArray(skills) && skills.length > 0 ? (
+                            skills.map((c: SkillState) => (
                                 <div className='bg-gray-100 rounded-xl p-2 px-4 flex gap-1 mb-1 items-center' key={c.id}>
                                     <div className='grow'>
-                                        {c.skill}
+                                        {c.title}
 
                                     </div>
                                     <div className="flex gap-1">
 
                                         <Button type="button"
                                             onClick={() => {
-                                                setEditSkills(c)
-                                                setSkillName(c.skill);
-                                                setCategoryId(c.id)
+                                                setEditProfession(c)
+                                                setProfessionName(c.title);
+                                                setProfessionId(c.id)
                                             }}
                                         >
                                             Edit
@@ -216,4 +291,4 @@ const ProfessionPage = () => {
     );
 };
 
-export default ProfessionPage;
+export default SkillsPage;

@@ -66,7 +66,7 @@ export const viewProfessions = createAsyncThunk < [] ,void ,{state:RootState}>(
   async (_, thunkAPI) => {
     try {
       
-      const response = await axios.get(`/api/category/getprofession`,
+      const response = await axios.get(`/api/profession/getProfession`,
       );
       const categories = response.data;
       console.log("categoreies from category",categories)

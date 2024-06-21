@@ -60,16 +60,16 @@ export const editCategory = createAsyncThunk<
 
 
 
-export const viewCategories = createAsyncThunk < [] ,void ,{state:RootState}>(
-  '/category/getall',
+export const viewSkills= createAsyncThunk < [] ,void ,{state:RootState}>(
+  '/skill/getall',
   async (_, thunkAPI) => {
     try {
       
-      const response = await axios.get(`/api/category/getskiill`,
+      const response = await axios.get(`/api/skills/getskill`,
       );
-      const categories = response.data;
-      console.log("categoreies from category",categories)
-      return categories;
+      const skills = response.data;
+      console.log("skills from category",skills)
+      return skills;
 
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -131,17 +131,17 @@ const skillsSlice = createSlice({
         state.status = 'failed';
         state.error = action.payload;
       })
-      .addCase(viewCategories.pending, (state) => {
+      .addCase(viewSkills.pending, (state) => {
         state.status = 'loading';
         state.success = null;
         state.error = null;
       })
-      .addCase(viewCategories.fulfilled, (state, action:PayloadAction<any>) => {
+      .addCase(viewSkills.fulfilled, (state, action:PayloadAction<any>) => {
         state.status = 'succeeded';
         state.skill = action.payload;
         state.success = "Categories fetched successfully";
       })
-      .addCase(viewCategories.rejected, (state, action: PayloadAction<any>) => {
+      .addCase(viewSkills.rejected, (state, action: PayloadAction<any>) => {
         state.status = 'failed';
         state.error = action.payload;
       })

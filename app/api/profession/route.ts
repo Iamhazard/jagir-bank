@@ -6,10 +6,10 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     if(req.method=="POST"){
         try {
 
-            const {profession,id}=await req.json()
+            const {profession,categoryId}=await req.json()
             
 
-if (!profession|| !id) {
+if (!profession|| !categoryId) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
@@ -18,7 +18,7 @@ if (!profession|| !id) {
                     profession:profession,
                     category:{
                         connect:{
-                            id:id
+                            id:categoryId
                         },
                     },
                    
