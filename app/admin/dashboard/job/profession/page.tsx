@@ -30,7 +30,7 @@ interface OptionType {
     professions: string[];
 }
 
-interface Category {
+export interface Category {
     id: string;
     title: string;
     createdAt: string;

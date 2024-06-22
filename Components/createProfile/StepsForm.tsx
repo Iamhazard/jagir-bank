@@ -1,16 +1,23 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { motion } from "framer-motion";
 import ProfileWrapper from "./ProfileWrapper";
 
-import { string, z } from "zod";
-
+import { z } from "zod";
+import Select from 'react-select';
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
+import { useForm, SubmitHandler, useFieldArray, Controller } from "react-hook-form";
 import { useSession } from "next-auth/react";
 import { FreeLancerSchema } from "@/Schemas";
+import { Category } from "@/app/admin/dashboard/job/profession/page";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/Redux/store";
+import { viewCategories } from "@/Redux/Features/admin/CategorySlice";
+import { viewProfessions } from "@/Redux/Features/admin/professionSlice";
+import { viewSkills } from "@/Redux/Features/admin/skillsSlice";
 
 type Inputs = z.infer<typeof FreeLancerSchema>;
 
@@ -28,7 +35,7 @@ const steps = [
   {
     id: "Step 3",
     name: "bio",
-    fields: ["message", "skills", "profession"],
+    fields: ["message", "profession", "skills"],
   },
   {
     id: "Step 4",
@@ -37,6 +44,25 @@ const steps = [
   },
   { id: "Step 5", name: "Complete" },
 ];
+
+interface Categorys {
+  id: string;
+  profession: string;
+  createdAt: string;
+  updatedAt: string;
+  professions: string[];
+}
+
+
+interface ProfessionProps {
+  id: string;
+  profession: string;
+}
+
+interface Skill {
+  id: string;
+  title: string;
+}
 
 export default function Form() {
   const [previousStep, setPreviousStep] = useState(0);
@@ -50,12 +76,21 @@ export default function Form() {
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const { data: session } = useSession();
+  const [isClearable, setIsClearable] = useState(true);
+  const [isSearchable, setIsSearchable] = useState(true);
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isRtl, setIsRtl] = useState(false);
   const userid: string | undefined = session?.user.id;
+  const [skill, setSkills] = useState<Category[]>([])
+  const [professions, setProfessions] = useState<Categorys[]>([])
+  const dispatch = useDispatch<AppDispatch>()
   const {
     register,
     handleSubmit,
     watch,
     control,
+    setValue,
     reset,
     trigger,
     formState: { errors },
@@ -105,69 +140,45 @@ export default function Form() {
     setSelecteExpFiles(selecteexpfiles);
     // console.log("Selected edu", files);
   };
-  // const processForm: SubmitHandler<Inputs> = async (data) => {
-  //   console.log(data, "data from form")
-  //   // const addCountry = () => {
-  //   //   appendCountry({ name: '', zip: '', Statename: '', cityname: '', address: '' })
-  //   // }
-  //   try {
-  //     //console.log(addCountry,"inside form submit")
-  //     const formData = new FormData();
-  //     formData.append("userId", userid as string);
-  //     formData.append("name", data.name);
-  //     formData.append("contact", data.contact);
-  //     formData.append("hourlyrate", data.hourlyrate);
-  //     formData.append("estimatedamount", data.estimatedamount);
-  //     formData.append("message", data.message);
-  //     data.skills.forEach((skill, Skillindex) => {
-  //       formData.append(`country[${Skillindex}][skill]`, skill.skill);
+  useEffect(() => {
+    fetchProfession()
 
-  //     });
-  //     data.profession.forEach((profession, Professionindex) => {
-  //       formData.append(`country[${Professionindex}][profession]`, profession.profession);
+  }, [])
 
-  //     });
-  //     formData.append("language", data.language);
-  //     formData.append("imageInput", selectedImage);
-  //     formData.append("educationfile", selectefiles);
-  //     formData.append("experiencefile", selecteexpfiles);
-  //     // console.log(...formData);
-  //     console.log("Selected image ", selectedImage);
-  //     data.country.forEach((country, index) => {
-  //       formData.append(`country[${index}][name]`, country.name);
-  //       formData.append(`country[${index}][zip]`, country.zip);
-  //       formData.append(`country[${index}][Statename]`, country.Statename);
-  //       formData.append(`country[${index}][cityname]`, country.cityname);
-  //       formData.append(`country[${index}][address]`, country.address);
-  //     });
-  //     const formDataObject: any = {};
-  //     for (const pair of formData.entries()) {
-  //       formDataObject[pair[0]] = pair[1];
-  //     }
+  const fetchProfession = async () => {
+    try {
+      dispatch(viewProfessions()).then((res: any) => {
+        if (res.payload) {
+          setProfessions(res.payload);
+        }
+      });
 
-  //     console.log("formdata obh", formDataObject);
+    } catch (error) {
+      console.log(error)
 
-  //     const response = await fetch("api/freelancerprofile/new", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //       body: JSON.stringify(formDataObject),
-  //     });
+    }
+  }
+  console.log(skill, "skill")
 
-  //     if (response.ok) {
-  //       const profiledata = await response.json();
-  //       console.log("profile data", profiledata);
-  //       setProfileData(profiledata);
-  //       setSuccess("Profile created successfully");
-  //     } else {
-  //       const errorData = await response.json();
-  //       setError(errorData.message || "An error occurred");
-  //     }
-  //   } catch (error) {
-  //     setError("An error occurred while processing the request");
-  //   }
-  // };
+  useEffect(() => {
+    fetchSkills()
+
+  }, [])
+
+  const fetchSkills = async () => {
+    try {
+      dispatch(viewSkills()).then((res: any) => {
+        if (res.payload) {
+          setSkills(res.payload);
+        }
+      });
+
+    } catch (error) {
+      console.log(error)
+
+    }
+  }
+
 
   const processForm: SubmitHandler<Inputs> = async (data) => {
     console.log(data, "data from form")
@@ -226,6 +237,13 @@ export default function Form() {
   };
   type FieldName = keyof Inputs;
 
+  const hourlyrate = watch('hourlyrate');
+  useEffect(() => {
+    const serviceFee = (parseFloat(hourlyrate) || 0) * 0.2;
+    const estimatedAmount = (parseFloat(hourlyrate) || 0) - serviceFee;
+    setValue('estimatedamount', estimatedAmount.toFixed(2));
+  }, [hourlyrate, setValue]);
+
   const next = async () => {
     const fields = steps[currentStep].fields;
     const output = await trigger(fields as FieldName[], { shouldFocus: true });
@@ -247,6 +265,9 @@ export default function Form() {
       setCurrentStep((step) => step - 1);
     }
   };
+
+
+
 
   return (
     <ProfileWrapper
@@ -554,7 +575,7 @@ export default function Form() {
                     <input
                       type="text"
                       id="hourlyrate"
-                      {...register("hourlyrate")}
+                      {...register("hourlyrate", { required: "Hourly rate is required" })}
                       autoComplete=""
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
                     />
@@ -581,7 +602,7 @@ export default function Form() {
                       id="disabled-input"
                       aria-label="disabled input"
                       className="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      placeholder="$2"
+                      value={`$${((parseFloat(hourlyrate) || 0) * 0.1).toFixed(2)}`}
                       disabled
                     />
                     <span className="text-gray-500">/hr</span>
@@ -600,6 +621,7 @@ export default function Form() {
                       id="estimatedamount"
                       type="text"
                       {...register("estimatedamount")}
+                      readOnly
                       autoComplete=""
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
                     />
@@ -645,59 +667,69 @@ export default function Form() {
                 you do.
               </p>
               <div className="mt-3">
-                {skillFields.map((sk, SkillInx: any) => (
-                  <div className="sm:col-span-3 mt-3" key={sk.id}>
+                {professionFields.map((pro, jobCategoryIndex: any) => (
+                  <div className="col-span-full" key={pro.id}>
+                    <label
+                      htmlFor={`profession[${jobCategoryIndex}].profession`}
+                      className="block text-sm font-medium leading-6 text-gray-900">
+                      Profession
+                    </label>
                     <div className="mt-2">
-                      <select
-                        id={`skill[${SkillInx}].skill`}
-                        {...register(`skills.${SkillInx}.skill`)}
-                        autoComplete="skill"
-                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:max-w-xs sm:text-sm sm:leading-6">
-                        <option>Logo design</option>
-                        <option>Web, Mobile, & Software Development</option>
-                        <option>WordPress design</option>
-                        <option>Accounting and Consulting</option>
-                        <option>Data Entry</option>
-                        <option>Design and Creative</option>
-                        <option>Engineering and Architecture</option>
-                        <option>Translation</option>
-                        <option>Sales and Marketing</option>
-                      </select>
-                      {errors.profession?.message && (
-                        <p className="mt-2 text-sm text-red-400">
-                          {errors.profession.message}
-                        </p>
-                      )}
+
+                      <Select
+                        isMulti
+                        className="basic-single block w-full rounded-md py-1.5 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
+                        classNamePrefix="category"
+
+                        isLoading={isLoading}
+                        {...register(`profession.${jobCategoryIndex}.profession`)}
+                        isClearable={isClearable}
+
+                        options={professions.map(pr => ({ value: pr.id, label: pr.profession }))}
+                        onChange={(selectedOption: any, actionMeta: any) => {
+                          setValue(`profession.${jobCategoryIndex}.profession`, selectedOption.map((pros: any) => ({ profession: pros.value })));
+                        }}
+                        isRtl={isRtl}
+                        isSearchable={isSearchable}
+
+
+
+                      />
+
+
                     </div>
                   </div>
                 ))}
-
               </div>
               <div className="mt-6">
-                <h1 className="text-xl mt-4">Add your Main Profession?</h1>
-                <div className="mt-4">
-                  {professionFields.map((profession, jobCategoryIndex: any) => (
-                    <div className="col-span-full" key={profession.id}>
-                      <label
-                        htmlFor={`profession[${jobCategoryIndex}].profession`}
-                        className="block text-sm font-medium leading-6 text-gray-900">
-                        Profession
-                      </label>
-                      <div className="mt-2">
-                        <input
-                          type="text"
-                          id={`profession[${jobCategoryIndex}].profession`}
-                          {...register(`profession.${jobCategoryIndex}.profession`)}
-                          autoComplete="Software Engineer |Javascript | OS"
-                          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                <h1 className="text-xl mt-4">Add your Main Skils?</h1>
+                <div className="mt-1">
+
+                  {skillFields.map((sk, SkillInx: number) => (
+
+                    <div className="sm:col-span-3 mt-3" key={sk.id}>
+                      <div className="py-2">
+
+                        <Select
+
+                          isMulti
+                          className="basic-multi-select"
+                          classNamePrefix="Skills"
+
+                          isClearable={isClearable}
+                          isRtl={isRtl}
+                          options={skill.map(sk => ({ value: sk.id, label: sk.title }))}
+                          onChange={(selectedOption: any, actionMeta: any) => {
+                            setValue(`skills.${SkillInx}.skill`, selectedOption.map((prop: any) => ({ skills: prop.value })));
+                          }}
+                          isSearchable={isSearchable}
+
                         />
-                        {/* {errors.jobcategory?.[jobCategoryIndex]?.title && (
-                          <p className="mt-2 text-sm text-red-400">
-                            {errors?.jobcategory[jobCategoryIndex].title.message}
-                          </p>
-                        )} */}
+
                       </div>
                     </div>
+
+
                   ))}
 
                 </div>

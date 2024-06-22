@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import multer from 'multer';
 import { Readable } from 'stream';
 import { fileSizeFormatter, upload } from '@/lib/multer'; // Adjust this import based on your actual implementation
+import { error } from 'console';
 interface MulterFile {
   fieldname: string;
   originalname: string;
@@ -78,7 +79,6 @@ export const POST = async (req: CustomNextApiRequest, res: NextResponse) => {
     { name: 'experiencefile', maxCount: 1 },
   ]));
 
-  
 
   const {
     userId,
@@ -94,7 +94,16 @@ export const POST = async (req: CustomNextApiRequest, res: NextResponse) => {
      imageInput, educationfile, experiencefile
   } = await req.json();
 
- 
+ const checkProfile =await db.freelancerProfile.findUnique({
+  where:{
+    id:userId,
+  }
+ })
+
+ if(checkProfile){
+  return NextResponse.json({error:"Freelancer profile already exist"},{status:400})
+
+ }
 
   const imageUpload = imageInput ? await uploadFileToCloudinary(imageInput[0]) : null;
   const educationUpload = educationfile ? await uploadFileToCloudinary(educationfile[0]) : null;

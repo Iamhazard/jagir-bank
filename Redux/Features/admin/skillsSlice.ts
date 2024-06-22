@@ -68,7 +68,7 @@ export const viewSkills= createAsyncThunk < [] ,void ,{state:RootState}>(
       const response = await axios.get(`/api/skills/getskill`,
       );
       const skills = response.data;
-      console.log("skills from category",skills)
+      //console.log("skills from category",skills)
       return skills;
 
     } catch (error: any) {
