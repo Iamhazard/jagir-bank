@@ -221,3 +221,18 @@ export interface Profession {
   id: string;
   title: string;
 }
+
+export type FormDataType = {
+  userId: string;
+  name: string;
+  country: { name: string; zip: string; Statename: string; cityname: string; address: string }[];
+  contact: string;
+  hourlyrate: string;
+  estimatedamount: string;
+  message: string;
+  category: { professions: { profession: string }[]; skills: { skill: string }[] }[];
+  language: string;
+  experiencefile?: string;
+  educationfile?: string;
+  imageInput?: string;
+};

@@ -98,22 +98,38 @@ model FreelancerProfile {
   id              String                          @id @default(auto()) @map("_id") @db.ObjectId
   userId          String                          @db.ObjectId
   name            String
-  country         Country[]
+  country         String
+  state           String
+  city            String
+  StreetAddress   String
   contact         String?
   hourlyrate      String?
   estimatedamount String?
   message         String
   profession      FreelancerProfileToProfession[]
+  countries       FreelancerProfileToCountry[]
   skills          FreelancerProfileToSkill[]
   language        String
-  experiencefile  String?
-  educationfile   String?
   imageInput      String?
   createdAt       DateTime                        @default(now())
   updatedAt       DateTime                        @updatedAt
   user            User                            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId])
+}
+
+model FreelancerProfileToCountry {
+  id                  String            @id @default(auto()) @map("_id") @db.ObjectId
+  freelancerProfileId String            @db.ObjectId
+  countryId           String            @db.ObjectId
+  stateId             String            @db.ObjectId
+  cityId              String            @db.ObjectId
+  freelancerProfile   FreelancerProfile @relation(fields: [freelancerProfileId], references: [id])
+  country             Country           @relation(fields: [countryId], references: [id])
+  state               State             @relation(fields: [stateId], references: [id])
+  city                City              @relation(fields: [cityId], references: [id])
+
+  @@index([freelancerProfileId, countryId], name: "unique_freelancer_profile_profession")
 }
 
 model FreelancerProfileToProfession {
@@ -137,43 +153,40 @@ model FreelancerProfileToSkill {
 }
 
 model Country {
-  id            String            @id @default(auto()) @map("_id") @db.ObjectId
+  id            String                       @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
   zip           String?
   state         State[]
   city          City[]
-  streetAddress StreetAddress[]
-  f_Id          String            @db.ObjectId
-  freelancer    FreelancerProfile @relation(fields: [f_Id], references: [id], onDelete: Cascade)
-  c_id          String            @db.ObjectId
-  client        ClientProfile     @relation(fields: [c_id], references: [id], onDelete: Cascade)
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
+  countries     FreelancerProfileToCountry[]
+  createdAt     DateTime                     @default(now())
+  updatedAt     DateTime                     @updatedAt
+  ClientProfile ClientProfile[]
 }
 
 model State {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String                       @id @default(auto()) @map("_id") @db.ObjectId
   name      String?
-  countryId String   @db.ObjectId
-  countries Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  states    FreelancerProfileToCountry[]
+  countryId String                       @db.ObjectId
+  countries Country                      @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  createdAt DateTime                     @default(now())
+  updatedAt DateTime                     @updatedAt
 }
 
 model City {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String                       @id @default(auto()) @map("_id") @db.ObjectId
   name      String?
-  countryId String   @db.ObjectId
-  country   Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  cities    FreelancerProfileToCountry[]
+  countryId String                       @db.ObjectId
+  country   Country                      @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  createdAt DateTime                     @default(now())
+  updatedAt DateTime                     @updatedAt
 }
 
 model StreetAddress {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   address   String?
-  countryId String   @db.ObjectId
-  country   Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -181,7 +194,8 @@ model StreetAddress {
 model ClientProfile {
   id        String     @id @default(auto()) @map("_id") @db.ObjectId
   userId    String     @db.ObjectId
-  country   Country[]
+  country   Country    @relation(fields: [countryId], references: [id])
+  countryId String     @db.ObjectId
   Jobs      Job[]
   Proposals Proposal[]
   createdAt DateTime   @default(now())

@@ -1,85 +1,65 @@
-import { v2 as cloudinary } from 'cloudinary';
-import { db } from '@/lib/db';
-import { NextRequest, NextResponse } from 'next/server';
-import multer from 'multer';
-import { Readable } from 'stream';
-import { fileSizeFormatter, upload } from '@/lib/multer'; // Adjust this import based on your actual implementation
-import { error } from 'console';
-interface MulterFile {
-  fieldname: string;
-  originalname: string;
-  encoding: string;
-  mimetype: string;
-  size: number;
-  destination: string;
-  filename: string;
-  path: string;
-  buffer: Buffer;
-}
-interface CustomNextApiRequest extends NextRequest {
-  json: () => Promise<any>;
-  files?: any;
-}
 
-interface MulterRequest extends NextRequest {
-  files: MulterFile[];
-}
+import { db } from "@/lib/db";
 
-// Configure Cloudinary
-cloudinary.config({ 
-  cloud_name: 'dmsko6djw', 
-  api_key: '592257523636176', 
-  api_secret: 'iG5wrVWoEpkUSFntp2_ZagUKLJ8' 
-});
+import { NextRequest, NextResponse } from "next/server";
 
 
 
-const runMiddleware = (req: any, res: any, fn: any) => {
-  return new Promise((resolve, reject) => {
-    fn(req, res, (result: any) => {
-      if (result instanceof Error) {
-        return reject(result);
-      }
-      return resolve(result);
-    });
-  });
-};
+function parseNestedFormData(formdata: FormData, prefix: string) {
+  const data: any = [];
+  formdata.forEach((value, key) => {
+    if (key.startsWith(prefix)) {
+      const newKey = key.replace(`${prefix}[`, '').replace(']', '');
+      const keys = newKey.split('.');
 
-const uploadFileToCloudinary = async (file: Express.Multer.File): Promise<string | null> => {
-  try {
-    const stream = new Readable();
-    stream.push(file.buffer);
-    stream.push(null);
-
-    const result = await new Promise((resolve, reject) => {
-      const cloudinaryStream = cloudinary.uploader.upload_stream(
-        { folder: 'jagirbank', resource_type: 'image' },
-        (error, result) => {
-          if (result) {
-            resolve(result.secure_url);
-          } else {
-            reject(error);
-          }
+      keys.reduce((acc, currKey, index) => {
+        if (index === keys.length - 1) {
+          acc[currKey] = value;
+        } else {
+          acc[currKey] = acc[currKey] || {};
         }
-      );
-      stream.pipe(cloudinaryStream);
-    });
+        return acc[currKey];
+      }, data);
+    }
+  });
+  return data;
+}
 
-    return result as string;
-  } catch (error) {
-    console.error('Error uploading file to Cloudinary:', error);
-    return null;
+
+export async function POST(request:NextRequest){
+ 
+ const body = await request.json();
+ const {
+    userId,
+    country,
+    name,
+    contact,
+    hourlyrate,
+    estimatedamount,
+    message,
+    category,
+    language,
+     imageUrl,
+  } = body;
+
+  if(!userId){
+    return new Response('No user ID is provided', { status: 400 });
+  
   }
-};
+  const checkProfile =await db.freelancerProfile.findUnique({
+  where:{
+    id:userId ,
+  }
+ })
 
-export const POST = async (req: CustomNextApiRequest, res: NextResponse) => {
-  await runMiddleware(req, res, upload.fields([
-    { name: 'imageInput', maxCount: 1 },
-    { name: 'educationfile', maxCount: 1 },
-    { name: 'experiencefile', maxCount: 1 },
-  ]));
+ if(checkProfile){
+  return NextResponse.json({error:"Freelancer profile already exist"},{status:400})
 
-
+ }
+ I see. The error message indicates that there's a mismatch between the structure of the countryData you're creating and what the Prisma schema expects for the Country model. Specifically, it seems that the Country model in your Prisma schema includes a client field that is required, but it's not present in the data you're trying to create.
+Let's modify the code to address this issue:
+typescriptCopyexport async function POST(request: NextRequest) {
+  const body = await request.json();
   const {
     userId,
     country,
@@ -88,48 +68,56 @@ export const POST = async (req: CustomNextApiRequest, res: NextResponse) => {
     hourlyrate,
     estimatedamount,
     message,
-    skills,
-    profession,
+    category,
     language,
-     imageInput, educationfile, experiencefile
-  } = await req.json();
+    imageUrl,
+  } = body;
 
- const checkProfile =await db.freelancerProfile.findUnique({
-  where:{
-    id:userId,
+  if (!userId) {
+    return new Response('No user ID is provided', { status: 400 });
   }
- })
 
- if(checkProfile){
-  return NextResponse.json({error:"Freelancer profile already exist"},{status:400})
+  const checkProfile = await db.freelancerProfile.findUnique({
+    where: {
+      id: userId,
+    }
+  });
 
- }
+  if (checkProfile) {
+    return NextResponse.json({ error: "Freelancer profile already exists" }, { status: 400 });
+  }
 
-  const imageUpload = imageInput ? await uploadFileToCloudinary(imageInput[0]) : null;
-  const educationUpload = educationfile ? await uploadFileToCloudinary(educationfile[0]) : null;
-  const experienceUpload = experiencefile ? await uploadFileToCloudinary(experiencefile[0]) : null;
+  // Check if country is defined and is an array
+  if (!country || !Array.isArray(country)) {
+    return NextResponse.json({ error: "Country data is missing or invalid" }, { status: 400 });
+  }
 
-  try {
-    const FreelancerProfile = await db.freelancerProfile.create({
+  // Check if category is defined and is an array
+  if (!category || !Array.isArray(category)) {
+    return NextResponse.json({ error: "Category data is missing or invalid" }, { status: 400 });
+  }
+ try {
+   const FreelancerProfile = await db.freelancerProfile.create({
       data: {
-        userId,
-        name,
-        contact,
-        hourlyrate: hourlyrate || null,
-        estimatedamount: estimatedamount || null,
-        message: message || null,
-        language: language || null,
+        name:name as string,
+        contact:contact as string,
+        hourlyrate: hourlyrate as string,
+        estimatedamount: estimatedamount as string,
+        message: message as string,
+        language: language as string,
         country: {
           create: country.map((c: any) => ({
-            name: c.name,
-            zip: c.zip,
-            Statename: c.Statename,
-            cityname: c.cityname,
-            address: c.address,
-          })),
+            name: c.name || '',
+            zip: c.zip || '',
+            Statename: c.Statename || '',
+            cityname: c.cityname || '',
+            address: c.address || '',
+            
+          }))
+        },
         },
         skills: {
-          create: skills.map((skill: any) => ({
+          create: category.map((skill: any) => ({
             skill: skill.skill,
             profession: {
               connect: {
@@ -139,7 +127,7 @@ export const POST = async (req: CustomNextApiRequest, res: NextResponse) => {
           })),
         },
         profession: {
-          create: profession.map((p: any) => ({
+          create: category.map((p: any) => ({
             profession: p.profession,
             jobCategory: {
               connect: {
@@ -148,24 +136,20 @@ export const POST = async (req: CustomNextApiRequest, res: NextResponse) => {
             },
           })),
         },
-        experiencefile: experienceUpload,
-        educationfile: educationUpload,
-        imageInput: imageUpload,
+    
+        imageInput: imageUrl ,
         user: {
-          connect: { id: userId },
+          connect: { id: userId as string},
         },
       },
     });
-
-    return NextResponse.json(FreelancerProfile, { status: 201 });
-  } catch (error) {
-    console.error('Error in POST /api/profile/new:', error);
+return NextResponse.json({msg:FreelancerProfile}, { status: 201 });
+  
+} catch (error) {
+  console.error('Error in POST /api/profile/new:', error);
     return NextResponse.json({ error: 'Failed to create freelancer profile' }, { status: 500 });
-  }
-};
+}
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+
+  
+}

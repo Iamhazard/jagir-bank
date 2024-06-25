@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 "use client";
-
-import { useEffect, useState, useTransition } from "react";
+import { CldUploadButton } from "next-cloudinary";
+import { ChangeEvent, useEffect, useState, useTransition } from "react";
 import { motion } from "framer-motion";
 import ProfileWrapper from "./ProfileWrapper";
 
@@ -11,13 +11,12 @@ import Select from 'react-select';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler, useFieldArray, Controller } from "react-hook-form";
 import { useSession } from "next-auth/react";
-import { FreeLancerSchema } from "@/Schemas";
-import { Category } from "@/app/admin/dashboard/job/profession/page";
+import { FreeLancerSchema, freelanceSchema } from "@/Schemas";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/Redux/store";
-import { viewCategories } from "@/Redux/Features/admin/CategorySlice";
 import { viewProfessions } from "@/Redux/Features/admin/professionSlice";
 import { viewSkills } from "@/Redux/Features/admin/skillsSlice";
+import axios from "axios";
 
 type Inputs = z.infer<typeof FreeLancerSchema>;
 
@@ -46,23 +45,32 @@ const steps = [
 ];
 
 interface Categorys {
-  id: string;
   profession: string;
+  id: string;
+  skill: string;
   createdAt: string;
   updatedAt: string;
   professions: string[];
 }
 
-
-interface ProfessionProps {
-  id: string;
-  profession: string;
-}
-
-interface Skill {
+interface Category {
   id: string;
   title: string;
+  createdAt: string;
+  updatedAt: string;
+  professions: string[];
 }
+interface ApiResponse {
+  success: boolean;
+  profile: {
+    success: any;
+    fileData: {
+      filePath: string;
+    };
+
+  };
+}
+
 
 export default function Form() {
   const [previousStep, setPreviousStep] = useState(0);
@@ -76,15 +84,12 @@ export default function Form() {
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const { data: session } = useSession();
-  const [isClearable, setIsClearable] = useState(true);
-  const [isSearchable, setIsSearchable] = useState(true);
-  const [isDisabled, setIsDisabled] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isRtl, setIsRtl] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const userid: string | undefined = session?.user.id;
   const [skill, setSkills] = useState<Category[]>([])
   const [professions, setProfessions] = useState<Categorys[]>([])
   const dispatch = useDispatch<AppDispatch>()
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -97,49 +102,63 @@ export default function Form() {
   } = useForm<Inputs>({
     resolver: zodResolver(FreeLancerSchema),
     defaultValues: {
-      skills: [{
-
-      }],
-
+      name: "",
       country: [
         { name: '', zip: '', Statename: '', cityname: '', address: '' }
       ],
-      profession: [{
+      contact: "",
+      hourlyrate: "",
+      estimatedamount: "",
+      message: "",
+      category: [{ professions: [{ profession: "" }], skills: [{ skill: "" }] }],
+      language: ""
 
-      }],
     }
   });
 
-  const { fields: skillFields, append: appendSkill, remove: removeSkill } = useFieldArray({
-    control,
-    name: 'skills',
-  });
 
-  const { fields: professionFields, append: appendProfession, remove: removeProfession } = useFieldArray({
-    control,
-    name: 'profession',
-  });
 
   const { fields: countryFields, append: appendCountry, remove: removeCountry } = useFieldArray({
     control,
     name: "country"
   });
+  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
+    control,
+    name: "category",
+  });
 
 
 
-  const onChange = (files: any) => {
-    setSelectedImage(selectedImage);
-    // console.log("Selected files:", files);
+  const Imagechangehandler = () => {
+
+
+  }
+
+  const handleUpload = (result: any) => {
+
+    try {
+      if (result.event === 'success') {
+        setUploadedImageUrl(result.info.url);
+      }
+      const imageUrl = result?.info?.secure_url;
+      console.log({ imageUrl })
+
+      if (imageUrl) {
+        setImageUrl(imageUrl);
+
+
+      }
+      else {
+        console.error("Image URL is null or undefined");
+      }
+
+    } catch (error) {
+      console.log(error)
+    }
+
   };
 
-  const onFileChange = (files: any) => {
-    setSelecteFiles(selectefiles);
-    // console.log("Selected edu", files);
-  };
-  const onexpeChange = (files: any) => {
-    setSelecteExpFiles(selecteexpfiles);
-    // console.log("Selected edu", files);
-  };
+
   useEffect(() => {
     fetchProfession()
 
@@ -158,7 +177,6 @@ export default function Form() {
 
     }
   }
-  console.log(skill, "skill")
 
   useEffect(() => {
     fetchSkills()
@@ -179,40 +197,51 @@ export default function Form() {
     }
   }
 
-
+  // console.log(professions)
   const processForm: SubmitHandler<Inputs> = async (data) => {
-    console.log(data, "data from form")
-    // const addCountry = () => {
-    //   appendCountry({ name: '', zip: '', Statename: '', cityname: '', address: '' })
-    // }
-    try {
-      const formDataObject: any = {
-        userId: userid as string,
-        name: data.name,
-        contact: data.contact,
-        hourlyrate: data.hourlyrate,
-        estimatedamount: data.estimatedamount,
-        message: data.message,
-        language: data.language,
-        imageInput: selectedImage,  // Assuming this is a base64 string or a URL
-        educationfile: selectefiles,  // Assuming this is a base64 string or a URL
-        experiencefile: selecteexpfiles,  // Assuming this is a base64 string or a URL
-        country: data.country.map((country, index) => ({
-          name: country.name,
-          zip: country.zip,
-          Statename: country.Statename,
-          cityname: country.cityname,
-          address: country.address,
-        })),
-        skills: data.skills.map((skill, inx) => ({
-          skill: skill.skill,
-        })),
-        profession: data.profession.map((pro, ind) => ({
-          profession: pro.profession,
-        }))
-      };
+    console.log(data, "data from form");
 
-      console.log("formdata obh", formDataObject);
+
+    try {
+      const fd = new FormData();
+      // Append non-nested values to FormData
+      fd.append('userId', (userid) as string);
+      fd.append('name', (data.name));
+      fd.append('contact', (data.contact));
+      fd.append('hourlyrate', (data.hourlyrate));
+      fd.append('estimatedamount', (data.estimatedamount));
+      fd.append('message', (data.message));
+      fd.append('language', (data.language));
+      if (imageUrl) {
+        fd.append('imageUrl', imageUrl)
+      }
+
+
+      data.country.forEach((country, index) => {
+        fd.append(`country[${index}].name`, country.name);
+        fd.append(`country[${index}].zip`, country.zip);
+        fd.append(`country[${index}].Statename`, country.Statename);
+        fd.append(`country[${index}].cityname`, country.cityname);
+        fd.append(`country[${index}].address`, country.address);
+      });
+
+      // Append nested category values
+      data.category.forEach((category, categoryIndex) => {
+        category.professions.forEach((profession, professionIndex) => {
+          fd.append(`category[${categoryIndex}].professions[${professionIndex}].profession`, profession.profession);
+        });
+
+        category.skills.forEach((skill, skillIndex) => {
+          fd.append(`category[${categoryIndex}].skills[${skillIndex}].skill`, skill.skill);
+          fd.append(`category[${categoryIndex}].skills[${skillIndex}].skillId`, skill.skill);
+        });
+      });
+      const formDataObject: any = {};
+      for (const pair of fd.entries()) {
+        formDataObject[pair[0]] = pair[1];
+      }
+
+      console.log(formDataObject, "formdataobj")
 
       const response = await fetch("api/freelancerprofile/new", {
         method: "POST",
@@ -231,10 +260,13 @@ export default function Form() {
         const errorData = await response.json();
         setError(errorData.message || "An error occurred");
       }
+
     } catch (error) {
+      console.error('An error occurred while processing the request:', error);
       setError("An error occurred while processing the request");
     }
   };
+
   type FieldName = keyof Inputs;
 
   const hourlyrate = watch('hourlyrate');
@@ -325,37 +357,41 @@ export default function Form() {
                 Address where you can receive mail.
               </p>
               <div className="flex items-center justify-center gap-4 mt-4 ">
-                <label
-                  htmlFor="imageInput"
-                  className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    className="h-6 w-6 inline-block mr-2">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                  </svg>
-                  Upload photo
-                </label>
-                <input
-                  type="file"
-                  id="imageInput"
-                  className="hidden"
-                  onChange={(e) => {
-                    onChange(e.target.files);
-                    setSelectedImage(e.target.files?.[0] || "");
-                  }}
-                  accept="image/*"
-                />
-                {selectedImage && (
+                <CldUploadButton
+                  options={{ maxFiles: 1 }}
+                  onUpload={handleUpload}
+                  uploadPreset="i1ziapfw"
+
+                >
+                  <label
+                    htmlFor="imageInput"
+                    className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full flex items-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      className="h-6 w-6 inline-block mr-2">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    Upload photo
+                  </label>
+                  <input
+                    type="file"
+                    id="imageInput"
+                    className="hidden"
+                    onChange={Imagechangehandler}
+                    accept="image/*"
+                  />
+                </CldUploadButton>
+                {uploadedImageUrl && (
                   <div className="mt-4 ">
                     <img
-                      src={URL.createObjectURL(selectedImage)}
+                      src={uploadedImageUrl}
                       alt="Selected"
                       className="rounded-full h-16 w-16 object-cover"
                     />
@@ -646,7 +682,7 @@ export default function Form() {
                 <label
                   htmlFor="message"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  Your message
+                  Your Bio
                 </label>
                 <textarea
                   id="message"
@@ -667,70 +703,71 @@ export default function Form() {
                 you do.
               </p>
               <div className="mt-3">
-                {professionFields.map((pro, jobCategoryIndex: any) => (
-                  <div className="col-span-full" key={pro.id}>
-                    <label
-                      htmlFor={`profession[${jobCategoryIndex}].profession`}
-                      className="block text-sm font-medium leading-6 text-gray-900">
-                      Profession
-                    </label>
-                    <div className="mt-2">
 
+                <div className="col-span-full" >
+                  <label
+                    htmlFor={`profession`}
+                    className="block text-sm font-medium leading-6 text-gray-900">
+                    Profession
+
+                  </label>
+
+                  <div className="mt-2" >
+
+                    {fields.map((field, index) => (
                       <Select
                         isMulti
-                        className="basic-single block w-full rounded-md py-1.5 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
-                        classNamePrefix="category"
-
-                        isLoading={isLoading}
-                        {...register(`profession.${jobCategoryIndex}.profession`)}
-                        isClearable={isClearable}
-
-                        options={professions.map(pr => ({ value: pr.id, label: pr.profession }))}
+                        key={field.id}
+                        options={professions.map(pro => ({ value: pro.id, label: pro.profession }))}
+                        id={`skill${index}`}
+                        {...register(`category.${index}.professions`)}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
                         onChange={(selectedOption: any, actionMeta: any) => {
-                          setValue(`profession.${jobCategoryIndex}.profession`, selectedOption.map((pros: any) => ({ profession: pros.value })));
+                          setValue(`category.${index}.professions`, selectedOption.map((sk: any) => ({ profession: sk.value })));
                         }}
-                        isRtl={isRtl}
-                        isSearchable={isSearchable}
-
-
-
                       />
+                    ))}
 
 
-                    </div>
+
                   </div>
-                ))}
+
+
+                </div>
+
               </div>
               <div className="mt-6">
                 <h1 className="text-xl mt-4">Add your Main Skils?</h1>
                 <div className="mt-1">
 
-                  {skillFields.map((sk, SkillInx: number) => (
 
-                    <div className="sm:col-span-3 mt-3" key={sk.id}>
-                      <div className="py-2">
+
+                  <div className="sm:col-span-3 mt-3">
+                    <div className="py-2">
+
+                      {fields.map((field, ind) => (
+
 
                         <Select
-
                           isMulti
-                          className="basic-multi-select"
-                          classNamePrefix="Skills"
-
-                          isClearable={isClearable}
-                          isRtl={isRtl}
+                          key={field.id}
                           options={skill.map(sk => ({ value: sk.id, label: sk.title }))}
+                          id={`skill${ind}`}
+                          {...register(`category.${ind}.skills`)}
+                          className="basic-multi-select"
+                          classNamePrefix="select"
                           onChange={(selectedOption: any, actionMeta: any) => {
-                            setValue(`skills.${SkillInx}.skill`, selectedOption.map((prop: any) => ({ skills: prop.value })));
+                            setValue(`category.${ind}.skills`, selectedOption.map((sk: any) => ({ skill: sk.value })));
                           }}
-                          isSearchable={isSearchable}
-
                         />
+                      ))}
 
-                      </div>
                     </div>
+                  </div>
 
 
-                  ))}
+
 
                 </div>
               </div>
@@ -743,42 +780,6 @@ export default function Form() {
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}>
               <div className="gap-4">
-                <div>
-                  <span className="text-xl">
-                    Clients like to know what you now -add your education here.
-                  </span>
-                  <h1 className="text-xl">Add education.</h1>
-                  <input
-                    className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                    id="educationfile"
-                    type="file"
-                    onChange={(e) => {
-                      onFileChange(e.target.files);
-                      setSelecteFiles(e.target.files?.[0] || "");
-                    }}
-                  />
-                  <p className="text-gray-500 dark:text-gray-40 p-2">
-                    Add any equivalent degree?
-                  </p>
-                </div>
-                <div>
-                  <span className="text-xl">
-                    Clients like to know what you now -add your experience here.
-                  </span>
-                  <h1 className="text-xl">Add experience.</h1>
-                  <input
-                    className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                    id="experiencefile"
-                    type="file"
-                    onChange={(e) => {
-                      onexpeChange(e.target.files);
-                      setSelecteExpFiles(e.target.files?.[0] || "");
-                    }}
-                  />
-                  <p className="text-gray-500 dark:text-gray-40 p-2">
-                    Add any equivalent experience?
-                  </p>
-                </div>
                 <div className="sm:col-span-3">
                   <label
                     htmlFor="country"
@@ -867,62 +868,3 @@ export default function Form() {
   );
 }
 
-const StateFields: React.FC<{ countryIndex: number, control: any, register: any, errors: any }> = ({ countryIndex, control, register, errors }) => {
-  const { fields: stateFields, append: appendState, remove: removeState } = useFieldArray({
-    control,
-    name: `country.${countryIndex}.state`,
-  });
-
-  return (
-    <>
-      {stateFields.map((state, stateIndex) => (
-        <div key={state.id}>
-          <input {...register(`country.${countryIndex}.state.${stateIndex}.name`)} placeholder="State Name" />
-          {errors.country?.[countryIndex]?.state?.[stateIndex]?.name && <p>{errors.country[countryIndex].state[stateIndex].name?.message}</p>}
-          <button type="button" onClick={() => removeState(stateIndex)}>Remove State</button>
-        </div>
-      ))}
-      <button type="button" onClick={() => appendState({ name: '' })}>Add State</button>
-    </>
-  );
-};
-
-const CityFields: React.FC<{ countryIndex: number, control: any, register: any, errors: any }> = ({ countryIndex, control, register, errors }) => {
-  const { fields: cityFields, append: appendCity, remove: removeCity } = useFieldArray({
-    control,
-    name: `country.${countryIndex}.city`,
-  });
-
-  return (
-    <>
-      {cityFields.map((city, cityIndex) => (
-        <div key={city.id}>
-          <input {...register(`country.${countryIndex}.city.${cityIndex}.name`)} placeholder="City Name" />
-          {errors.country?.[countryIndex]?.city?.[cityIndex]?.name && <p>{errors.country[countryIndex].city[cityIndex].name?.message}</p>}
-          <button type="button" onClick={() => removeCity(cityIndex)}>Remove City</button>
-        </div>
-      ))}
-      <button type="button" onClick={() => appendCity({ name: '' })}>Add City</button>
-    </>
-  );
-};
-
-const StreetFields: React.FC<{ countryIndex: number, control: any, register: any, errors: any }> = ({ countryIndex, control, register, errors }) => {
-  const { fields: streetFields, append: appendStreet, remove: removeStreet } = useFieldArray({
-    control,
-    name: `country.${countryIndex}.streetAddress`,
-  });
-
-  return (
-    <>
-      {streetFields.map((street, streetIndex) => (
-        <div key={street.id}>
-          <input {...register(`country.${countryIndex}.streetAddress.${streetIndex}.address`)} placeholder="Street Address" />
-          {errors.country?.[countryIndex]?.streetAddress?.[streetIndex]?.address && <p>{errors.country[countryIndex].streetAddress[streetIndex].address?.message}</p>}
-          <button type="button" onClick={() => removeStreet(streetIndex)}>Remove Street</button>
-        </div>
-      ))}
-      <button type="button" onClick={() => appendStreet({ address: '' })}>Add Street</button>
-    </>
-  );
-};

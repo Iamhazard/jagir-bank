@@ -68,26 +68,7 @@ const phoneRegex = new RegExp(
 const amountRegex = /^[0-9]*\.?[0-9]+$/;
 
 
-// export const FormDataSchema = z.object({
-//   country: z.string().min(1, 'Country is required'),
-//   street: z.string().min(1, 'Street is required'),
-//   contact: z.string().regex(phoneRegex,'Invalid Number!'),
-//   city: z.string().min(1, 'City is required'),
-//   state: z.string().min(1, 'State is required'),
-//   zip: z.string().min(1, 'Zip is required'),
-//    hourlyrate: z.string().regex(amountRegex,"Hourly rate must be a positive number"),
-//   estimatedamount:z.string().regex(amountRegex,"estimatedamount  must be a positive number"),
-//   message: z.string().min(10, 'minium 10 words  is required'),
-//   program: z.string().min(1, 'program is required'),
-//   profession: z.string().min(1, 'profession is required'),
-//   language: z.string().min(1, 'language is required'),
-// });
 
-// const skillsSchema = z.object({
-//   skills1: z.string(),
-//   skills2: z.string(),
-//   skills3: z.string(),
-// });
 
 const RateSchema=z.object({
   from:z.string().regex(amountRegex,"fixed  must be a positive number"),
@@ -112,22 +93,7 @@ export const ClientSchema = z.object({
    })),
   }),) 
 });
-
-// export const ClientSchema = z.object({
-//   country: z.string().min(1, 'Country is required'),
-//   post: z.string().min(1, 'post is required'),
-//   skills1: z.string(),
-//   skills2: z.string(),
-//   skills3: z.string(),
-//   projectSize:z.string().min(1, { message: "Please select a value" }).max(260, { message: "The name is too long" }),
-//   duration:z.string().min(1, { message: "Please select a value" }).max(260, { message: "The name is too long" }),
-//   expertise:z.string().min(1, { message: "Please select a value" }).max(260, { message: "The name is too long" }),
-  
-//  from:z.string().regex(amountRegex,"fixed  must be a positive number"),
-//   to:z.string().regex(amountRegex,"fixed  must be a positive number"),
-//   fixed:z.string().regex(amountRegex,"fixed  must be a positive number"),
-//   jobDescription:z.string().min(60, 'minium 60 words  is required'),
-// });
+;
 
 
 export const MessageSchema = z.object({
@@ -207,15 +173,37 @@ const CountrySchema = z.object({
   }),
 });
 
+export const freelanceSchema=z.object({
+  profession: z.string().min(2, {
+    message: "profession must be at least 2 characters.",
+  }),
+  
+})
+
+export const SkillsFreelancer = z.object({
+   skill: z.string().min(2, {
+    message: "profession must be at least 2 characters.",
+  }),
+  
+  
+})
 export const FreeLancerSchema=z.object({
   name:z.string(),
  country:z.array(CountrySchema),
-   profession: z.array(ProfessionSchema),
    contact: z.string().regex(phoneRegex,'Invalid Number!'),
    hourlyrate: z.string().regex(amountRegex,"Hourly rate must be a positive number"),
 estimatedamount:z.string().regex(amountRegex,"estimatedamount  must be a positive number"),
 message: z.string().min(10, 'minium 10 words  is required'),
-  skills:z.array(SkillsSchema),
+
+category:z.array(z.object({
+professions:z.array(z.object({
+    profession:z.string().min(1),
+   })),
+ skills:z.array(z.object({
+    skill:z.string().min(1),
+   })),
+})),
+ 
   language: z.string().min(2, {
     message: "State Name must be at least 2 characters.",
   }),
