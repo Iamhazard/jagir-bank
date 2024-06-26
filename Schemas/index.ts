@@ -144,6 +144,7 @@ export const CitySchema = z.object({
   name: z.string().min(2, {
     message: "name must be at least 2 characters.",
   }),
+   countryId:z.string().optional(),
 })
 
 export const StateSchema = z.object({
@@ -161,16 +162,11 @@ export const StreetSchema = z.object({
 
 const CountrySchema = z.object({
   name: z.string().min(2, { message: "Country name must be at least 2 characters." }),
-  zip: z.string(),
-    Statename: z.string().min(2, {
-    message: "State Name must be at least 2 characters.",
-  }),
+ 
    cityname: z.string().min(2, {
     message: "name must be at least 2 characters.",
   }),
-  address: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
+  
 });
 
 export const freelanceSchema=z.object({
@@ -189,12 +185,25 @@ export const SkillsFreelancer = z.object({
 })
 export const FreeLancerSchema=z.object({
   name:z.string(),
- country:z.array(CountrySchema),
+  zip: z.string().regex(phoneRegex,'Invalid Number!'),
+    Statename: z.string().min(2, {
+    message: "State Name must be at least 2 characters.",
+  }),
+  address: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+ countries:z.array(z.object({
+country:z.array(z.object({
+    name:z.string().min(1),
+   })),
+ city:z.array(z.object({
+    name:z.string().min(1),
+   })),
+})),
    contact: z.string().regex(phoneRegex,'Invalid Number!'),
    hourlyrate: z.string().regex(amountRegex,"Hourly rate must be a positive number"),
 estimatedamount:z.string().regex(amountRegex,"estimatedamount  must be a positive number"),
 message: z.string().min(10, 'minium 10 words  is required'),
-
 category:z.array(z.object({
 professions:z.array(z.object({
     profession:z.string().min(1),

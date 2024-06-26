@@ -80,7 +80,6 @@ const Category = () => {
             setSuccessMessage('Category updated successfully');
             fetchCategories()
             resetForm();
-
         } else {
             try {
                 const response = await fetch('/api/category/new', {

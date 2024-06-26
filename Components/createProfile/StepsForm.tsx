@@ -2,7 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import { CldUploadButton } from "next-cloudinary";
-import { ChangeEvent, useEffect, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { motion } from "framer-motion";
 import ProfileWrapper from "./ProfileWrapper";
 
@@ -11,12 +11,12 @@ import Select from 'react-select';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler, useFieldArray, Controller } from "react-hook-form";
 import { useSession } from "next-auth/react";
-import { FreeLancerSchema, freelanceSchema } from "@/Schemas";
+import { FreeLancerSchema } from "@/Schemas";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/Redux/store";
 import { viewProfessions } from "@/Redux/Features/admin/professionSlice";
 import { viewSkills } from "@/Redux/Features/admin/skillsSlice";
-import axios from "axios";
+import { viewCountry } from "@/Redux/Features/admin/countrySlice";
 
 type Inputs = z.infer<typeof FreeLancerSchema>;
 
@@ -24,7 +24,7 @@ const steps = [
   {
     id: "Step 1",
     name: "Address",
-    fields: ["name", "country"],
+    fields: ["name", "country", "address", "cityname", "Statename", "zip",],
   },
   {
     id: "Step 2",
@@ -52,6 +52,23 @@ interface Categorys {
   updatedAt: string;
   professions: string[];
 }
+interface Country {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  country: string[]
+}
+interface Countries {
+  country: string;
+  id: string;
+  name: string;
+  city: string;
+  createdAt: string;
+  updatedAt: string;
+  professions: string[];
+}
+
 
 interface Category {
   id: string;
@@ -76,9 +93,6 @@ export default function Form() {
   const [previousStep, setPreviousStep] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const delta = currentStep - previousStep;
-  const [selectedImage, setSelectedImage] = useState<File | "">("");
-  const [selectefiles, setSelecteFiles] = useState<File | "">("");
-  const [selecteexpfiles, setSelecteExpFiles] = useState<File | "">("");
   const [error, setError] = useState<string | undefined>("");
   const [profiledata, setProfileData] = useState();
   const [success, setSuccess] = useState<string | undefined>("");
@@ -90,6 +104,11 @@ export default function Form() {
   const [professions, setProfessions] = useState<Categorys[]>([])
   const dispatch = useDispatch<AppDispatch>()
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
+  const [countries, setCountries] = useState<Countries[]>([])
+  const [districts, setDistricts] = useState<Countries[]>([])
+
+  //console.log(districts, "districtts")
+  //console.log(countries, "country")
   const {
     register,
     handleSubmit,
@@ -103,10 +122,11 @@ export default function Form() {
     resolver: zodResolver(FreeLancerSchema),
     defaultValues: {
       name: "",
-      country: [
-        { name: '', zip: '', Statename: '', cityname: '', address: '' }
-      ],
+      countries: [{ country: [{ name: "" }], city: [{ name: "" }] }],
       contact: "",
+      Statename: "",
+      zip: "",
+      address: "",
       hourlyrate: "",
       estimatedamount: "",
       message: "",
@@ -120,14 +140,58 @@ export default function Form() {
 
   const { fields: countryFields, append: appendCountry, remove: removeCountry } = useFieldArray({
     control,
-    name: "country"
+    name: "countries"
   });
   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
     control,
     name: "category",
   });
 
+  useEffect(() => {
+    fetchCountries()
 
+  }, [])
+
+  const fetchCountries = async () => {
+    try {
+      dispatch(viewCountry()).then((res: any) => {
+        if (res.payload) {
+          setCountries(res.payload);
+        }
+      });
+
+    } catch (error) {
+      console.log(error)
+
+    }
+  }
+
+  useEffect(() => {
+    fetchCity()
+
+  }, [])
+
+  const fetchCity = async () => {
+    try {
+      const response = await fetch('/api/city/getcity', {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      if (data) {
+        setDistricts(data);
+      } else {
+        console.error('No payload in response:');
+      }
+    } catch (error) {
+      console.error('Failed to fetch cities:', error);
+    }
+  };
 
   const Imagechangehandler = () => {
 
@@ -159,6 +223,8 @@ export default function Form() {
   };
 
 
+
+
   useEffect(() => {
     fetchProfession()
 
@@ -182,6 +248,7 @@ export default function Form() {
     fetchSkills()
 
   }, [])
+  //console.log("skoills from form0", skill)
 
   const fetchSkills = async () => {
     try {
@@ -200,13 +267,13 @@ export default function Form() {
   // console.log(professions)
   const processForm: SubmitHandler<Inputs> = async (data) => {
     console.log(data, "data from form");
-
-
     try {
       const fd = new FormData();
       // Append non-nested values to FormData
       fd.append('userId', (userid) as string);
-      fd.append('name', (data.name));
+      fd.append('Statename', (data.Statename));
+      fd.append('address', (data.address));
+      fd.append('zip', (data.zip));
       fd.append('contact', (data.contact));
       fd.append('hourlyrate', (data.hourlyrate));
       fd.append('estimatedamount', (data.estimatedamount));
@@ -214,18 +281,18 @@ export default function Form() {
       fd.append('language', (data.language));
       if (imageUrl) {
         fd.append('imageUrl', imageUrl)
-      }
+      };
+      data.countries.forEach((country$, countryIndex) => {
+        country$.country.forEach((country, countryIndex) => {
+          fd.append(`countries[${countryIndex}].country[${countryIndex}].profession`, country.name);
+        });
 
-
-      data.country.forEach((country, index) => {
-        fd.append(`country[${index}].name`, country.name);
-        fd.append(`country[${index}].zip`, country.zip);
-        fd.append(`country[${index}].Statename`, country.Statename);
-        fd.append(`country[${index}].cityname`, country.cityname);
-        fd.append(`country[${index}].address`, country.address);
+        country$.city.forEach((city, cityIndex) => {
+          fd.append(`countries[${countryIndex}].city[${cityIndex}].name`, city.name);
+          fd.append(`countries[${countryIndex}].city[${cityIndex}].CityId`, city.name);
+        });
       });
 
-      // Append nested category values
       data.category.forEach((category, categoryIndex) => {
         category.professions.forEach((profession, professionIndex) => {
           fd.append(`category[${categoryIndex}].professions[${professionIndex}].profession`, profession.profession);
@@ -297,10 +364,6 @@ export default function Form() {
       setCurrentStep((step) => step - 1);
     }
   };
-
-
-
-
   return (
     <ProfileWrapper
       headerLabel="Create a FreeLancer profile"
@@ -430,23 +493,21 @@ export default function Form() {
                     countryFields.map((country, countryIndex) => (
                       <div className="mt-2" key={country.id}>
 
-                        <select
-                          id="country"
-                          {...register(`country.${countryIndex}.name`)}
-                          autoComplete="country-name"
-                          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:max-w-xs sm:text-sm sm:leading-6">
-                          <option>Nepal</option>
-                          <option>India</option>
-                          <option>China</option>
-                          <option>Srilanka</option>
-                          <option>United States</option>
-                          <option>Canada</option>
-                          <option>Mexico</option>
-                          <option>Austraia</option>
-                        </select>
-                        {errors.country?.message && (
+                        <Select
+                          isMulti
+                          key={country.id}
+                          options={countries.map(pro => ({ value: pro.id, label: pro.name }))}
+                          id={`country${countryIndex}`}
+                          {...register(`countries.${countryIndex}.country`)}
+                          className="basic-multi-select"
+                          classNamePrefix="select"
+                          onChange={(selectedOption: any, actionMeta: any) => {
+                            setValue(`countries.${countryIndex}.country`, selectedOption.map((sk: any) => ({ country: sk.value })));
+                          }}
+                        />
+                        {errors.countries?.message && (
                           <p className="mt-2 text-sm text-red-400">
-                            {errors.country.message}
+                            {errors.countries.message}
                           </p>
                         )}
                       </div>
@@ -459,51 +520,58 @@ export default function Form() {
 
                 <div className="col-span-full">
                   <label
-                    htmlFor="street"
+                    htmlFor="address"
                     className="block text-sm font-medium leading-6 text-gray-900">
                     Street address
                   </label>
-                  {countryFields.map((streetfield, streetindex) => (
-                    <div className="mt-2" key={streetfield.id}>
-                      <input
-                        type="text"
-                        id="street"
-                        {...register(`country.${streetindex}.address`)}
-                        autoComplete="street-address"
-                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
-                      />
-                      {/* {errors.couaddress?.message && (
-                        <p className="mt-2 text-sm text-red-400">
-                          {errors.address.message}
-                        </p>
-                      )} */}
-                    </div>
-                  ))}
+
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      id="address"
+                      {...register("address")}
+                      autoComplete="street-address"
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                    />
+                    {errors.address?.message && (
+                      <p className="mt-2 text-sm text-red-400">
+                        {errors.address.message}
+                      </p>
+                    )}
+                  </div>
+
 
                 </div>
 
                 <div className="col-span-full">
                   <label
-                    htmlFor="city"
+                    htmlFor="cityname"
                     className="block text-sm font-medium leading-6 text-gray-900">
                     City
                   </label>
-                  {countryFields.map((cityFields, cityIndex: any) => (
-                    <div className="mt-2" key={cityFields.id}>
-                      <input
-                        type="text"
-                        id="city"
-                        {...register(`country.${cityIndex}.cityname`)}
-                        autoComplete="address-level2"
-                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                  <div className="mt-2">
+                    {countryFields.map((cityFields, cityIndex: any) => (
+                      <Select
+                        isMulti
+                        key={cityFields.id}
+                        options={countries.map(pro => ({ value: pro.id, label: pro.name }))}
+                        id={`city${cityIndex}`}
+                        {...register(`countries.${cityIndex}.city`)}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                        onChange={(selectedOption: any, actionMeta: any) => {
+                          setValue(`category.${cityIndex}.professions`, selectedOption.map((sk: any) => ({ profession: sk.value })));
+                        }}
                       />
-                      {/* {errors.cityname?.message && (
-                        <p className="mt-2 text-sm text-red-400">
-                          {errors.cityname.message}
-                        </p>
-                      )} */}
-                    </div>
-                  ))}
+
+                    ))}
+                    {errors.countries?.message && (
+                      <p className="mt-2 text-sm text-red-400">
+                        {errors.countries.message}
+                      </p>
+                    )}
+                  </div>
+
 
                 </div>
 
@@ -530,26 +598,26 @@ export default function Form() {
                 </div>
                 <div className="sm:col-span-2">
                   <label
-                    htmlFor="state"
+                    htmlFor="Statename"
                     className="block text-sm font-medium leading-6 text-gray-900">
                     State / Province
                   </label>
-                  {countryFields.map((stateFields, stateindex) => (
-                    <div className="mt-2" key={stateFields.id}>
-                      <input
-                        type="text"
-                        id="state"
-                        {...register(`country.${stateindex}.Statename`)}
-                        autoComplete="address-level1"
-                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
-                      />
-                      {/* {errors.state?.message && (
-                        <p className="mt-2 text-sm text-red-400">
-                          {errors.state.message}
-                        </p>
-                      )} */}
-                    </div>
-                  ))}
+
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      id="Statename"
+                      {...register("Statename")}
+                      autoComplete="address-level1"
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                    />
+                    {errors.Statename?.message && (
+                      <p className="mt-2 text-sm text-red-400">
+                        {errors.Statename?.message}
+                      </p>
+                    )}
+                  </div>
+
 
                 </div>
                 <div className="sm:col-span-2">
@@ -558,22 +626,22 @@ export default function Form() {
                     className="block text-sm font-medium leading-6 text-gray-900">
                     ZIP / Postal code
                   </label>
-                  {countryFields.map((zipfields, zipIndex) => (
-                    <div className="mt-2" key={zipfields.id}>
-                      <input
-                        type="text"
-                        id="zip"
-                        {...register(`country.${zipIndex}.zip`)}
-                        autoComplete="postal-code"
-                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
-                      />
-                      {/* {errors.zip?.message && (
-                          <p className="mt-2 text-sm text-red-400">
-                            {errors.zip.message}
-                          </p>
-                        )} */}
-                    </div>
-                  ))}
+
+                  <div className="mt-2" >
+                    <input
+                      type="text"
+                      id="zip"
+                      {...register(`zip`)}
+                      autoComplete="postal-code"
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                    />
+                    {errors.zip?.message && (
+                      <p className="mt-2 text-sm text-red-400">
+                        {errors.zip.message}
+                      </p>
+                    )}
+                  </div>
+
 
                 </div>
 

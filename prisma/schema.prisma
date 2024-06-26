@@ -98,10 +98,9 @@ model FreelancerProfile {
   id              String                          @id @default(auto()) @map("_id") @db.ObjectId
   userId          String                          @db.ObjectId
   name            String
-  country         String
   state           String
-  city            String
   StreetAddress   String
+  zip             String
   contact         String?
   hourlyrate      String?
   estimatedamount String?
@@ -122,11 +121,9 @@ model FreelancerProfileToCountry {
   id                  String            @id @default(auto()) @map("_id") @db.ObjectId
   freelancerProfileId String            @db.ObjectId
   countryId           String            @db.ObjectId
-  stateId             String            @db.ObjectId
   cityId              String            @db.ObjectId
   freelancerProfile   FreelancerProfile @relation(fields: [freelancerProfileId], references: [id])
   country             Country           @relation(fields: [countryId], references: [id])
-  state               State             @relation(fields: [stateId], references: [id])
   city                City              @relation(fields: [cityId], references: [id])
 
   @@index([freelancerProfileId, countryId], name: "unique_freelancer_profile_profession")
@@ -153,25 +150,13 @@ model FreelancerProfileToSkill {
 }
 
 model Country {
-  id            String                       @id @default(auto()) @map("_id") @db.ObjectId
-  name          String?
-  zip           String?
-  state         State[]
-  city          City[]
-  countries     FreelancerProfileToCountry[]
-  createdAt     DateTime                     @default(now())
-  updatedAt     DateTime                     @updatedAt
-  ClientProfile ClientProfile[]
-}
-
-model State {
-  id        String                       @id @default(auto()) @map("_id") @db.ObjectId
-  name      String?
-  states    FreelancerProfileToCountry[]
-  countryId String                       @db.ObjectId
-  countries Country                      @relation(fields: [countryId], references: [id], onDelete: Cascade)
-  createdAt DateTime                     @default(now())
-  updatedAt DateTime                     @updatedAt
+  id              String                       @id @default(auto()) @map("_id") @db.ObjectId
+  name            String?
+  city            City[]
+  countries       FreelancerProfileToCountry[]
+  createdAt       DateTime                     @default(now())
+  updatedAt       DateTime                     @updatedAt
+  Clientcountries ClientProfileToCountry[]
 }
 
 model City {
@@ -184,25 +169,27 @@ model City {
   updatedAt DateTime                     @updatedAt
 }
 
-model StreetAddress {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  address   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model ClientProfile {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String     @db.ObjectId
-  country   Country    @relation(fields: [countryId], references: [id])
-  countryId String     @db.ObjectId
+  id        String                   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String                   @db.ObjectId
   Jobs      Job[]
+  countries ClientProfileToCountry[]
   Proposals Proposal[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime                 @default(now())
+  updatedAt DateTime                 @updatedAt
+  user      User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId])
+}
+
+model ClientProfileToCountry {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  clientProfileId String        @db.ObjectId
+  countryId       String        @db.ObjectId
+  clientProfile   ClientProfile @relation(fields: [clientProfileId], references: [id])
+  country         Country       @relation(fields: [countryId], references: [id])
+
+  @@index([clientProfileId, countryId], name: "unique_freelancer_profile_profession")
 }
 
 model Job {

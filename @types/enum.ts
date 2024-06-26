@@ -149,6 +149,13 @@ export interface CategoryPageProps {
     success: string | null;
 
 }
+export interface CountryPageProps {
+    country: CountryState| null;
+    status: 'idle' | 'loading' | 'succeeded' | 'failed';
+    error: string | null;
+    success: string | null;
+
+}
 export interface ProfessionState {
    id: string;
   profession: string;
@@ -202,7 +209,16 @@ export interface DistrictState {
    id: string;
   district: string;
 }
+export interface CityState {
+   id: string;
+  name: string;
+}
 
+
+export interface CountryState {
+   id: string;
+  name: string;
+}
 export interface Country {
   id: string;
   name: string;
