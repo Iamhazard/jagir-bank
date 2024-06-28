@@ -185,22 +185,22 @@ export const SkillsFreelancer = z.object({
 })
 export const FreeLancerSchema=z.object({
   name:z.string(),
-  zip: z.string().regex(phoneRegex,'Invalid Number!'),
-    Statename: z.string().min(2, {
-    message: "State Name must be at least 2 characters.",
-  }),
+  countries:z.array(z.object({
+country:z.array(z.object({
+   countryname:z.string().min(1),
+   })),
+ city:z.array(z.object({
+    cityname:z.string().min(1),
+   })),
+})),
   address: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
- countries:z.array(z.object({
-country:z.array(z.object({
-    name:z.string().min(1),
-   })),
- city:z.array(z.object({
-    name:z.string().min(1),
-   })),
-})),
    contact: z.string().regex(phoneRegex,'Invalid Number!'),
+    Statename: z.string().min(2, {
+    message: "State Name must be at least 2 characters.",
+  }),
+  zip: z.string().regex(phoneRegex,'Invalid Number!'),
    hourlyrate: z.string().regex(amountRegex,"Hourly rate must be a positive number"),
 estimatedamount:z.string().regex(amountRegex,"estimatedamount  must be a positive number"),
 message: z.string().min(10, 'minium 10 words  is required'),
@@ -212,12 +212,9 @@ professions:z.array(z.object({
     skill:z.string().min(1),
    })),
 })),
- 
   language: z.string().min(2, {
     message: "State Name must be at least 2 characters.",
   }),
-  experiencefile: z.string().optional(),
-  educationfile: z.string().optional(),
-  imageInput: z.string().optional(),
+ 
 
 })

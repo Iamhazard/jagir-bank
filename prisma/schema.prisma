@@ -126,7 +126,7 @@ model FreelancerProfileToCountry {
   country             Country           @relation(fields: [countryId], references: [id])
   city                City              @relation(fields: [cityId], references: [id])
 
-  @@index([freelancerProfileId, countryId], name: "unique_freelancer_profile_profession")
+  @@index([freelancerProfileId, countryId], name: "unique_freelancer_profile_country")
 }
 
 model FreelancerProfileToProfession {

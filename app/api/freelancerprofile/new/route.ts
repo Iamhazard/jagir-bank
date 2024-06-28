@@ -4,10 +4,10 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-
+      console.log("body",body)
     const {
       userId,
-      country,
+      countries,
       zip,
       address,
       Statename,
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
       message,
       category,
       language,
-      imageUrl,
+      imageInput,
     } = body;
 
     if (!userId) {
@@ -46,22 +46,28 @@ export async function POST(req: NextRequest) {
         estimatedamount: estimatedamount,
         message: message,
         language: language,
-        countries: {
-          create: country.map((countryId: string) => ({
-            country: { connect: { id: countryId } },
-          })),
-        },
-        skills: {
-          create: category.map((skill: any) => ({
-            skill: { connect: { id: skill.skillId } },
-          })),
-        },
         profession: {
-          create: category.map((p: any) => ({
-            profession: { connect: { id: p.professionId } },
-          })),
-        },
-        imageInput: imageUrl,
+            create: category.flatMap((cat:any) =>
+              cat.professions.map((prof:any) => ({ professionId: prof.profession }))
+            ),
+          },
+           skills: {
+            create: category.flatMap((cat: { skills: any[]; }) =>
+              cat.skills.map((skl: { skill: any; }) => ({ skillId: skl.skill }))
+            ),
+          },
+          countries: {
+            create: countries.flatMap((cnt: { country: any[]; city: any[]; }) =>
+              cnt.country.map((c: {
+                [x: string]: any; countryname: any; 
+}) => ({
+                countryId: c.countryname,
+              
+               cityId:c.countryname              
+              }))
+            ),
+          },
+        imageInput: imageInput as string,
         user: {
           connect: { id: userId },
         },

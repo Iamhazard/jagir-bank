@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import { admin } from "@/actions/admin";
 import toast from "react-hot-toast";
 import ECommerce from "../_component/E-commerce";
+import withAdmin from "../_component/AdminOrder";
 
 const DefaultDashboard = () => {
     const onServerActionClick = () => {
@@ -43,4 +44,4 @@ const DefaultDashboard = () => {
 };
 
 
-export default DefaultDashboard;
+export default withAdmin(DefaultDashboard);

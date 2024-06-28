@@ -1,4 +1,7 @@
+"use client"
 import SteppersForm from "@/Components/createProfile/StepsForm";
+import withFreelance from "@/lib/WithFreeLance";
+
 import React from "react";
 
 const CreateProfile = () => {
@@ -9,4 +12,4 @@ const CreateProfile = () => {
   );
 };
 
-export default CreateProfile;
+export default withFreelance(CreateProfile);

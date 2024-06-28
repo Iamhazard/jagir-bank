@@ -6,13 +6,14 @@ import "../_component/css/satoshi.css"
 import React, { useEffect, useState } from "react";
 import Loader from "@/Components/common/Loader";
 import DefaultLayout from "../_component/DefaultLayout";
+import withAdmin from "../_component/AdminOrder";
 
 
-export default function RootLayout({
+const RootLayout = ({
     children,
 }: Readonly<{
     children: React.ReactNode;
-}>) {
+}>) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -35,3 +36,4 @@ export default function RootLayout({
         </html>
     );
 }
+export default withAdmin(RootLayout)

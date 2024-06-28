@@ -1,5 +1,7 @@
+"use client"
 import React, { ReactNode } from "react";
 import AccountNavbar from "@/Components/ui/AccountNavbar";
+
 
 const ProfileLayout = ({ children }: { children: ReactNode }) => {
   return (

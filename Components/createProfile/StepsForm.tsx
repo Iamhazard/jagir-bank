@@ -24,7 +24,7 @@ const steps = [
   {
     id: "Step 1",
     name: "Address",
-    fields: ["name", "country", "address", "cityname", "Statename", "zip",],
+    fields: ["name", "countryname", "cityname", "address", "contact", "Statename", "zip",],
   },
   {
     id: "Step 2",
@@ -122,11 +122,11 @@ export default function Form() {
     resolver: zodResolver(FreeLancerSchema),
     defaultValues: {
       name: "",
-      countries: [{ country: [{ name: "" }], city: [{ name: "" }] }],
+      countries: [{ country: [{ countryname: "" }], city: [{ cityname: "" }] }],
+      address: "",
       contact: "",
       Statename: "",
       zip: "",
-      address: "",
       hourlyrate: "",
       estimatedamount: "",
       message: "",
@@ -264,58 +264,22 @@ export default function Form() {
     }
   }
 
-  // console.log(professions)
   const processForm: SubmitHandler<Inputs> = async (data) => {
-    console.log(data, "data from form");
+    //console.log(data, "data from form");
     try {
-      const fd = new FormData();
-      // Append non-nested values to FormData
-      fd.append('userId', (userid) as string);
-      fd.append('Statename', (data.Statename));
-      fd.append('address', (data.address));
-      fd.append('zip', (data.zip));
-      fd.append('contact', (data.contact));
-      fd.append('hourlyrate', (data.hourlyrate));
-      fd.append('estimatedamount', (data.estimatedamount));
-      fd.append('message', (data.message));
-      fd.append('language', (data.language));
-      if (imageUrl) {
-        fd.append('imageUrl', imageUrl)
-      };
-      data.countries.forEach((country$, countryIndex) => {
-        country$.country.forEach((country, countryIndex) => {
-          fd.append(`countries[${countryIndex}].country[${countryIndex}].profession`, country.name);
-        });
-
-        country$.city.forEach((city, cityIndex) => {
-          fd.append(`countries[${countryIndex}].city[${cityIndex}].name`, city.name);
-          fd.append(`countries[${countryIndex}].city[${cityIndex}].CityId`, city.name);
-        });
-      });
-
-      data.category.forEach((category, categoryIndex) => {
-        category.professions.forEach((profession, professionIndex) => {
-          fd.append(`category[${categoryIndex}].professions[${professionIndex}].profession`, profession.profession);
-        });
-
-        category.skills.forEach((skill, skillIndex) => {
-          fd.append(`category[${categoryIndex}].skills[${skillIndex}].skill`, skill.skill);
-          fd.append(`category[${categoryIndex}].skills[${skillIndex}].skillId`, skill.skill);
-        });
-      });
-      const formDataObject: any = {};
-      for (const pair of fd.entries()) {
-        formDataObject[pair[0]] = pair[1];
+      const formdata = {
+        ...data,
+        imageInput: imageUrl,
+        userId: userid as string
       }
-
-      console.log(formDataObject, "formdataobj")
+      console.log(formdata, "formdataobj")
 
       const response = await fetch("api/freelancerprofile/new", {
         method: "POST",
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        body: JSON.stringify(formDataObject),
+        body: JSON.stringify(formdata),
       });
 
       if (response.ok) {
@@ -333,6 +297,8 @@ export default function Form() {
       setError("An error occurred while processing the request");
     }
   };
+
+  // console.log(professions)
 
   type FieldName = keyof Inputs;
 
@@ -497,12 +463,12 @@ export default function Form() {
                           isMulti
                           key={country.id}
                           options={countries.map(pro => ({ value: pro.id, label: pro.name }))}
-                          id={`country${countryIndex}`}
+                          id={`name${countryIndex}`}
                           {...register(`countries.${countryIndex}.country`)}
                           className="basic-multi-select"
                           classNamePrefix="select"
                           onChange={(selectedOption: any, actionMeta: any) => {
-                            setValue(`countries.${countryIndex}.country`, selectedOption.map((sk: any) => ({ country: sk.value })));
+                            setValue(`countries.${countryIndex}.country`, selectedOption.map((sk: any) => ({ countryname: sk.value, countryId: sk.name })));
                           }}
                         />
                         {errors.countries?.message && (
@@ -515,7 +481,37 @@ export default function Form() {
                   }
 
                 </div>
+                <div className="col-span-full">
+                  <label
+                    htmlFor="cityname"
+                    className="block text-sm font-medium leading-6 text-gray-900">
+                    City
+                  </label>
+                  <div className="mt-2">
+                    {countryFields.map((cityFields, cityIndex) => (
+                      <Select
+                        isMulti
+                        key={cityFields.id}
+                        options={districts.map(pro => ({ value: pro.id, label: pro.name }))}
+                        id={`cityname${cityIndex}`}
+                        {...register(`countries.${cityIndex}.city`)}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                        onChange={(selectedOption: any, actionMeta: any) => {
+                          setValue(`countries.${cityIndex}.city`, selectedOption.map((sk: any) => ({ cityname: sk.value, cityId: sk.name })));
+                        }}
+                      />
 
+                    ))}
+                    {errors.countries?.message && (
+                      <p className="mt-2 text-sm text-red-400">
+                        {errors.countries.message}
+                      </p>
+                    )}
+                  </div>
+
+
+                </div>
 
 
                 <div className="col-span-full">
@@ -543,37 +539,7 @@ export default function Form() {
 
                 </div>
 
-                <div className="col-span-full">
-                  <label
-                    htmlFor="cityname"
-                    className="block text-sm font-medium leading-6 text-gray-900">
-                    City
-                  </label>
-                  <div className="mt-2">
-                    {countryFields.map((cityFields, cityIndex: any) => (
-                      <Select
-                        isMulti
-                        key={cityFields.id}
-                        options={countries.map(pro => ({ value: pro.id, label: pro.name }))}
-                        id={`city${cityIndex}`}
-                        {...register(`countries.${cityIndex}.city`)}
-                        className="basic-multi-select"
-                        classNamePrefix="select"
-                        onChange={(selectedOption: any, actionMeta: any) => {
-                          setValue(`category.${cityIndex}.professions`, selectedOption.map((sk: any) => ({ profession: sk.value })));
-                        }}
-                      />
 
-                    ))}
-                    {errors.countries?.message && (
-                      <p className="mt-2 text-sm text-red-400">
-                        {errors.countries.message}
-                      </p>
-                    )}
-                  </div>
-
-
-                </div>
 
                 <div className="sm:col-span-2 sm:col-start-1">
                   <label
@@ -787,7 +753,7 @@ export default function Form() {
                         isMulti
                         key={field.id}
                         options={professions.map(pro => ({ value: pro.id, label: pro.profession }))}
-                        id={`skill${index}`}
+                        id={`profession${index}`}
                         {...register(`category.${index}.professions`)}
                         className="basic-multi-select"
                         classNamePrefix="select"
@@ -815,8 +781,6 @@ export default function Form() {
                     <div className="py-2">
 
                       {fields.map((field, ind) => (
-
-
                         <Select
                           isMulti
                           key={field.id}
@@ -833,10 +797,6 @@ export default function Form() {
 
                     </div>
                   </div>
-
-
-
-
                 </div>
               </div>
             </motion.div>
