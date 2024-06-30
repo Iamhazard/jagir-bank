@@ -189,6 +189,13 @@ export interface SkillState {
   createdAt: string;
   updatedAt: string;
 }
+export interface OrganizationState {
+   id: string;
+  organization: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 
 export interface SkillPageProps {
     skill: SkillState| null;

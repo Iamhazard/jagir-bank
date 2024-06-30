@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import CardWrapper from '@/Components/auth/card-wrapper';
-import { SkillSchema } from '@/Schemas';
+
 import axios from 'axios';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/Components/ui/form'
 import React, { useEffect, useState, useTransition } from 'react';
@@ -11,12 +11,13 @@ import { Input } from '@/Components/ui/input';
 import { FormError } from '@/Components/auth/form-error';
 import { FormSuccess } from '@/Components/auth/form-success';
 import { Button } from '@/Components/ui/button';
-import { SkillState } from '@/@types/enum';
+import { OrganizationState, SkillState } from '@/@types/enum';
 import { Header } from '@/Components/auth/header';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/Redux/store';
 import { editCategory, viewCategories } from '@/Redux/Features/admin/CategorySlice';
 import { DeleteButton } from '@/app/admin/_component/DeleteButton';
+import { OrganizationSchema } from '@/Schemas';
 
 interface Profession {
     name: string,
@@ -30,9 +31,9 @@ const ProfessionPage = () => {
         reset,
     } = useForm();
 
-    const form = useForm<z.infer<typeof SkillSchema>>({
+    const form = useForm<z.infer<typeof OrganizationSchema>>({
         defaultValues: {
-            skill: "",
+            organization: "",
 
         }
     })
@@ -40,61 +41,65 @@ const ProfessionPage = () => {
     const [skillName, setSkillName] = useState('');
     const [success, setSuccess] = useState<string | null>("");
     const [categories, setCategories] = useState<Profession | null>(null)
-    const [editSkills, setEditSkills] = useState<SkillState | null>(null);
+    const [editSkills, setEditSkills] = useState<OrganizationState | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [isPending, startTransition] = useTransition();
     const [categoryId, setCategoryId] = useState('')
+    const [organizationId, setOrganizationId] = useState('')
+
+
     const dispatch = useDispatch<AppDispatch>()
 
-
     useEffect(() => {
-        fetchCategories()
+        fetchOrgainzation()
 
     }, [])
 
-    const fetchCategories = async () => {
+    const fetchOrgainzation = async () => {
         try {
-            dispatch(viewCategories()).then((res: any) => {
-                if (res.payload) {
-                    setCategories(res.payload);
-                }
-            });
-
+            const respose = await axios.get('/api/job/organization/getOrganization')
+            const data = respose.data
+            console.log("datafrom response", data)
+            setCategories(data)
         } catch (error) {
             console.log(error)
-
+            setCategories(null);
         }
     }
+
     console.log("all category", categories)
     const submitCategory = async (data: any) => {
 
         setSubmitting(true);
 
         if (editSkills) {
-            await dispatch(editCategory({
-                categoryId,
-                category: data.title
-            }))
-            setSuccessMessage('Category updated successfully');
-            fetchCategories()
-            resetForm();
+            const response = await axios.patch('/api/job/organization', {
+                organizationId,
+                organizationName: data.organization
+            });
+
+            if (response.status === 200) {
+                setSuccessMessage('Organization updated successfully');
+                fetchOrgainzation();
+                resetForm();
+            }
 
         } else {
             try {
-                const response = await fetch('/api/category/new', {
+                const response = await fetch('/api/job/organization/new', {
                     method: 'POST',
                     headers: {
-                        "Content-Type": "multipart/form-data",
+                        "Content-Type": "application/json",
                     },
                     body: JSON.stringify(data),
                 })
                 if (!response.ok) throw new Error("HTTP error " + response.status);
-                //console.log(response)
+                console.log(response)
 
                 setSuccessMessage('Category added successfully');
-                fetchCategories()
+                fetchOrgainzation()
                 resetForm();
             } catch (error) {
                 setErrorMessage('Failed to add category');
@@ -107,7 +112,7 @@ const ProfessionPage = () => {
     };
     const resetForm = () => {
         form.reset({
-            skill: "",
+            organization: "",
         });
         setEditSkills(null);
         setCategoryId('');
@@ -136,12 +141,12 @@ const ProfessionPage = () => {
                             <div className='space-y-4'>
                                 <FormField
                                     control={form.control}
-                                    name="skill"
+                                    name="organization"
                                     render={({ field }) => (
                                         <FormItem>
                                             <label>{editSkills ? "Update Organization Types " : "New Organization Types "}
                                                 {editSkills && (
-                                                    <b>:{editSkills.skill}</b>
+                                                    <b>:{editSkills.organization}</b>
                                                 )}
                                             </label>
                                             <FormControl>
@@ -175,10 +180,10 @@ const ProfessionPage = () => {
                     <div className='mt-4'>
                         <Header label='Existing Profession'></Header>
                         {Array.isArray(categories) && categories.length > 0 ? (
-                            categories.map((c: SkillState) => (
+                            categories.map((c: OrganizationState) => (
                                 <div className='bg-gray-100 rounded-xl p-2 px-4 flex gap-1 mb-1 items-center' key={c.id}>
                                     <div className='grow'>
-                                        {c.skill}
+                                        {c.organization}
 
                                     </div>
                                     <div className="flex gap-1">
@@ -186,8 +191,9 @@ const ProfessionPage = () => {
                                         <Button type="button"
                                             onClick={() => {
                                                 setEditSkills(c)
-                                                setSkillName(c.skill);
+                                                setSkillName(c.organization);
                                                 setCategoryId(c.id)
+                                                setOrganizationId(c.id)
                                             }}
                                         >
                                             Edit

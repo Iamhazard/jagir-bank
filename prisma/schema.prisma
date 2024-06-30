@@ -150,13 +150,12 @@ model FreelancerProfileToSkill {
 }
 
 model Country {
-  id              String                       @id @default(auto()) @map("_id") @db.ObjectId
-  name            String?
-  city            City[]
-  countries       FreelancerProfileToCountry[]
-  createdAt       DateTime                     @default(now())
-  updatedAt       DateTime                     @updatedAt
-  Clientcountries ClientProfileToCountry[]
+  id        String                       @id @default(auto()) @map("_id") @db.ObjectId
+  name      String?
+  city      City[]
+  countries FreelancerProfileToCountry[]
+  createdAt DateTime                     @default(now())
+  updatedAt DateTime                     @updatedAt
 }
 
 model City {
@@ -170,47 +169,47 @@ model City {
 }
 
 model ClientProfile {
-  id        String                   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String                   @db.ObjectId
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String     @db.ObjectId
   Jobs      Job[]
-  countries ClientProfileToCountry[]
+  country   String?
   Proposals Proposal[]
-  createdAt DateTime                 @default(now())
-  updatedAt DateTime                 @updatedAt
-  user      User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId])
 }
 
-model ClientProfileToCountry {
-  id              String        @id @default(auto()) @map("_id") @db.ObjectId
-  clientProfileId String        @db.ObjectId
-  countryId       String        @db.ObjectId
-  clientProfile   ClientProfile @relation(fields: [clientProfileId], references: [id])
-  country         Country       @relation(fields: [countryId], references: [id])
+// model ClientProfileToCountry {
+//   id              String        @id @default(auto()) @map("_id") @db.ObjectId
+//   clientProfileId String        @unique @db.ObjectId
+//   countryId       String        @db.ObjectId
+//   clientProfile   ClientProfile @relation(fields: [clientProfileId], references: [id])
+//   country         Country       @relation(fields: [countryId], references: [id])
 
-  @@index([clientProfileId, countryId], name: "unique_freelancer_profile_profession")
-}
+//   @@index([clientProfileId, countryId], name: "unique_freelancer_profile_profession")
+// }
 
 model Job {
-  id              String             @id @default(auto()) @map("_id") @db.ObjectId
+  id              String         @id @default(auto()) @map("_id") @db.ObjectId
   post            String?
   projectSize     String?
   duration        String?
   jobDescription  String?
-  clientProfile   ClientProfile      @relation(fields: [clientProfileId], references: [id])
-  clientProfileId String             @db.ObjectId
+  clientProfile   ClientProfile  @relation(fields: [clientProfileId], references: [id])
+  clientProfileId String         @db.ObjectId
   SkillsOnJobs    SkillsOnJobs[]
-  status          JobStatus          @default(posted)
+  status          JobStatus      @default(posted)
   proposals       Proposal[]
   profession      String
   jobType         JobType[]
-  organization    OrganizationType[]
+  Education       String?
+  organization    String?
   experience      Experience[]
   ratings         Rating[]
-  jobtime         Jobtime[]
-  createdAt       DateTime           @default(now())
-  updatedAt       DateTime           @updatedAt
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 }
 
 enum JobStatus {
@@ -283,11 +282,14 @@ model JobType {
   updatedAt  DateTime @updatedAt
 }
 
+model Education {
+  id   String  @id @default(auto()) @map("_id") @db.ObjectId
+  name String?
+}
+
 model OrganizationType {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   organization String?
-  jobId        String   @db.ObjectId
-  job          Job      @relation(fields: [jobId], references: [id])
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -295,17 +297,6 @@ model OrganizationType {
 model Experience {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   expertise String?
-  jobId     String   @db.ObjectId
-  job       Job      @relation(fields: [jobId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Jobtime {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  from      String
-  to        String
-  fixed     String
   jobId     String   @db.ObjectId
   job       Job      @relation(fields: [jobId], references: [id])
   createdAt DateTime @default(now())

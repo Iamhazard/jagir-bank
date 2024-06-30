@@ -1,6 +1,20 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable @next/next/no-img-element */
 "use client";
+
+
+interface Orgainzations {
+  id: string;
+  organization: string;
+
+}export interface Countries {
+  id: string;
+  name: string;
+  data: DistrictState[]
+}
+
+
 import {
   Accordion,
   AccordionContent,
@@ -25,6 +39,10 @@ import { clientProfile } from "@/actions/clientProfile";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/Redux/store";
+import { viewCountry } from "@/Redux/Features/admin/countrySlice";
+import { DistrictState } from "@/@types/enum";
 
 type Inputs = z.infer<typeof ClientSchema>;
 
@@ -37,22 +55,13 @@ interface Skill {
   id: string;
   title: string;
 }
-const CategoryOptions = [
-  { value: 'Development', label: 'Development' },
-  { value: 'AI services', label: 'AI services' },
-  { value: 'Desgin', label: 'Desgin' },
-  { value: 'Technical writing', label: 'Technical writing' },
-  { value: 'Data Science & Analytics', label: 'Data Science & Analytics' },
-  { value: 'IT & Networking', label: 'IT & Networking' },
-  { value: 'Sales & Marketing', label: 'Sales & Marketing' },
-  { value: 'Engineering & Architecture', label: 'Engineering & Architecture' },
-]
+
 
 const steps = [
   {
     id: "Step 1",
     name: "Job title",
-    fields: ["country", "post"],
+    fields: ["post", "organization"],
   },
 
   {
@@ -94,16 +103,18 @@ const ClientForm: React.FC<Inputs> = () => {
   const [previousStep, setPreviousStep] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [getorginazations, setgetOrgainzations] = useState<Orgainzations[]>([])
   const [selectedSkills, setSelectedSkills] = useState<Skill[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<null | MultiValue<{ value: string; label: string }>>(null);
   const delta = currentStep - previousStep;
   const [isPending, startTransition] = useTransition();
   const router = useRouter()
+  const [countries, setCountries] = useState<Countries[]>([])
 
   const methods = useForm<Inputs>({
     resolver: zodResolver(ClientSchema),
     defaultValues: {
-      country: "",
+
       jobs: [{
 
       }],
@@ -120,13 +131,47 @@ const ClientForm: React.FC<Inputs> = () => {
     setValue,
     formState: { errors },
   } = methods;
-
+  const dispatch: AppDispatch = useDispatch()
   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
     control,
     name: "jobs",
   });
+  useEffect(() => {
+    fetchOrgainzation()
 
-  //console.log(watch("skills"))
+  }, [])
+
+  const fetchOrgainzation = async () => {
+    try {
+      const respose = await axios.get('/api/job/organization/getOrganization')
+      const data = respose.data
+      //console.log("datafrom response", data)
+      setgetOrgainzations(data)
+    } catch (error) {
+      console.log(error)
+      setgetOrgainzations([]);
+    }
+  }
+
+  useEffect(() => {
+    fetchCountry()
+
+  }, [])
+
+  const fetchCountry = async () => {
+    try {
+      dispatch(viewCountry()).then((res: any) => {
+        if (res.payload) {
+          setCountries(res.payload);
+        }
+      });
+    } catch (error) {
+      console.log(error)
+
+    }
+  }
+
+  //console.log("country", countries)
   const processForm: SubmitHandler<Inputs> = (
     values: z.infer<typeof ClientSchema>
   ) => {
@@ -310,21 +355,26 @@ const ClientForm: React.FC<Inputs> = () => {
                           </small>
                         </span>
                       </div>
-                      <div>
+                      <div className="py-3">
                         <label
                           htmlFor="post"
                           className="block text-sm font-medium leading-6 text-gray-900">
                           Organization types
                         </label>
                         {fields.map((field, index) => (
-                          <input
+                          <Select
+                            isMulti
                             key={field.id}
-                            type="text"
-                            id={`post_${index}`}
-                            {...register(`jobs.${index}.post`)}
-                            autoComplete="web"
-                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                            options={getorginazations?.map(pro => ({ value: pro.id, label: pro.organization }))}
+                            id={`organization_${index}`}
+                            {...register(`jobs.${index}.organization`)}
+                            className="basic-multi-select"
+                            classNamePrefix="select"
+                            onChange={(selectedOption: any, actionMeta: any) => {
+                              setValue(`jobs.${index}.organization`, selectedOption.map((sk: any) => ({ countryname: sk.name, countryId: sk.value })));
+                            }}
                           />
+
                         ))}
                       </div>
                     </div>
@@ -337,19 +387,21 @@ const ClientForm: React.FC<Inputs> = () => {
                       </label>
                       <div className="mt-2">
                         <select
-                          id="country"
-                          autoComplete="country-name"
-                          {...register("country")}
-                          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:max-w-xs sm:text-sm sm:leading-6">
-                          <option>Nepal</option>
-                          <option>India</option>
-                          <option>China</option>
-                          <option>Srilanka</option>
-                          <option>United States</option>
-                          <option>Canada</option>
-                          <option>Mexico</option>
-                          <option>Austraia</option>
+                          id="category"
+
+                          className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                        >
+                          <option value="">Select a country</option>
+                          {countries.map((category) => (
+                            <option key={category.id} value={category.id}>
+                              {category.name}
+                            </option>
+                          ))}
                         </select>
+                        {/* {errors.country && <p className="mt-2 text-sm text-red-400">{errors.country.message}</p>} */}
+
+
+
                       </div>
                     </div>
                   </div>

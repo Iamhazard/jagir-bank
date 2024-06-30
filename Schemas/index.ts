@@ -77,10 +77,22 @@ const RateSchema=z.object({
 
 
 
+export const OrganizationSchema=z.object({
+  organization:z.string(),
+
+})
+export const EducationSchema=z.object({
+  name:z.string(),
+
+})
+
+
+
 export const ClientSchema = z.object({
-   country: z.string().min(1, 'Country is required'),
+  
    jobs: z.array(z.object({
     post: z.string().min(1, 'Post is required'),
+    organization:z.string(),
   projectSize: z.string().min(1, { message: "Please select a value" }).max(260, { message: "The name is too long" }),
   duration: z.string().min(1, { message: "Please select a value" }).max(260, { message: "The name is too long" }),
   expertise: z.string().min(1, { message: "Please select a value" }).max(260, { message: "The name is too long" }),
@@ -91,6 +103,7 @@ export const ClientSchema = z.object({
   skills:z.array(z.object({
     skill:z.string().min(1),
    })),
+  
   }),) 
 });
 ;

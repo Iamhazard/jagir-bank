@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import CardWrapper from '@/Components/auth/card-wrapper';
-import { SkillSchema } from '@/Schemas';
 import axios from 'axios';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/Components/ui/form'
 import React, { useEffect, useState, useTransition } from 'react';
@@ -17,12 +16,14 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/Redux/store';
 import { editCategory, viewCategories } from '@/Redux/Features/admin/CategorySlice';
 import { DeleteButton } from '@/app/admin/_component/DeleteButton';
+import { EducationSchema } from '@/Schemas';
 
 interface Profession {
     name: string,
 }
 
-const ProfessionPage = () => {
+
+const EducationPage = () => {
     const {
         register,
         handleSubmit,
@@ -30,9 +31,9 @@ const ProfessionPage = () => {
         reset,
     } = useForm();
 
-    const form = useForm<z.infer<typeof SkillSchema>>({
+    const form = useForm<z.infer<typeof EducationSchema>>({
         defaultValues: {
-            skill: "",
+            name: "",
 
         }
     })
@@ -56,15 +57,12 @@ const ProfessionPage = () => {
 
     const fetchCategories = async () => {
         try {
-            dispatch(viewCategories()).then((res: any) => {
-                if (res.payload) {
-                    setCategories(res.payload);
-                }
-            });
-
+            const reponse = await axios.get(`/api/job/Education/getEducaion`)
+            const data = reponse.data
+            setCategories(data)
         } catch (error) {
             console.log(error)
-
+            setCategories(null)
         }
     }
     console.log("all category", categories)
@@ -73,20 +71,23 @@ const ProfessionPage = () => {
         setSubmitting(true);
 
         if (editSkills) {
-            await dispatch(editCategory({
+            const response = await axios.patch('/api/job/Education', {
                 categoryId,
-                category: data.title
-            }))
-            setSuccessMessage('Category updated successfully');
-            fetchCategories()
-            resetForm();
+                category: data.name
+            });
+            if (response.status === 200) {
+                setSuccessMessage('Category updated successfully');
+                fetchCategories()
+                resetForm();
+
+            }
 
         } else {
             try {
-                const response = await fetch('/api/category/new', {
+                const response = await fetch('/api/job/Education/new', {
                     method: 'POST',
                     headers: {
-                        "Content-Type": "multipart/form-data",
+                        "Content-Type": "application/json",
                     },
                     body: JSON.stringify(data),
                 })
@@ -107,7 +108,7 @@ const ProfessionPage = () => {
     };
     const resetForm = () => {
         form.reset({
-            skill: "",
+            name: "",
         });
         setEditSkills(null);
         setCategoryId('');
@@ -136,7 +137,7 @@ const ProfessionPage = () => {
                             <div className='space-y-4'>
                                 <FormField
                                     control={form.control}
-                                    name="skill"
+                                    name="name"
                                     render={({ field }) => (
                                         <FormItem>
                                             <label>{editSkills ? "Update Education" : "New Education"}
@@ -216,4 +217,4 @@ const ProfessionPage = () => {
     );
 };
 
-export default ProfessionPage;
+export default EducationPage;
