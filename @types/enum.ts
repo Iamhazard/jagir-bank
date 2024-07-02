@@ -180,6 +180,12 @@ export interface DeleteButtonPros {
     onDelete: ()=>{}
 }
 
+export interface EducationState {
+   id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 
 
@@ -189,6 +195,9 @@ export interface SkillState {
   createdAt: string;
   updatedAt: string;
 }
+
+
+
 export interface OrganizationState {
    id: string;
   organization: string;
@@ -241,6 +250,7 @@ export interface Skill {
 }
 
 export interface Profession {
+
   id: string;
   title: string;
 }

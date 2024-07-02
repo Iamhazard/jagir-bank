@@ -10,11 +10,10 @@ import { Input } from '@/Components/ui/input';
 import { FormError } from '@/Components/auth/form-error';
 import { FormSuccess } from '@/Components/auth/form-success';
 import { Button } from '@/Components/ui/button';
-import { SkillState } from '@/@types/enum';
+import { EducationState, SkillState } from '@/@types/enum';
 import { Header } from '@/Components/auth/header';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/Redux/store';
-import { editCategory, viewCategories } from '@/Redux/Features/admin/CategorySlice';
 import { DeleteButton } from '@/app/admin/_component/DeleteButton';
 import { EducationSchema } from '@/Schemas';
 
@@ -40,8 +39,8 @@ const EducationPage = () => {
     const [error, setError] = useState<string | null>("");
     const [skillName, setSkillName] = useState('');
     const [success, setSuccess] = useState<string | null>("");
-    const [categories, setCategories] = useState<Profession | null>(null)
-    const [editSkills, setEditSkills] = useState<SkillState | null>(null);
+    const [educations, setEducations] = useState<Profession | null>(null)
+    const [editSkills, setEditSkills] = useState<EducationState | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -51,21 +50,24 @@ const EducationPage = () => {
 
 
     useEffect(() => {
-        fetchCategories()
+        fetchEducations()
 
     }, [])
 
-    const fetchCategories = async () => {
+    const fetchEducations = async () => {
         try {
-            const reponse = await axios.get(`/api/job/Education/getEducaion`)
-            const data = reponse.data
-            setCategories(data)
+            const reponse = await fetch('/api/job/Education/getEducation', {
+                method: 'GET',
+            })
+            const data = await reponse.json()
+            console.log("datafrom response", data)
+            setEducations(data)
         } catch (error) {
             console.log(error)
-            setCategories(null)
+            setEducations(null)
         }
     }
-    console.log("all category", categories)
+    console.log("all educations", educations)
     const submitCategory = async (data: any) => {
 
         setSubmitting(true);
@@ -77,7 +79,7 @@ const EducationPage = () => {
             });
             if (response.status === 200) {
                 setSuccessMessage('Category updated successfully');
-                fetchCategories()
+                fetchEducations()
                 resetForm();
 
             }
@@ -95,7 +97,7 @@ const EducationPage = () => {
                 //console.log(response)
 
                 setSuccessMessage('Category added successfully');
-                fetchCategories()
+                fetchEducations()
                 resetForm();
             } catch (error) {
                 setErrorMessage('Failed to add category');
@@ -142,10 +144,10 @@ const EducationPage = () => {
                                         <FormItem>
                                             <label>{editSkills ? "Update Education" : "New Education"}
                                                 {editSkills && (
-                                                    <b>:{editSkills.skill}</b>
+                                                    <b>:{editSkills.name}</b>
                                                 )}
                                             </label>
-                                            <FormControl>
+                                            <FormControl>S
                                                 <Input
                                                     type="text"
                                                     placeholder="Enter Education"
@@ -175,11 +177,11 @@ const EducationPage = () => {
                     </Form>
                     <div className='mt-4'>
                         <Header label='Existing Education'></Header>
-                        {Array.isArray(categories) && categories.length > 0 ? (
-                            categories.map((c: SkillState) => (
+                        {Array.isArray(educations) && educations.length > 0 ? (
+                            educations.map((c: EducationState) => (
                                 <div className='bg-gray-100 rounded-xl p-2 px-4 flex gap-1 mb-1 items-center' key={c.id}>
                                     <div className='grow'>
-                                        {c.skill}
+                                        {c.name}
 
                                     </div>
                                     <div className="flex gap-1">
@@ -187,7 +189,7 @@ const EducationPage = () => {
                                         <Button type="button"
                                             onClick={() => {
                                                 setEditSkills(c)
-                                                setSkillName(c.skill);
+                                                setSkillName(c.name);
                                                 setCategoryId(c.id)
                                             }}
                                         >

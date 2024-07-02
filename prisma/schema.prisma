@@ -169,27 +169,16 @@ model City {
 }
 
 model ClientProfile {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String     @db.ObjectId
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
   Jobs      Job[]
   country   String?
-  Proposals Proposal[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId])
 }
-
-// model ClientProfileToCountry {
-//   id              String        @id @default(auto()) @map("_id") @db.ObjectId
-//   clientProfileId String        @unique @db.ObjectId
-//   countryId       String        @db.ObjectId
-//   clientProfile   ClientProfile @relation(fields: [clientProfileId], references: [id])
-//   country         Country       @relation(fields: [countryId], references: [id])
-
-//   @@index([clientProfileId, countryId], name: "unique_freelancer_profile_profession")
-// }
 
 model Job {
   id              String         @id @default(auto()) @map("_id") @db.ObjectId
@@ -202,7 +191,6 @@ model Job {
   SkillsOnJobs    SkillsOnJobs[]
   status          JobStatus      @default(posted)
   proposals       Proposal[]
-  profession      String
   jobType         JobType[]
   Education       String?
   organization    String?
@@ -316,8 +304,6 @@ model Proposal {
   updatedAt       DateTime       @updatedAt
   status          ProposalStatus
   job             Job            @relation(fields: [jobId], references: [id])
-  clientProfile   ClientProfile  @relation(fields: [clientProfileId], references: [id])
-  clientProfileId String         @db.ObjectId
 }
 
 enum ProposalStatus {

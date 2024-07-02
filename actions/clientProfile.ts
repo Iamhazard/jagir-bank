@@ -5,10 +5,6 @@ import { ClientSchema } from "@/Schemas";
 import {  getUserById } from "@/data/user";
 import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
-// import { sendVerificationEmail } from "@/lib/mail";
-// import { getMessageEmbedding } from "@/lib/opeanai";
-// import { jobsIndex } from "@/lib/pinecone";
-// import { generateVerificationToken } from "@/lib/token";
 
 import * as z from "zod";
 
@@ -42,8 +38,9 @@ export const clientProfile = async (values: z.infer<typeof ClientSchema>) => {
  const existingClientProfile=await db.clientProfile.findFirst({where:{userId:dbUser.id}});
 
 
- let clientProfile: { id: any; userId?: string; country?: [] | null; };
+ //let clientProfile: { id: any; userId?: string; country:string; };
 
+ let clientProfile = await db.clientProfile.findFirst({ where: { userId: dbUser.id } });
 
  
  // If a ClientProfile exists, use it; otherwise, create a new one
@@ -77,17 +74,39 @@ export const clientProfile = async (values: z.infer<typeof ClientSchema>) => {
 
 
 const createdJobs = await Promise.all(jobData.map(async (job) => {
-  const {skills,...rest} = job;
+  const {skills,expertise,fixed,...rest} = job;
   const skillIds = skills.map(skill =>  skill.skill );
   return db.job.create({
     data: {
       clientProfileId: clientProfile.id,
+    
       ...rest,
       SkillsOnJobs: {
         createMany: {
           data: skillIds.map(skillId => ({
             skillId: skillId.toString()
           }))
+        }
+      },
+      experience:{
+        create: {
+          expertise
+        }
+      },
+      jobType:{
+create: {
+              fulltime: fixed ? "Yes" : null,
+              parttime: !fixed ? "Yes" : null,
+              contract: null,
+              internship: null,
+              freelance: null
+            }
+      }
+    },
+    include:{
+      SkillsOnJobs:{
+        include: {
+          skill: true
         }
       }
     }

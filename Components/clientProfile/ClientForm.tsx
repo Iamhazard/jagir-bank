@@ -43,6 +43,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/Redux/store";
 import { viewCountry } from "@/Redux/Features/admin/countrySlice";
 import { DistrictState } from "@/@types/enum";
+import GetEducation from "./GetEducation";
 
 type Inputs = z.infer<typeof ClientSchema>;
 
@@ -61,13 +62,13 @@ const steps = [
   {
     id: "Step 1",
     name: "Job title",
-    fields: ["post", "organization"],
+    fields: ["country", "post"],
   },
 
   {
     id: "Step 2 ",
     name: "Skills",
-    fields: ["skill"],
+    fields: ["skill", "education"],
   },
   {
     id: "Step 3",
@@ -114,7 +115,7 @@ const ClientForm: React.FC<Inputs> = () => {
   const methods = useForm<Inputs>({
     resolver: zodResolver(ClientSchema),
     defaultValues: {
-
+      country: '',
       jobs: [{
 
       }],
@@ -231,7 +232,7 @@ const ClientForm: React.FC<Inputs> = () => {
 
   useEffect(() => {
 
-    console.log("Selected categories:", selectedCategory);
+    //console.log("Selected categories:", selectedCategory);
 
 
     const fetchSkills = async () => {
@@ -357,38 +358,41 @@ const ClientForm: React.FC<Inputs> = () => {
                       </div>
                       <div className="py-3">
                         <label
-                          htmlFor="post"
+                          htmlFor="organization"
                           className="block text-sm font-medium leading-6 text-gray-900">
                           Organization types
                         </label>
                         {fields.map((field, index) => (
-                          <Select
-                            isMulti
+                          <select
+                            id='organization'
                             key={field.id}
-                            options={getorginazations?.map(pro => ({ value: pro.id, label: pro.organization }))}
-                            id={`organization_${index}`}
                             {...register(`jobs.${index}.organization`)}
-                            className="basic-multi-select"
-                            classNamePrefix="select"
-                            onChange={(selectedOption: any, actionMeta: any) => {
-                              setValue(`jobs.${index}.organization`, selectedOption.map((sk: any) => ({ countryname: sk.name, countryId: sk.value })));
-                            }}
-                          />
+                            className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                          >
+                            <option value="">Select a Education</option>
+                            {getorginazations.map((category) => (
+                              <option key={category.id} value={category.id}>
+                                {category.organization}
 
+                              </option>
+                            ))}
+                          </select>
                         ))}
                       </div>
                     </div>
 
-                    <div className="sm:col-span-3">
+                    <div className="sm:col-span-3 sm:col-start-1">
                       <label
                         htmlFor="country"
                         className="block text-sm font-medium leading-6 text-gray-900">
                         Country
                       </label>
                       <div className="mt-2">
-                        <select
-                          id="category"
 
+                        <select
+
+                          id="country"
+                          {...register('country')}
                           className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                         >
                           <option value="">Select a country</option>
@@ -398,10 +402,32 @@ const ClientForm: React.FC<Inputs> = () => {
                             </option>
                           ))}
                         </select>
-                        {/* {errors.country && <p className="mt-2 text-sm text-red-400">{errors.country.message}</p>} */}
+                      </div>
 
 
 
+                    </div>
+                    <div className="sm:col-span-3">
+                      <label
+                        htmlFor="country"
+                        className="block text-sm font-medium leading-6 text-gray-900">
+                        Job type
+                      </label>
+                      <div className="mt-2">
+
+                        <select
+
+                          id="country"
+                          {...register('country')}
+                          className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                        >
+                          <option value="">Select a Job Type</option>
+                          {countries.map((category) => (
+                            <option key={category.id} value={category.id}>
+                              {category.name}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                     </div>
                   </div>
@@ -461,7 +487,21 @@ const ClientForm: React.FC<Inputs> = () => {
                 </div>
 
 
+                <div className="mt-2">
+                  {fields.map((field, eduindex) => (
+                    <GetEducation
+                      key={field.id}
+                      id='education'
+                      {...register(`jobs.${eduindex}.education`)}
+                    />
+                  ))}
 
+
+                  {/* {errors.country && <p className="mt-2 text-sm text-red-400">{errors.country.message}</p>} */}
+
+
+
+                </div>
 
               </motion.div>
             )}

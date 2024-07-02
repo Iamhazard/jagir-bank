@@ -12,4 +12,4 @@ const CreateProfile = () => {
   );
 };
 
-export default withFreelance(CreateProfile);
+export default (CreateProfile);

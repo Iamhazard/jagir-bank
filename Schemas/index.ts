@@ -89,10 +89,10 @@ export const EducationSchema=z.object({
 
 
 export const ClientSchema = z.object({
-  
+  country:z.string().optional(),
    jobs: z.array(z.object({
-    post: z.string().min(1, 'Post is required'),
     organization:z.string(),
+    post: z.string().min(1, 'Post is required'),
   projectSize: z.string().min(1, { message: "Please select a value" }).max(260, { message: "The name is too long" }),
   duration: z.string().min(1, { message: "Please select a value" }).max(260, { message: "The name is too long" }),
   expertise: z.string().min(1, { message: "Please select a value" }).max(260, { message: "The name is too long" }),
@@ -100,6 +100,7 @@ export const ClientSchema = z.object({
   to: z.string().regex(amountRegex, "Fixed must be a positive number"),
   fixed: z.string().regex(amountRegex, "Fixed must be a positive number"),
   jobDescription: z.string().min(60, 'Minimum 60 words are required'),
+  education: z.string().optional(),
   skills:z.array(z.object({
     skill:z.string().min(1),
    })),

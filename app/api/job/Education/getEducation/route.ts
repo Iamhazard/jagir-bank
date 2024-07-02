@@ -7,11 +7,11 @@ export  const GET =async(req: NextRequest, res: NextResponse,) =>{
   
   if (req.method === "GET") {
     try {
-      const getAllcategory = await db.education.findMany();
-      if (!getAllcategory) {
-        return new Response("Category not found", { status: 404 });
+      const getAllEducation = await db.education.findMany();
+      if (!getAllEducation) {
+        return new Response("Education not found", { status: 404 });
       }
-      return new Response(JSON.stringify(getAllcategory), { status: 200 });
+      return new Response(JSON.stringify(getAllEducation), { status: 200 });
     } catch (error) {
       console.error(error);
       return new Response("Internal Server Error", { status: 500 });
