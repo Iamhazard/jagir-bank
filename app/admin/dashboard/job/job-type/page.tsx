@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import CardWrapper from '@/Components/auth/card-wrapper';
-import { SkillSchema } from '@/Schemas';
 import axios from 'axios';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/Components/ui/form'
 import React, { useEffect, useState, useTransition } from 'react';
@@ -18,9 +17,14 @@ import { AppDispatch } from '@/Redux/store';
 import { editCategory, viewCategories } from '@/Redux/Features/admin/CategorySlice';
 import { DeleteButton } from '@/app/admin/_component/DeleteButton';
 
+
 interface Profession {
     name: string,
 }
+export const SkillSchema = z.object({
+    skill: z.string(),
+
+})
 
 const ProfessionPage = () => {
     const {
@@ -50,11 +54,11 @@ const ProfessionPage = () => {
 
 
     useEffect(() => {
-        fetchCategories()
+        fetchJobType()
 
     }, [])
 
-    const fetchCategories = async () => {
+    const fetchJobType = async () => {
         try {
             dispatch(viewCategories()).then((res: any) => {
                 if (res.payload) {
@@ -78,7 +82,7 @@ const ProfessionPage = () => {
                 category: data.title
             }))
             setSuccessMessage('Category updated successfully');
-            fetchCategories()
+            fetchJobType()
             resetForm();
 
         } else {
@@ -94,7 +98,7 @@ const ProfessionPage = () => {
                 //console.log(response)
 
                 setSuccessMessage('Category added successfully');
-                fetchCategories()
+                fetchJobType()
                 resetForm();
             } catch (error) {
                 setErrorMessage('Failed to add category');

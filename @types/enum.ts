@@ -141,9 +141,22 @@ export interface CategoryState {
   createdAt: string;
   updatedAt: string;
 }
+export interface jobtype {
+   id: string;
+  type: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface CategoryPageProps {
     category: CategoryState| null;
+    status: 'idle' | 'loading' | 'succeeded' | 'failed';
+    error: string | null;
+    success: string | null;
+
+}
+export interface JobtypeProps {
+    job: jobtype| null;
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null;
     success: string | null;

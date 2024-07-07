@@ -5,6 +5,7 @@ import categoryReducer from './Features/admin/CategorySlice'
 import skillsReducer from './Features/admin/skillsSlice'
 import professionReducer from './Features/admin/professionSlice'
 import countryReducer from './Features/admin/countrySlice'
+import jobTypeReducer from './Features/admin/jobType'
 
 export const makeStore = () => {
   return configureStore({
@@ -14,7 +15,8 @@ export const makeStore = () => {
         category:categoryReducer,
         profession:professionReducer,
         skills:skillsReducer,
-        country:skillsReducer,
+        country:countryReducer,
+        jobtype:jobTypeReducer,
         
        
     }
