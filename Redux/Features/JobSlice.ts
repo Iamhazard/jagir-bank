@@ -40,15 +40,14 @@ const initialState: JobState = loadStateFromLocalStorage() || {
  
 };
 
-export const BACKEND_URL = "http://localhost:3000";
-const API_URL = `${BACKEND_URL}/api`;
+
 
 // Thunks
 export const getAllJobs = createAsyncThunk<Job[], void, { state: RootState }>(
   'auth/getAllUsers',
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get(`${API_URL}/job`, {
+      const response = await axios.get(`/api/job`, {
 
       });
       console.log("response from  slice",response)
@@ -63,7 +62,7 @@ export const login = createAsyncThunk(
   'auth/login',
   async (credentials: { email: string; hashedPassword: string }, thunkAPI) => {
     try {
-      const response = await axios.post(`${API_URL}/login`, credentials);
+      const response = await axios.post(`/api/login`, credentials);
       const user = response.data.user;
       LoginSchema.parse(user);
       localStorage.setItem('sessionToken', response.data.sessionToken);
@@ -78,7 +77,7 @@ export const register = createAsyncThunk(
   'auth/register',
   async (credentials: { email: string; hashedPassword: string; lastName: string; name: string }, thunkAPI) => {
     try {
-      const response = await axios.post(`${API_URL}/register`, credentials);
+      const response = await axios.post(`/api/register`, credentials);
       const user = response.data.user;
       RegisterSchema.parse(user);
       return response.data;
@@ -92,7 +91,7 @@ export const fetchCurrentUser = createAsyncThunk(
   'auth/fetchCurrentUser',
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get(`${API_URL}/current_user`);
+      const response = await axios.get(`/api/current_user`);
       return response.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.response.data);

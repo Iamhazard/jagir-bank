@@ -7,6 +7,7 @@ import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 
 import * as z from "zod";
+import getCurrentUser from "./getCurrentUser";
 
 export const clientProfile = async (values: z.infer<typeof ClientSchema>) => {
 
@@ -31,7 +32,7 @@ export const clientProfile = async (values: z.infer<typeof ClientSchema>) => {
  
 
   const { country,jobs:jobData} = validatedFiled.data;
-
+const UserId=getCurrentUser();
 
      //check if existing Client Profile
      
@@ -74,12 +75,15 @@ export const clientProfile = async (values: z.infer<typeof ClientSchema>) => {
 
 
 const createdJobs = await Promise.all(jobData.map(async (job) => {
-  const {skills,expertise,fixed,...rest} = job;
+  const {skills,from,to,fixed,...rest} = job;
   const skillIds = skills.map(skill =>  skill.skill );
   return db.job.create({
     data: {
       clientProfileId: clientProfile.id,
-    
+       from: from || "", 
+          to: to || "", 
+          fixed: fixed || "",
+
       ...rest,
       SkillsOnJobs: {
         createMany: {
@@ -87,21 +91,7 @@ const createdJobs = await Promise.all(jobData.map(async (job) => {
             skillId: skillId.toString()
           }))
         }
-      },
-      experience:{
-        create: {
-          expertise
-        }
-      },
-      jobType:{
-create: {
-              fulltime: fixed ? "Yes" : null,
-              parttime: !fixed ? "Yes" : null,
-              contract: null,
-              internship: null,
-              freelance: null
-            }
-      }
+      },      
     },
     include:{
       SkillsOnJobs:{

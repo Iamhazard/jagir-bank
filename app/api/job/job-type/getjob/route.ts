@@ -7,11 +7,11 @@ export  const GET =async(req: NextRequest, res: NextResponse,) =>{
   
   if (req.method === "GET") {
     try {
-      const getAllJobtype = await db.jobType.findMany();
-      if (!getAllJobtype) {
-        return new Response("job-type not found", { status: 404 });
+      const getAllJobType = await db.jobType.findMany();
+      if (!getAllJobType) {
+        return new Response("Category not found", { status: 404 });
       }
-      return new Response(JSON.stringify(getAllJobtype), { status: 200 });
+      return new Response(JSON.stringify(getAllJobType), { status: 200 });
     } catch (error) {
       console.error(error);
       return new Response("Internal Server Error", { status: 500 });

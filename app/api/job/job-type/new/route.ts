@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { JobTypeEnum } from "@prisma/client";
+
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest, res: NextResponse) => {
@@ -15,7 +15,7 @@ if (!type) {
 
             const newCategory=await db.jobType.create({
                 data:{
-                    type: type as JobTypeEnum,
+                    type:type,
                   
                 }
             })

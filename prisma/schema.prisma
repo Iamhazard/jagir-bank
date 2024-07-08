@@ -29,7 +29,9 @@ model User {
   isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
   profile               FreelancerProfile[]
+  ratings               Rating[]
   clientProfile         ClientProfile[]
+  proposal              Proposal[]
   conversationIds       String[]               @db.ObjectId
   conversations         Conversation[]         @relation(fields: [conversationIds], references: [id])
 
@@ -184,6 +186,9 @@ model Job {
   id              String         @id @default(auto()) @map("_id") @db.ObjectId
   post            String?
   projectSize     String?
+  from            String?
+  to              String?
+  fixed           String?
   duration        String?
   jobDescription  String?
   clientProfile   ClientProfile  @relation(fields: [clientProfileId], references: [id])
@@ -191,10 +196,10 @@ model Job {
   SkillsOnJobs    SkillsOnJobs[]
   status          JobStatus      @default(posted)
   proposals       Proposal[]
-  jobType         JobType[]
-  Education       String?
+  jobType         String?
+  education       String?
   organization    String?
-  experience      Experience[]
+  expertise       String?
   ratings         Rating[]
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
@@ -253,25 +258,22 @@ model Rating {
   comment   String?
   job       Job      @relation(fields: [jobId], references: [id])
   jobId     String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-enum JobTypeEnum {
-  FULLTIME
-  PARTTIME
-  CONTRACT
-  INTERNSHIP
-  FREELANCE
-}
-
-model JobType {
-  id        String      @id @default(auto()) @map("_id") @db.ObjectId
-  type      JobTypeEnum
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  Job       Job?        @relation(fields: [jobId], references: [id])
-  jobId     String?     @db.ObjectId
+model Proposal {
+  id        String         @id @default(auto()) @map("_id") @db.ObjectId
+  Profile   String
+  status    ProposalStatus @default(PENDING)
+  job       Job            @relation(fields: [jobId], references: [id])
+  jobId     String         @db.ObjectId
+  user      User           @relation(fields: [userId], references: [id])
+  userId    String         @db.ObjectId
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 }
 
 model Education {
@@ -289,25 +291,15 @@ model OrganizationType {
 model Experience {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   expertise String?
-  jobId     String   @db.ObjectId
-  job       Job      @relation(fields: [jobId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Proposal {
-  id              String         @id @default(auto()) @map("_id") @db.ObjectId
-  duration        String?
-  hourlyRate      String?
-  coverLetter     String?
-  userId          String         @db.ObjectId
-  jobId           String         @db.ObjectId
-  image           String
-  estimatedAmount String
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
-  status          ProposalStatus
-  job             Job            @relation(fields: [jobId], references: [id])
+model JobType {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  type      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum ProposalStatus {

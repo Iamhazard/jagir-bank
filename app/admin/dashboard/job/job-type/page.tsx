@@ -10,19 +10,20 @@ import { Input } from '@/Components/ui/input';
 import { FormError } from '@/Components/auth/form-error';
 import { FormSuccess } from '@/Components/auth/form-success';
 import { Button } from '@/Components/ui/button';
-import { SkillState } from '@/@types/enum';
+import { jobtype } from '@/@types/enum';
 import { Header } from '@/Components/auth/header';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/Redux/store';
 import { editCategory, viewCategories } from '@/Redux/Features/admin/CategorySlice';
 import { DeleteButton } from '@/app/admin/_component/DeleteButton';
+import { editJobType, viewjobType } from '@/Redux/Features/admin/jobType';
 
 
 interface Profession {
     name: string,
 }
-export const SkillSchema = z.object({
-    skill: z.string(),
+export const jobtypeSchema = z.object({
+    type: z.string(),
 
 })
 
@@ -34,9 +35,9 @@ const ProfessionPage = () => {
         reset,
     } = useForm();
 
-    const form = useForm<z.infer<typeof SkillSchema>>({
+    const form = useForm<z.infer<typeof jobtypeSchema>>({
         defaultValues: {
-            skill: "",
+            type: "",
 
         }
     })
@@ -44,12 +45,12 @@ const ProfessionPage = () => {
     const [skillName, setSkillName] = useState('');
     const [success, setSuccess] = useState<string | null>("");
     const [categories, setCategories] = useState<Profession | null>(null)
-    const [editSkills, setEditSkills] = useState<SkillState | null>(null);
+    const [editSkills, setEditSkills] = useState<jobtype | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [isPending, startTransition] = useTransition();
-    const [categoryId, setCategoryId] = useState('')
+    const [jobId, setJobId] = useState('')
     const dispatch = useDispatch<AppDispatch>()
 
 
@@ -60,7 +61,7 @@ const ProfessionPage = () => {
 
     const fetchJobType = async () => {
         try {
-            dispatch(viewCategories()).then((res: any) => {
+            dispatch(viewjobType()).then((res: any) => {
                 if (res.payload) {
                     setCategories(res.payload);
                 }
@@ -77,9 +78,9 @@ const ProfessionPage = () => {
         setSubmitting(true);
 
         if (editSkills) {
-            await dispatch(editCategory({
-                categoryId,
-                category: data.title
+            await dispatch(editJobType({
+                jobId,
+                job: data.title
             }))
             setSuccessMessage('Category updated successfully');
             fetchJobType()
@@ -87,7 +88,7 @@ const ProfessionPage = () => {
 
         } else {
             try {
-                const response = await fetch('/api/category/new', {
+                const response = await fetch('/api/job/job-type/new', {
                     method: 'POST',
                     headers: {
                         "Content-Type": "multipart/form-data",
@@ -111,10 +112,10 @@ const ProfessionPage = () => {
     };
     const resetForm = () => {
         form.reset({
-            skill: "",
+            type: "",
         });
         setEditSkills(null);
-        setCategoryId('');
+        setJobId('');
     };
 
     const handleCancelClick = () => {
@@ -140,12 +141,12 @@ const ProfessionPage = () => {
                             <div className='space-y-4'>
                                 <FormField
                                     control={form.control}
-                                    name="skill"
+                                    name="type"
                                     render={({ field }) => (
                                         <FormItem>
                                             <label>{editSkills ? "Update Job-Type" : "New Job-type"}
                                                 {editSkills && (
-                                                    <b>:{editSkills.skill}</b>
+                                                    <b>:{editSkills.type}</b>
                                                 )}
                                             </label>
                                             <FormControl>
@@ -179,10 +180,10 @@ const ProfessionPage = () => {
                     <div className='mt-4'>
                         <Header label='Existing Job-type'></Header>
                         {Array.isArray(categories) && categories.length > 0 ? (
-                            categories.map((c: SkillState) => (
+                            categories.map((c: jobtype) => (
                                 <div className='bg-gray-100 rounded-xl p-2 px-4 flex gap-1 mb-1 items-center' key={c.id}>
                                     <div className='grow'>
-                                        {c.skill}
+                                        {c.type}
 
                                     </div>
                                     <div className="flex gap-1">
@@ -190,8 +191,8 @@ const ProfessionPage = () => {
                                         <Button type="button"
                                             onClick={() => {
                                                 setEditSkills(c)
-                                                setSkillName(c.skill);
-                                                setCategoryId(c.id)
+                                                setSkillName(c.type);
+                                                setJobId(c.id)
                                             }}
                                         >
                                             Edit

@@ -44,12 +44,22 @@ import { AppDispatch } from "@/Redux/store";
 import { viewCountry } from "@/Redux/Features/admin/countrySlice";
 import { DistrictState } from "@/@types/enum";
 import GetEducation from "./GetEducation";
+import { viewjobType } from "@/Redux/Features/admin/jobType";
 
 type Inputs = z.infer<typeof ClientSchema>;
+
+
+
+
+
 
 interface Category {
   id: string;
   title: string;
+}
+interface JobType {
+  id: string;
+  type: string;
 }
 
 interface Skill {
@@ -104,6 +114,7 @@ const ClientForm: React.FC<Inputs> = () => {
   const [previousStep, setPreviousStep] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [jobtypes, setJobTypes] = useState<JobType[]>([]);
   const [getorginazations, setgetOrgainzations] = useState<Orgainzations[]>([])
   const [selectedSkills, setSelectedSkills] = useState<Skill[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<null | MultiValue<{ value: string; label: string }>>(null);
@@ -215,6 +226,24 @@ const ClientForm: React.FC<Inputs> = () => {
     }
   };
 
+  useEffect(() => {
+    fetchJobType()
+
+  }, [])
+
+  const fetchJobType = async () => {
+    try {
+      dispatch(viewjobType()).then((res: any) => {
+        if (res.payload) {
+          setJobTypes(res.payload);
+        }
+      });
+
+    } catch (error) {
+      console.log(error)
+
+    }
+  }
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -369,7 +398,7 @@ const ClientForm: React.FC<Inputs> = () => {
                             {...register(`jobs.${index}.organization`)}
                             className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                           >
-                            <option value="">Select a Education</option>
+                            <option value="">Select a Organization</option>
                             {getorginazations.map((category) => (
                               <option key={category.id} value={category.id}>
                                 {category.organization}
@@ -408,26 +437,33 @@ const ClientForm: React.FC<Inputs> = () => {
 
                     </div>
                     <div className="sm:col-span-3">
+
                       <label
-                        htmlFor="country"
+                        htmlFor="jobType"
                         className="block text-sm font-medium leading-6 text-gray-900">
                         Job type
                       </label>
                       <div className="mt-2">
 
-                        <select
+                        {fields.map((field, index) => (
+                          <select
+                            id='jobType'
+                            key={field.id}
+                            {...register(`jobs.${index}.jobType`)}
+                            className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                          >
+                            <option value="">Select a Job Type</option>
+                            {jobtypes.map((jbs) => (
+                              <option key={jbs.id} value={jbs.id}>
+                                {jbs.type}
 
-                          id="country"
-                          {...register('country')}
-                          className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-                        >
-                          <option value="">Select a Job Type</option>
-                          {countries.map((category) => (
-                            <option key={category.id} value={category.id}>
-                              {category.name}
-                            </option>
-                          ))}
-                        </select>
+                              </option>
+                            ))}
+                          </select>
+                        ))}
+
+
+
                       </div>
                     </div>
                   </div>
@@ -492,7 +528,8 @@ const ClientForm: React.FC<Inputs> = () => {
                     <GetEducation
                       key={field.id}
                       id='education'
-                      {...register(`jobs.${eduindex}.education`)}
+                      register={register}
+                      name={`jobs.${eduindex}.education`}
                     />
                   ))}
 
@@ -683,7 +720,7 @@ const ClientForm: React.FC<Inputs> = () => {
                                   <input
                                     key={field.id}
                                     type="radio"
-                                    value="expertise"
+                                    value="entry"
                                     id={`expertise${index}`}
                                     {...register(`jobs.${index}.expertise`)}
                                     autoComplete="web"

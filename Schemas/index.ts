@@ -1,4 +1,5 @@
-import { UserRole } from "@prisma/client";
+import jobType from "@/Redux/Features/admin/jobType";
+import {  UserRole } from "@prisma/client";
 import * as z from "zod";
 
 
@@ -96,11 +97,12 @@ export const ClientSchema = z.object({
   projectSize: z.string().min(1, { message: "Please select a value" }).max(260, { message: "The name is too long" }),
   duration: z.string().min(1, { message: "Please select a value" }).max(260, { message: "The name is too long" }),
   expertise: z.string().min(1, { message: "Please select a value" }).max(260, { message: "The name is too long" }),
-  from: z.string().regex(amountRegex, "Fixed must be a positive number"),
-  to: z.string().regex(amountRegex, "Fixed must be a positive number"),
-  fixed: z.string().regex(amountRegex, "Fixed must be a positive number"),
+  from: z.string().regex(amountRegex, "Fixed must be a positive number").optional(),
+  to: z.string().regex(amountRegex, "Fixed must be a positive number").optional(),
+  fixed: z.string().regex(amountRegex, "Fixed must be a positive number").optional(),
   jobDescription: z.string().min(60, 'Minimum 60 words are required'),
   education: z.string().optional(),
+   jobType: z.string().min(1, 'Job type is required'),
   skills:z.array(z.object({
     skill:z.string().min(1),
    })),

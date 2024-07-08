@@ -24,8 +24,7 @@ export const createJobtype = createAsyncThunk(
   'job/create',
   async (payload: { job: string,userId:string |undefined }, thunkAPI) => {
     try {
-      const response = await axios.post(`/api/job`, payload)
-      
+      const response = await axios.post(`/api/job/job-type/new`, payload)
       const job = response.data.job; 
       CategorySchema.parse(job);
 
@@ -36,7 +35,7 @@ export const createJobtype = createAsyncThunk(
   }
 );
 
-export const editCategory = createAsyncThunk<
+export const editJobType= createAsyncThunk<
   JobsType[], 
   { jobId: string;job:string },
   { state: RootState } 
@@ -117,17 +116,17 @@ const jobTypeSlice = createSlice({
         state.status = 'failed';
         state.error = action.payload;
       })
-      .addCase(editCategory.pending, (state) => {
+      .addCase(editJobType.pending, (state) => {
         state.status = 'loading';
         state.success = null;
         state.error = null;
       })
-      .addCase(editCategory.fulfilled, (state, action: PayloadAction<any>) => {
+      .addCase(editJobType.fulfilled, (state, action: PayloadAction<any>) => {
         state.status = 'succeeded';
         state.job = action.payload;
         state.success = "Category edited successfully";
       })
-      .addCase(editCategory.rejected, (state, action: PayloadAction<any>) => {
+      .addCase(editJobType.rejected, (state, action: PayloadAction<any>) => {
         state.status = 'failed';
         state.error = action.payload;
       })
