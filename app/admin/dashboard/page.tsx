@@ -22,7 +22,7 @@ const DefaultDashboard = () => {
 
     return (
         <>
-            <ECommerce />
+
         </>
     );
 };
