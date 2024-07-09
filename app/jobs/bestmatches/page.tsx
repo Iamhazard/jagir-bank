@@ -52,7 +52,7 @@ const BestmatchesPage = () => {
 
   }, [dispatch])
 
-  console.log("all jobs", jobs)
+  // console.log("all jobs", jobs)
   //console.log("jib0", { jobs })
   return (
     <div>

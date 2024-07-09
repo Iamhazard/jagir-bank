@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import CardWrapper from '@/Components/auth/card-wrapper';
-import { SkillSchema } from '@/Schemas';
 import axios from 'axios';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/Components/ui/form'
 import React, { useEffect, useState, useTransition } from 'react';
@@ -17,6 +16,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/Redux/store';
 import { editCategory, viewCategories } from '@/Redux/Features/admin/CategorySlice';
 import { DeleteButton } from '@/app/admin/_component/DeleteButton';
+import { SkillSchema } from '@/Schemas';
 
 interface Profession {
     name: string,

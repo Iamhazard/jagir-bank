@@ -14,18 +14,15 @@ import { jobtype } from '@/@types/enum';
 import { Header } from '@/Components/auth/header';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/Redux/store';
-import { editCategory, viewCategories } from '@/Redux/Features/admin/CategorySlice';
 import { DeleteButton } from '@/app/admin/_component/DeleteButton';
 import { editJobType, viewjobType } from '@/Redux/Features/admin/jobType';
+import { jobtypeSchema } from '@/Schemas';
 
 
 interface Profession {
     name: string,
 }
-export const jobtypeSchema = z.object({
-    type: z.string(),
 
-})
 
 const ProfessionPage = () => {
     const {

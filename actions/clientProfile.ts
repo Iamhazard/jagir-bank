@@ -32,7 +32,7 @@ export const clientProfile = async (values: z.infer<typeof ClientSchema>) => {
  
 
   const { country,jobs:jobData} = validatedFiled.data;
-const UserId=getCurrentUser();
+
 
      //check if existing Client Profile
      
@@ -43,7 +43,9 @@ const UserId=getCurrentUser();
 
  let clientProfile = await db.clientProfile.findFirst({ where: { userId: dbUser.id } });
 
- 
+ if (!clientProfile?.id) {
+  throw new Error("Client profile is required");
+}
  // If a ClientProfile exists, use it; otherwise, create a new one
 
   if (existingClientProfile) {
@@ -76,10 +78,14 @@ const UserId=getCurrentUser();
 
 const createdJobs = await Promise.all(jobData.map(async (job) => {
   const {skills,from,to,fixed,...rest} = job;
-  const skillIds = skills.map(skill =>  skill.skill );
+  const skillIds = skills.map(skill => ({skillId: skill.skill} ));
   return db.job.create({
     data: {
-      clientProfileId: clientProfile.id,
+       clientProfile: {
+          connect: {
+            id: clientProfile!.id
+          }
+        },
        from: from || "", 
           to: to || "", 
           fixed: fixed || "",
@@ -87,9 +93,7 @@ const createdJobs = await Promise.all(jobData.map(async (job) => {
       ...rest,
       SkillsOnJobs: {
         createMany: {
-          data: skillIds.map(skillId => ({
-            skillId: skillId.toString()
-          }))
+          data: skillIds
         }
       },      
     },

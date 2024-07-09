@@ -1,7 +1,7 @@
-import React from "react";
-import FormElements from "@/components/FormElements";
+import DefaultLayout from "@/app/admin/_component/DefaultLayout";
+import FormElements from "@/app/admin/_component/FormElements";
 import { Metadata } from "next";
-import DefaultLayout from "@/components/Layouts/DefaultLayout";
+import React from "react";
 
 export const metadata: Metadata = {
   title: "Next.js Form Elements | TailAdmin - Next.js Dashboard Template",

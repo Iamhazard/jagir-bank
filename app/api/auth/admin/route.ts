@@ -7,16 +7,18 @@ import { db } from "@/lib/db";
 import { sendVerificationEmail } from "@/lib/mail";
 import { generateVerificationToken } from "@/lib/token";
 import { UserRole } from "@prisma/client";
-import { NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
+import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import bcrypt from "bcryptjs"; 
 import { signIn } from "next-auth/react";
 import { AuthError } from "next-auth";
 
-export async function POST (request:Request,values:z.infer<typeof LoginSchema>,callbackUrl?: string | null,
-  role?:UserRole){
+export const POST= async(request:NextRequest,values:z.infer<typeof LoginSchema>,callbackUrl?: string | null,
+  role?:UserRole)=>{
     try {
+          const body = await request.json();
        const validatedFields=LoginSchema.safeParse(values);
+       
        if(!validatedFields.success){
         return new NextResponse("Invalid fields",{status:500})
 
@@ -39,26 +41,25 @@ export async function POST (request:Request,values:z.infer<typeof LoginSchema>,c
  try {
          const existingRole= await getUserRoleByEmail(email)
      if (!existingRole) {
-      return { error: "role does not exist!" };
+      return NextResponse.json({ error: "role does not exist!" });
     }
     const existingUser = await getUserByEmail(email);
 
     if (!existingUser) {
-      return { error: "Email does not exist!" };
+      return NextResponse.json({ error: "Email does not exist!" });
     }
 
     if (!existingUser.emailVerified) {
       const verificationToken = await generateVerificationToken(
         existingUser?.email || ""
+        
       );
-
-      await sendVerificationEmail(
+  await sendVerificationEmail(
         verificationToken.email,
         verificationToken.token
       );
 
-      return { success: "Confirmation email sent!" };
-
+       return NextResponse.json({ success: "Confirmation email sent!" }, { status: 200 });
 
     }
      if (existingUser.isTwoFactorEnabled && existingUser.email) {
@@ -67,18 +68,15 @@ export async function POST (request:Request,values:z.infer<typeof LoginSchema>,c
           existingUser.email
         );
 
-        if (!twoFactorToken) {
-          return { error: "Invalid code!" };
+       if (!twoFactorToken || twoFactorToken.token !== code || new Date(twoFactorToken.expires) < new Date()) {
+          return NextResponse.json({ error: "Invalid or expired code!" }, { status: 400 });
         }
 
-        if (twoFactorToken.token !== code) {
-          return { error: "Invalid code!" };
-        }
 
         const hasExpired = new Date(twoFactorToken.expires) < new Date();
 
         if (hasExpired) {
-          return { error: "Code expired!" };
+          return NextResponse.json({ error: "Code expired!" },{status:400});
         }
 
         await db.twoFactorToken.delete({
@@ -107,24 +105,30 @@ export async function POST (request:Request,values:z.infer<typeof LoginSchema>,c
           twoFactorToken.token
         );
 
-        return { twoFactor: true };
+        return NextResponse.json({ twoFactor: true },{status:200});
       }
+    }
+      const isPasswordValid = await bcrypt.compare(password, existingUser.password || "");
+    if (!isPasswordValid) {
+      return NextResponse.json({ error: "Invalid credentials!" }, { status: 401 });
     }
     try {
         await signIn("credentials",{
             email,
             role:existingRole,
             password,
+            redirect: false,
+            callbackUrl:'',
             
         })
-        
+         return NextResponse.json({ success: "Sign-in successful" }, { status: 200 });
     } catch (error) {
          if (error instanceof AuthError) {
         switch (error.type) {
           case "CredentialsSignin":
-            return { error: "Invalid credentials!" };
+            return NextResponse.json({ error: "Invalid credentials!" }, { status: 401 });
           default:
-            return { error: "Something went wrong!" };
+            return NextResponse.json({ error: "Something went wrong!" }, { status: 500 });
         }
       }
        return new NextResponse("Not an admin", { status: 401 });  
@@ -141,6 +145,9 @@ export async function POST (request:Request,values:z.infer<typeof LoginSchema>,c
    
     
     } catch (error) {
-        throw error;
+      console.log(error)
+      return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+        
+        
     }
 }

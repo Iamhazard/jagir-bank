@@ -142,6 +142,14 @@ export const ProfileSchema = z.object({
   
 })
 
+export const SkillSchema = z.object({
+   skill: z.string().min(2, {
+    message: "profession must be at least 2 characters.",
+  }),
+  professionId:z.string().optional(),
+  
+})
+
 export const SkillsSchema = z.object({
    skill: z.string().min(2, {
     message: "profession must be at least 2 characters.",
@@ -168,6 +176,7 @@ export const StateSchema = z.object({
     message: "State Name must be at least 2 characters.",
   }),
 })
+
 
 export const StreetSchema = z.object({
   address: z.string().min(2, {
@@ -232,5 +241,9 @@ professions:z.array(z.object({
     message: "State Name must be at least 2 characters.",
   }),
  
+
+})
+export const jobtypeSchema = z.object({
+    type: z.string(),
 
 })

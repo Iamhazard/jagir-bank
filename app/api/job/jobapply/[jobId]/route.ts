@@ -34,6 +34,7 @@ if (existingApplication) {
 
     const {
 duration,
+Profile,
 estimatedAmount,
 imageUrl,
 hourlyRate,
@@ -51,14 +52,16 @@ console.log({body})
 const proposal=await db.proposal.create({
     data:{
         duration,
+        Profile,
         hourlyRate,
-        coverLetter:message,
+        Coverletter:message,
+        clientProfileId,
         userId:userId || "",
         jobId:jobId||"" ,
         estimatedAmount,
          status: 'PENDING',
          image:imageUrl,
-        clientProfileId,
+        
          
     }
     
