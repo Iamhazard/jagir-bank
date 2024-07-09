@@ -19,19 +19,6 @@ const DefaultDashboard = () => {
         });
     };
 
-    useEffect(() => {
-        const onApiRouteClick = () => {
-            fetch("/api/admin").then((response) => {
-                if (response.ok) {
-                    toast.success("Allowed API Route!");
-                } else {
-                    toast.error("Forbidden API Route!");
-                }
-            });
-        };
-
-        onApiRouteClick();
-    }, []);
 
     return (
         <>
