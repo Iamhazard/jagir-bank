@@ -13,9 +13,9 @@ import {
 } from "@/Components/ui/dialog"
 import { Label } from "@/Components/ui/label"
 import { FiEdit } from "react-icons/fi";
-import { Textarea } from "@/Components/ui/textarea"
+import { Input } from "@/Components/ui/input";
 
-export function BioAlert() {
+export function LanguageAlert() {
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -23,7 +23,7 @@ export function BioAlert() {
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Bio</DialogTitle>
+                    <DialogTitle>Languages</DialogTitle>
                     <DialogDescription>
                         This action cannot be undone. This will permanently delete your
                         account and remove your data from our servers.
@@ -32,8 +32,12 @@ export function BioAlert() {
                 <div className="flex items-center space-x-2">
                     <div className="grid flex-1 gap-2">
                         <div className="grid w-full gap-1.5">
-                            <Label htmlFor="message">Your Bio</Label>
-                            <Textarea placeholder="Type your message here." id="message" />
+                            <Label htmlFor="message">Your New Languages</Label>
+                            <Input
+                                id="text"
+                                defaultValue=""
+                                readOnly
+                            />
                         </div>
                     </div>
 

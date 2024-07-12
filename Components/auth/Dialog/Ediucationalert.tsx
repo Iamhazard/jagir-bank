@@ -13,9 +13,10 @@ import {
 } from "@/Components/ui/dialog"
 import { Label } from "@/Components/ui/label"
 import { FiEdit } from "react-icons/fi";
-import { Textarea } from "@/Components/ui/textarea"
+import { Input } from "@/Components/ui/input";
+import DatePickerTwo from "@/app/admin/_component/FormElements/DatePicker/DatePickerTwo";
 
-export function BioAlert() {
+export function EducationAlert() {
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -23,7 +24,7 @@ export function BioAlert() {
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Bio</DialogTitle>
+                    <DialogTitle>Eucation</DialogTitle>
                     <DialogDescription>
                         This action cannot be undone. This will permanently delete your
                         account and remove your data from our servers.
@@ -32,8 +33,23 @@ export function BioAlert() {
                 <div className="flex items-center space-x-2">
                     <div className="grid flex-1 gap-2">
                         <div className="grid w-full gap-1.5">
-                            <Label htmlFor="message">Your Bio</Label>
-                            <Textarea placeholder="Type your message here." id="message" />
+                            <Label>University Name</Label>
+                            <Input
+                                id="text"
+                                defaultValue=""
+                                readOnly
+                            />
+                            <div>
+                                <Label>End year</Label>
+                                <Input
+                                    id="number"
+                                    defaultValue=""
+                                    readOnly
+                                />
+                            </div>
+
+
+
                         </div>
                     </div>
 
