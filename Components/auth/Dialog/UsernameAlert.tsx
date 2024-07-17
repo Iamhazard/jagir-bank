@@ -1,6 +1,6 @@
-import { Copy } from "lucide-react"
+'use client'
 
-import { Button } from "@/Components/ui/button"
+import { Button } from "@/Components/ui/button";
 import {
     Dialog,
     DialogClose,
@@ -10,16 +10,55 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/Components/ui/dialog"
-import { Label } from "@/Components/ui/label"
+} from "@/Components/ui/dialog";
+import { Label } from "@/Components/ui/label";
 import { FiEdit } from "react-icons/fi";
 import { Input } from "@/Components/ui/input";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 
-export function UserNameAlert() {
+export type UsernameAlert = {
+    userName?: string
+}
+
+interface PropPass {
+    userName: string;
+    setUserName: (value: string) => void;
+}
+
+export const UserNameAlert: React.FC<PropPass> = ({ userName, setUserName }) => {
+    //const [userName, setUserName] = useState<string>("");
+    //console.log(userName, "userName")
+    const [errors, setErrors] = useState<UsernameAlert>({});
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setUserName(e.target.value);
+    };
+
+    const validate = (): boolean => {
+        const newErrors: UsernameAlert = {};
+        if (userName.trim() === '') {
+            newErrors.userName = 'User Name is required';
+        }
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+
+
+    const handleSubmit = (e: FormEvent) => {
+        e.preventDefault();
+        if (validate()) {
+
+            //console.log('Form submitted', { userName });
+        }
+    };
+
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="outline"><FiEdit color="blue" /></Button>
+                <Button variant="outline">
+                    <FiEdit color="blue" />
+                </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
@@ -29,27 +68,32 @@ export function UserNameAlert() {
                         account and remove your data from our servers.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="flex items-center space-x-2">
+                <form onSubmit={handleSubmit} className="flex items-center space-x-2">
                     <div className="grid flex-1 gap-2">
                         <div className="grid w-full gap-1.5">
-                            <Label htmlFor="message">Your New User Name</Label>
+                            <Label htmlFor="userName">Your New User Name</Label>
                             <Input
-                                id="text"
-                                defaultValue=""
-                                readOnly
+                                id="userName"
+                                value={userName}
+                                onChange={handleChange}
                             />
+                            {errors.userName && (
+                                <span className="text-red-500 text-sm">{errors.userName}</span>
+                            )}
                         </div>
                     </div>
-
-                </div>
-                <DialogFooter className="sm:justify-start">
-                    <DialogClose asChild>
-                        <Button type="button" variant="secondary">
-                            Close
+                    <DialogFooter className="sm:justify-start">
+                        <Button type="button" variant="default">
+                            Save
                         </Button>
-                    </DialogClose>
-                </DialogFooter>
+                        <DialogClose asChild>
+                            <Button type="button" variant="secondary">
+                                Close
+                            </Button>
+                        </DialogClose>
+                    </DialogFooter>
+                </form>
             </DialogContent>
         </Dialog>
-    )
+    );
 }

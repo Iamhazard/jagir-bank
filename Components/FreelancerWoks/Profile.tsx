@@ -1,13 +1,11 @@
 'use client'
 /* eslint-disable @next/next/no-img-element */
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { buttonVariants } from "../ui/button";
 import { Progress } from "@/Components/ui/progress";
 import Link from "next/link";
 import { Card } from "../ui/card";
-import { AppDispatch } from "@/Redux/store";
-import { useDispatch } from "react-redux";
-import { fetchCurrentUser } from "@/Redux/Features/authSlice";
+;
 import { useSession } from "next-auth/react";
 
 interface ProfilePros {
@@ -33,11 +31,13 @@ const Profile = () => {
             variant: "link2",
             className: "gap-1.5",
           })}
-          href="/freelancerProfile/viewprofile">
+          href="/auth/profile">
           {session?.user.name} {session?.user.lastName}
-
-
         </Link>
+        <div className="flex">
+          <a className={buttonVariants({ variant: "ghost" })}>{session?.user.role}</a>
+
+        </div>
 
         <div className="flex  md:mt-6">
           <Link

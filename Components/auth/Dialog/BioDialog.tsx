@@ -1,6 +1,5 @@
-import { Copy } from "lucide-react"
-
-import { Button } from "@/Components/ui/button"
+import { useForm, Controller } from "react-hook-form";
+import { Button } from "@/Components/ui/button";
 import {
     Dialog,
     DialogClose,
@@ -10,12 +9,27 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/Components/ui/dialog"
-import { Label } from "@/Components/ui/label"
+} from "@/Components/ui/dialog";
+import { Label } from "@/Components/ui/label";
 import { FiEdit } from "react-icons/fi";
-import { Textarea } from "@/Components/ui/textarea"
+import { Textarea } from "@/Components/ui/textarea";
 
-export function BioAlert() {
+export type BioAlertProps = {
+    bio: string;
+    setBio: (value: string) => void;
+};
+
+export const BioAlert = ({ bio, setBio }: BioAlertProps) => {
+    const { register, handleSubmit, formState: { errors }, control } = useForm<BioAlertProps>({
+        defaultValues: {
+            bio,
+        },
+    });
+
+    const onSubmit = (data: BioAlertProps) => {
+        console.log(data);
+    };
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -29,23 +43,38 @@ export function BioAlert() {
                         account and remove your data from our servers.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="flex items-center space-x-2">
-                    <div className="grid flex-1 gap-2">
-                        <div className="grid w-full gap-1.5">
-                            <Label htmlFor="message">Your Bio</Label>
-                            <Textarea placeholder="Type your message here." id="message" />
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className="flex items-center space-x-2">
+                        <div className="grid flex-1 gap-2">
+                            <div className="grid w-full gap-1.5">
+                                <Label htmlFor="bio">Your Bio</Label>
+                                <Controller
+                                    name="bio"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Textarea
+                                            id="bio"
+                                            placeholder="Type your message here."
+                                            {...field}
+                                        />
+                                    )}
+                                />
+                                {errors.bio && <span>{errors.bio.message}</span>}
+                            </div>
                         </div>
                     </div>
-
-                </div>
-                <DialogFooter className="sm:justify-start">
-                    <DialogClose asChild>
-                        <Button type="button" variant="secondary">
-                            Close
+                    <DialogFooter className="sm:justify-start">
+                        <Button type="submit" variant="secondary">
+                            Submit
                         </Button>
-                    </DialogClose>
-                </DialogFooter>
+                        <DialogClose asChild>
+                            <Button type="button" variant="secondary">
+                                Close
+                            </Button>
+                        </DialogClose>
+                    </DialogFooter>
+                </form>
             </DialogContent>
         </Dialog>
-    )
-}
+    );
+};

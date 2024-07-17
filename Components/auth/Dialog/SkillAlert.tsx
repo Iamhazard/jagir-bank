@@ -1,6 +1,5 @@
-import { Copy } from "lucide-react"
-
-import { Button } from "@/Components/ui/button"
+import { useForm, Controller } from "react-hook-form";
+import { Button } from "@/Components/ui/button";
 import {
     Dialog,
     DialogClose,
@@ -10,12 +9,43 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/Components/ui/dialog"
-import { Input } from "@/Components/ui/input"
-import { Label } from "@/Components/ui/label"
+} from "@/Components/ui/dialog";
+import { Input } from "@/Components/ui/input";
+import { Label } from "@/Components/ui/label";
 import { FiEdit } from "react-icons/fi";
+import { useState } from "react";
 
-export function SkillAlert() {
+export type SkillAlertProps = {
+    skills: string;
+    setSkills: (value: string) => void;
+};
+export type SkillsAlert = {
+    skills?: string
+}
+export const SkillAlert = ({ skills, setSkills }: SkillAlertProps) => {
+    const { register, handleSubmit, formState: { errors }, control } = useForm<SkillAlertProps>({
+        defaultValues: {
+            skills,
+        },
+    });
+    const [error, setErrors] = useState<SkillsAlert>({});
+    const validate = (): boolean => {
+        const newErrors: SkillsAlert = {};
+        if (skills.trim() === '') {
+            newErrors.skills = 'Skills Name is required';
+        }
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const onSubmit = (data: SkillAlertProps) => {
+        if (validate()) {
+
+            console.log(data);
+        }
+
+    };
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -29,27 +59,38 @@ export function SkillAlert() {
                         account and remove your data from our servers.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="flex items-center space-x-2">
-                    <div className="grid flex-1 gap-2">
-                        <Label htmlFor="link" className="sr-only">
-                            Skills
-                        </Label>
-                        <Input
-                            id="text"
-                            defaultValue=""
-                            readOnly
-                        />
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className="flex items-center space-x-2">
+                        <div className="grid flex-1 gap-2">
+                            <Label htmlFor="skills" className="sr-only">
+                                Skills
+                            </Label>
+                            <Controller
+                                name="skills"
+                                control={control}
+                                render={({ field }) => (
+                                    <Input
+                                        id="skills"
+                                        {...field}
+                                        readOnly
+                                    />
+                                )}
+                            />
+                            {errors.skills && <span>{errors.skills.message}</span>}
+                        </div>
                     </div>
-
-                </div>
-                <DialogFooter className="sm:justify-start">
-                    <DialogClose asChild>
-                        <Button type="button" variant="secondary">
-                            Close
+                    <DialogFooter className="sm:justify-start">
+                        <Button type="submit" variant="secondary">
+                            Submit
                         </Button>
-                    </DialogClose>
-                </DialogFooter>
+                        <DialogClose asChild>
+                            <Button type="button" variant="secondary">
+                                Close
+                            </Button>
+                        </DialogClose>
+                    </DialogFooter>
+                </form>
             </DialogContent>
         </Dialog>
-    )
-}
+    );
+};
