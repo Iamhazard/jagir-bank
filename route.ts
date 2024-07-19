@@ -20,9 +20,9 @@ export const authRoutes = [
   "/auth/new-password",
 ];
 
-export const adminRoutes = ["/dashboard/users"];
+export const adminRoutes = ["/admin"];
 export const clientRoutes = ["/clientProfile"];
-export const dashboardRoutes= ["/dashboard"];
+export const dashboardRoutes= ["/admin/dashboard"];
 export const freeLancerRoutes= ["/freeLancerProfile"];
 export const freelancerdahboard= ["/freelancerdashoard"];
 export const clientdashboard= ["/clientdashboard"];

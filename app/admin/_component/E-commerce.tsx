@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import ChartOne from "./Charts/ChartOne";
 import ChartTwo from "./Charts/ChartTwo";
@@ -8,9 +8,65 @@ import ChartThree from "./Charts/ChartThree";
 import TableOne from "./Tables/TableOne";
 import ChatCard from "./Chat/ChatCard";
 import CardDataStats from "./CardDataStats";
+import axios from "axios";
+import { Job } from "@/@types/enum";
 
 
+interface User {
+    isTwoFactorEnabled: boolean | null;
+    id: string;
+    name: string | null;
+    lastName: string | null;
+    email: string | null;
+    emailVerified: Date | null;
+    image: string | null;
+    password: string | null;
+}
 const ECommerce: React.FC = () => {
+
+    const [users, setUsers] = useState<User[]>([]);
+    const [jobs, setJobs] = useState<Job[]>([]);
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await axios.get('/api/users');
+                const fetchedUsers: User[] = response.data;
+                setUsers(fetchedUsers);
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        };
+
+        fetchUsers();
+    }, []);
+    useEffect(() => {
+        const fetchJobs = async () => {
+            try {
+                const response = await axios.get('/api/job/getjob');
+                const fetchedjobs: Job[] = response.data;
+                setJobs(fetchedjobs);
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        };
+
+        fetchJobs();
+    }, []);
+    const totalUsers = users.length.toString();
+    const totalJobs = jobs.length.toString();
+    const serviceFee = 20;
+    const operationalCosts = 4;
+    const employeeSalaries = 5;
+    const marketingAndAdvertising = 2;
+    const otherExpenses = 2;
+
+    const totalCosts = operationalCosts + employeeSalaries + marketingAndAdvertising + otherExpenses;
+    const profit: string = `Nrs.${serviceFee - totalCosts}`;
+
+
+    //console.log(jobs)
     return (
         <>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
@@ -33,7 +89,7 @@ const ECommerce: React.FC = () => {
                         />
                     </svg>
                 </CardDataStats>
-                <CardDataStats title="Total Profit" total="$45,2K" rate="4.35%" levelUp>
+                <CardDataStats title="Total Profit" total={profit} rate="4.35%" levelUp>
                     <svg
                         className="fill-primary dark:fill-white"
                         width="20"
@@ -56,7 +112,7 @@ const ECommerce: React.FC = () => {
                         />
                     </svg>
                 </CardDataStats>
-                <CardDataStats title="Total Jobs" total="2.450" rate="2.59%" levelUp>
+                <CardDataStats title="Total Jobs" total={totalJobs} rate="2.59%" levelUp>
                     <svg
                         className="fill-primary dark:fill-white"
                         width="22"
@@ -75,7 +131,7 @@ const ECommerce: React.FC = () => {
                         />
                     </svg>
                 </CardDataStats>
-                <CardDataStats title="Total Users" total="3.456" rate="0.95%" levelDown>
+                <CardDataStats title="Total Users" total={totalUsers} rate="0.95%" levelDown>
                     <svg
                         className="fill-primary dark:fill-white"
                         width="22"

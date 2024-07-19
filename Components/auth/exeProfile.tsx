@@ -54,12 +54,41 @@ export default function Example() {
 
     };
 
-    const handleProfileSubmit = () => {
-        console.log(userName, "inside use form")
-        console.log(universityName, "inside use form")
-        console.log(endYear, "inside use form")
+    const handleProfileSubmit = async () => {
+        const profileData = {
+            userName,
+            hours,
+            language,
+            universityName,
+            endYear,
+            JobName,
+            position,
+            bio,
+            skills,
+            imageUrl
+        };
 
-    }
+        console.log(profileData);
+
+        try {
+            const response = await fetch('/api/profile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(profileData)
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const result = await response.json();
+            console.log('Profile submitted successfully:', result);
+        } catch (error) {
+            console.error('Error submitting profile:', error);
+        }
+    };
     return (
         <MaxWidthWrapper>
             <form onSubmit={handleProfileSubmit}>
@@ -71,6 +100,7 @@ export default function Example() {
                                     options={{ maxFiles: 1 }}
                                     onUpload={handleUpload}
                                     uploadPreset="i1ziapfw"
+
                                 >
                                     {uploadedImageUrl ? (
                                         <AvatarImage src={uploadedImageUrl} alt="Applicant Avatar" />

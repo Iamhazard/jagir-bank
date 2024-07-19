@@ -28,7 +28,7 @@ export const UserButton = () => {
     } else if (user?.role === 'Freelancer') {
       router.push('/freelancerdashoard');
     } else if (user?.role === 'ADMIN') {
-      router.push('/dashboard');
+      router.push('/admin/dashboard');
     } else {
       router.push(''); // Default to client dashboard if no role matches
     }

@@ -103,9 +103,11 @@ export const ClientSchema = z.object({
   jobDescription: z.string().min(60, 'Minimum 60 words are required'),
   education: z.string().optional(),
    jobType: z.string().min(1, 'Job type is required'),
+   category:z.string().min(1),
   skills:z.array(z.object({
     skill:z.string().min(1),
    })),
+    
   
   }),) 
 });
@@ -247,3 +249,12 @@ export const jobtypeSchema = z.object({
     type: z.string(),
 
 })
+
+export const portfolioSchema = z.object({
+    projectTitle: z.string().min(1, "Project title is required"),
+    skills: z.string().min(1, "Skills are required"),
+    role: z.string().min(1, "Role is required"),
+    projectDescription: z.string().min(1, "Project description is required"),
+    imageUrl:z.string(),
+  
+});

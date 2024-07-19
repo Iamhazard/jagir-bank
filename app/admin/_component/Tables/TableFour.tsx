@@ -54,7 +54,7 @@ const TableFour: React.FC = () => {
         <div className="mb-6 flex justify-between">
           <div>
             <h4 className="text-title-sm2 font-bold text-black dark:text-white">
-              Top Channels
+              Top Jobs
             </h4>
           </div>
           <DropdownDefault />
@@ -64,7 +64,7 @@ const TableFour: React.FC = () => {
           <div className="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-4">
             <div className="p-2.5 xl:p-4">
               <h5 className="text-sm font-medium uppercase xsm:text-base">
-                Source
+                Title
               </h5>
             </div>
             <div className="p-2.5 text-center xl:p-4">

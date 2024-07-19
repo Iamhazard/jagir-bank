@@ -7,7 +7,6 @@ import {
   DEFAULT_LOGIN_REDIRECT,
   apiAuthPrefix,
   authRoutes,
-  jobRoutes,
   publicRoutes,
   adminRoutes,
   clientRoutes,
@@ -44,7 +43,7 @@ export default auth((req) => {
     if (isLoggedIn) {
      
        const userRole = req.auth?.user?.role || null;
-         console.log('User Role:', userRole); 
+        // console.log('User Role:', userRole); 
         if (userRole === UserRole.Freelancer) {
     return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
   }
@@ -80,26 +79,6 @@ export default auth((req) => {
 
   if(isLoggedIn){
      const userRole = req.auth?.user.role;
-     //console.log(req.auth?.user.role)
-
-//  if (isPublicRoute) {
-//       return null;
-//     }
-//     if(
-//       (
-//         isAdminRoute || isDashboardRoute
-//       ) && userRole !== UserRole.ADMIN
-//     ){
-//        return Response.redirect(new URL("/dashboard/users", nextUrl));
-//     }
-    
-//     if (isClientRoute && userRole === UserRole.Client) {
-//       return Response.redirect(new URL("/clientdashboard", nextUrl));
-//     }
-//      if (isFreelancerRoute && userRole !== UserRole.Freelancer) {
-//       return Response.redirect(new URL("/", nextUrl));
-//     }
-
   }
 
   
