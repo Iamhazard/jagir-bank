@@ -113,6 +113,13 @@ export const ClientSchema = z.object({
 });
 ;
 
+export const DeviceInfoSchema = z.object({
+  device: z.string(),
+  browserName: z.string(),
+  userAgent: z.string(),
+});
+
+export const ClientProfileSchema = ClientSchema.merge(DeviceInfoSchema);
 
 export const MessageSchema = z.object({
   id: z.string(),

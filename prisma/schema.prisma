@@ -210,13 +210,16 @@ model Job {
 }
 
 model JobView {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  jobId      String   @db.ObjectId
-  job        Job      @relation(fields: [jobId], references: [id])
-  category   Category @relation(fields: [categoryId], references: [id])
-  categoryId String   @db.ObjectId
-  viewCount  Int      @default(0)
-  createdAt  DateTime @default(now())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  jobId       String   @db.ObjectId
+  job         Job      @relation(fields: [jobId], references: [id])
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  String   @db.ObjectId
+  viewCount   Int      @default(0)
+  createdAt   DateTime @default(now())
+  device      String
+  userAgent   String
+  browserName String?
 }
 
 enum JobStatus {

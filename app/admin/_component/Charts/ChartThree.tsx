@@ -1,9 +1,17 @@
 import { ApexOptions } from "apexcharts";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
+import axios from "axios";
+
+interface JobView {
+  device: string;
+  browserName: string;
+  viewCount: number;
+}
 
 interface ChartThreeState {
   series: number[];
+  labels: string[];
 }
 
 const options: ApexOptions = {
@@ -12,12 +20,11 @@ const options: ApexOptions = {
     type: "donut",
   },
   colors: ["#3C50E0", "#6577F3", "#8FD0EF", "#0FADCF"],
-  labels: ["Desktop", "Tablet", "Mobile", "Unknown"],
+  labels: [],
   legend: {
     show: false,
     position: "bottom",
   },
-
   plotOptions: {
     pie: {
       donut: {
@@ -51,16 +58,36 @@ const options: ApexOptions = {
 
 const ChartThree: React.FC = () => {
   const [state, setState] = useState<ChartThreeState>({
-    series: [65, 34, 12, 56],
+    series: [],
+    labels: [],
   });
 
-  const handleReset = () => {
-    setState((prevState) => ({
-      ...prevState,
-      series: [65, 34, 12, 56],
-    }));
-  };
-  handleReset;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get<JobView[]>(`/api/job/Jobview`);
+        const deviceCounts = response.data.reduce((acc, item) => {
+          acc[item.browserName] = (acc[item.browserName] || 0) + item.viewCount;
+          return acc;
+        }, {} as Record<string, number>);
+
+        const labels = Object.keys(deviceCounts);
+        const series = Object.values(deviceCounts);
+
+        setState({
+          series,
+          labels
+        });
+
+        // Update the chart options with new labels
+        options.labels = labels;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-5">
@@ -119,42 +146,20 @@ const ChartThree: React.FC = () => {
       </div>
 
       <div className="-mx-8 flex flex-wrap items-center justify-center gap-y-3">
-        <div className="w-full px-8 sm:w-1/2">
-          <div className="flex w-full items-center">
-            <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-primary"></span>
-            <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-              <span> Desktop </span>
-              <span> 65% </span>
-            </p>
+        {state.labels.map((label, index) => (
+          <div key={index} className="w-full px-8 sm:w-1/2">
+            <div className="flex w-full items-center">
+              <span
+                className="mr-2 block h-3 w-full max-w-3 rounded-full"
+                style={{ backgroundColor: options.colors![index] }}
+              ></span>
+              <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
+                <span>{label}</span>
+                <span>{state.series[index]}%</span>
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="w-full px-8 sm:w-1/2">
-          <div className="flex w-full items-center">
-            <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#6577F3]"></span>
-            <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-              <span> Tablet </span>
-              <span> 34% </span>
-            </p>
-          </div>
-        </div>
-        <div className="w-full px-8 sm:w-1/2">
-          <div className="flex w-full items-center">
-            <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#8FD0EF]"></span>
-            <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-              <span> Mobile </span>
-              <span> 45% </span>
-            </p>
-          </div>
-        </div>
-        <div className="w-full px-8 sm:w-1/2">
-          <div className="flex w-full items-center">
-            <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#0FADCF]"></span>
-            <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-              <span> Unknown </span>
-              <span> 12% </span>
-            </p>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );

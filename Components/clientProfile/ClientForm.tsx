@@ -45,6 +45,7 @@ import { viewCountry } from "@/Redux/Features/admin/countrySlice";
 import { DistrictState } from "@/@types/enum";
 import GetEducation from "./GetEducation";
 import { viewjobType } from "@/Redux/Features/admin/jobType";
+import useDeviceDetection from "./UseDeviceDetction";
 
 type Inputs = z.infer<typeof ClientSchema>;
 
@@ -184,23 +185,7 @@ const ClientForm: React.FC<Inputs> = () => {
   }
 
   //console.log("country", countries)
-  const processForm: SubmitHandler<Inputs> = (
-    values: z.infer<typeof ClientSchema>
-  ) => {
-    setError("");
-    setSuccess("");
-    console.log("vaue befor transition", values)
-    startTransition(() => {
-      clientProfile(values).then((data) => {
-        setError(data?.error);
-        setSuccess(data?.success);
-        router.push('/clientdashboard')
 
-      });
-    });
-    // reset();
-    console.log(values);
-  };
 
   type FieldName = keyof Inputs;
 
@@ -271,8 +256,32 @@ const ClientForm: React.FC<Inputs> = () => {
 
     fetchSkills();
   }, []);
+  const { device, browserInfo } = useDeviceDetection()
+  const processForm: SubmitHandler<Inputs> = (
+    values: z.infer<typeof ClientSchema>
+  ) => {
+    setError("");
+    setSuccess("");
 
+    const formData = {
+      ...values,
+      device,
+      browserName: browserInfo.browserName,
+      userAgent: browserInfo.userAgent,
+    }
+    //console.log("vaue befor transition", values)
+    startTransition(() => {
 
+      clientProfile(formData).then((data) => {
+        setError(data?.error);
+        setSuccess(data?.success);
+        router.push('/clientdashboard')
+
+      });
+    });
+    // reset();
+    console.log(values);
+  };
 
   //console.log({ selectedSkills })
 

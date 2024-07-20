@@ -3,11 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (req: NextRequest, res: NextResponse) => {
   try {
-    const fetchJobViews = await db.category.findMany({
+    const fetchJobViews = await db.jobView.findMany({
       include: {
-        professions:true,
-        jobs:true,
-        visitor:true,
+        category:true,
+        job:true,
+       
         },
       },
     )
