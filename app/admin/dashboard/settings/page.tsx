@@ -1,19 +1,20 @@
-
+'use client'
 import Image from "next/image";
 import { Metadata } from "next";
-import DefaultLayout from "../../_component/DefaultLayout";
 import Breadcrumb from "../../_component/Breadcrumbs/Breadcrumb";
+import { useSession } from "next-auth/react";
 
 
-export const metadata: Metadata = {
-  title: "Next.js Settings | TailAdmin - Next.js Dashboard Template",
-  description:
-    "This is Next.js Settings page for TailAdmin - Next.js Tailwind CSS Admin Dashboard Template",
-};
+// export const metadata: Metadata = {
+//   title: "Setting",
+//   description:
+//     "This is Setting page",
+// };
 
 const Settings = () => {
+  const { data: session } = useSession();
   return (
-    <DefaultLayout>
+    <>
       <div className="mx-auto max-w-270">
         <Breadcrumb pageName="Settings" />
 
@@ -66,8 +67,9 @@ const Settings = () => {
                           type="text"
                           name="fullName"
                           id="fullName"
-                          placeholder="Devid Jhon"
-                          defaultValue="Devid Jhon"
+                          placeholder={`${session?.user.name} ${session?.user.lastName}`}
+                          defaultValue=""
+                          readOnly
                         />
                       </div>
                     </div>
@@ -84,8 +86,8 @@ const Settings = () => {
                         type="text"
                         name="phoneNumber"
                         id="phoneNumber"
-                        placeholder="+990 3343 7865"
-                        defaultValue="+990 3343 7865"
+                        placeholder=''
+                        defaultValue="+977"
                       />
                     </div>
                   </div>
@@ -128,8 +130,9 @@ const Settings = () => {
                         type="email"
                         name="emailAddress"
                         id="emailAddress"
-                        placeholder="devidjond45@gmail.com"
-                        defaultValue="devidjond45@gmail.com"
+                        placeholder={`session?.user.email`}
+                        defaultValue=""
+                        readOnly
                       />
                     </div>
                   </div>
@@ -319,7 +322,7 @@ const Settings = () => {
           </div>
         </div>
       </div>
-    </DefaultLayout>
+    </>
   );
 };
 

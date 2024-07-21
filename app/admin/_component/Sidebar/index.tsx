@@ -66,7 +66,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     >
       {/* <!-- SIDEBAR HEADER --> */}
       <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
-        <Link href="/">
+        <Link href="/admin/dashboard">
           <Image
             width={176}
             height={32}
@@ -116,7 +116,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   return (
                     <React.Fragment>
                       <Link
-                        href="#"
+                        href="/admin/dashboard"
                         className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${(pathname === "/" ||
                           pathname?.includes("dashboard")) &&
                           "bg-graydark dark:bg-meta-4"
@@ -219,7 +219,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Calendar --> */}
               <li>
                 <Link
-                  href="/calendar"
+                  href="/admin/dashboard/calendar"
                   className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname?.includes("calendar") &&
                     "bg-graydark dark:bg-meta-4"
                     }`}
@@ -245,7 +245,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Profile --> */}
               <li>
                 <Link
-                  href="/profile"
+                  href="/admin/dashboard/profile"
                   className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname?.includes("profile") && "bg-graydark dark:bg-meta-4"
                     }`}
                 >
@@ -452,7 +452,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Tables --> */}
               <li>
                 <Link
-                  href="/admin/dashbaord/user"
+                  href="/admin/dashboard/tables"
                   className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname?.includes("tables") && "bg-graydark dark:bg-meta-4"
                     }`}
                 >
@@ -489,7 +489,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Settings --> */}
               <li>
                 <Link
-                  href="/settings"
+                  href="/admin/dashboard/settings"
                   className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname?.includes("settings") &&
                     "bg-graydark dark:bg-meta-4"
                     }`}
@@ -772,7 +772,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         <ul className="mb-5.5 mt-4 flex flex-col gap-2.5 pl-6">
                           <li>
                             <Link
-                              href="/ui/alerts"
+                              href="/admin/dashboard/faqs"
                               className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${pathname === "/ui/alerts" && "text-white"
                                 }`}
                             >
@@ -781,7 +781,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           </li>
                           <li>
                             <Link
-                              href="/ui/buttons"
+                              href="/admin/dashboard/testimonials"
                               className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${pathname === "/ui/buttons" && "text-white"
                                 }`}
                             >
@@ -875,7 +875,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         </svg>
                       </Link>
                       {/* <!-- Dropdown Menu Start --> */}
-                      <div
+                      {/* <div
                         className={`translate transform overflow-hidden ${!open && "hidden"
                           }`}
                       >
@@ -899,7 +899,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             </Link>
                           </li>
                         </ul>
-                      </div>
+                      </div> */}
                       {/* <!-- Dropdown Menu End --> */}
                     </React.Fragment>
                   );

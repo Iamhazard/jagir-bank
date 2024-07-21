@@ -1,15 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
-
-import ChartOne from "./Charts/ChartOne";
-import ChartTwo from "./Charts/ChartTwo";
-import ChartThree from "./Charts/ChartThree";
-//import MapOne from "./Maps/MapOne";
 import TableOne from "./Tables/TableOne";
 import ChatCard from "./Chat/ChatCard";
 import CardDataStats from "./CardDataStats";
 import axios from "axios";
 import { Job } from "@/@types/enum";
+import dynamic from 'next/dynamic';
+
 
 
 interface User {
@@ -23,7 +20,11 @@ interface User {
     password: string | null;
 }
 const ECommerce: React.FC = () => {
-
+    const [isBrowser, setIsBrowser] = useState(false);
+    const MapOne = dynamic(() => import('./Maps/MapOne'), { ssr: false });
+    const ChartOne = dynamic(() => import('./Charts/ChartOne'), { ssr: false });
+    const ChartTwo = dynamic(() => import('./Charts/ChartTwo'), { ssr: false });
+    const ChartThree = dynamic(() => import('./Charts/ChartThree'), { ssr: false });
     const [users, setUsers] = useState<User[]>([]);
     const [jobs, setJobs] = useState<Job[]>([]);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -54,6 +55,17 @@ const ECommerce: React.FC = () => {
 
         fetchJobs();
     }, []);
+
+    useEffect(() => {
+        setIsBrowser(typeof window !== 'undefined');
+    }, []);
+
+    if (!isBrowser) {
+        return null; // or a loading spinner
+    }
+
+    // Your component rendering code here
+
     const totalUsers = users.length.toString();
     const totalJobs = jobs.length.toString();
     const serviceFee = 20;
@@ -160,7 +172,7 @@ const ECommerce: React.FC = () => {
                 <ChartOne />
                 <ChartTwo />
                 <ChartThree />
-                {/* <MapOne /> */}
+                <MapOne />
                 <div className="col-span-12 xl:col-span-8">
                     <TableOne />
                 </div>

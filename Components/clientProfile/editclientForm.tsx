@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable @next/next/no-img-element */
 "use client";
+import UAParser from 'ua-parser-js';
 import {
     Accordion,
     AccordionContent,
@@ -25,6 +26,7 @@ import { clientProfile } from "@/actions/clientProfile";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import useDeviceDetection from './UseDeviceDetction';
 
 type Inputs = z.infer<typeof ClientSchema>;
 
@@ -125,16 +127,23 @@ const ClientForm: React.FC<Inputs> = () => {
         control,
         name: "jobs",
     });
+    const { device, browserInfo } = useDeviceDetection();
 
-    //console.log(watch("skills"))
+
     const processForm: SubmitHandler<Inputs> = (
         values: z.infer<typeof ClientSchema>
     ) => {
         setError("");
         setSuccess("");
-        console.log("vaue befor transition", values)
+        const formData = {
+            ...values,
+            device,
+            browserName: browserInfo.browserName,
+            userAgent: browserInfo.userAgent,
+        }
+        //console.log("vaue befor transition", values)
         startTransition(() => {
-            clientProfile(values).then((data) => {
+            clientProfile(formData).then((data) => {
                 setError(data?.error);
                 setSuccess(data?.success);
                 router.push('/clientdashboard')

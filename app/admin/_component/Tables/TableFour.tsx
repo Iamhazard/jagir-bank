@@ -1,4 +1,4 @@
-
+'use client'
 import Image from "next/image";
 import { BRAND } from "../types/brand";
 import DropdownDefault from "../Dropdowns/DropdownDefault";

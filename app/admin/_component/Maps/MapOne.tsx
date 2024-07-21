@@ -10,7 +10,7 @@ const MapOne: React.FC = () => {
     if (typeof window !== "undefined") {
       const mapOne = new jsVectorMap({
         selector: "#mapOne",
-        map: "us_aea_en",
+        map: "world",
         zoomButtons: true,
         regionStyle: {
           initial: {
