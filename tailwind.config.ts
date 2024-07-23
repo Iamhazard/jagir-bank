@@ -1,17 +1,19 @@
 import type { Config } from "tailwindcss";
 import defaultTheme from "tailwindcss/defaultTheme";
 const config = {
-  darkMode: ["class"],
+  darkMode: "class",
   content: [
     "./pages/**/*.{ts,tsx}",
-    "./Components/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
+    "./constants/**/*.{ts,tsx}",
   ],
   prefix: "",
   theme: {
      fontFamily: {
       satoshi: ["Satoshi", "sans-serif"],
+        "ibm-plex-serif": "var(--font-ibm-plex-serif)",
     },
     container: {
       center: true,
@@ -26,7 +28,6 @@ const config = {
     },
     extend: {
       keyframes: {
-        
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -53,14 +54,60 @@ const config = {
         line1: "line 10s infinite linear",
         line2: "line-revert 8s infinite linear",
         line3: "line 7s infinite linear",
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
+    
       },
       colors: {
+        fill: {
+          1: "rgba(255, 255, 255, 0.10)",
+        },
+        bankGradient: "#0179FE",
+        indigo: {
+          500: "#6172F3",
+          700: "#3538CD",
+        },
+        success: {
+          25: "#F6FEF9",
+          50: "#ECFDF3",
+          100: "#D1FADF",
+          600: "#039855",
+          700: "#027A48",
+          900: "#054F31",
+        },
+        pink: {
+          25: "#FEF6FB",
+          100: "#FCE7F6",
+          500: "#EE46BC",
+          600: "#DD2590",
+          700: "#C11574",
+          900: "#851651",
+        },
+        blue: {
+          25: "#F5FAFF",
+          100: "#D1E9FF",
+          500: "#2E90FA",
+          600: "#1570EF",
+          700: "#175CD3",
+          900: "#194185",
+        },
+        sky: {
+          1: "#F3F9FF",
+        },
+        black: {
+          1: "#00214F",
+          2: "#344054",
+        },
+        gray: {
+          25: "#FCFCFD",
+          200: "#EAECF0",
+          300: "#D0D5DD",
+          500: "#667085",
+          600: "#475467",
+          700: "#344054",
+          900: "#101828",
+        },
          current: "currentColor",
         transparent: "transparent",
         white: "#FFFFFF",
-        black: "#1C2434",
         red: "#FB5454",
         "black-2": "#010101",
         body: "#64748B",
@@ -70,7 +117,6 @@ const config = {
         primary: "#3C50E0",
         secondary: "#80CAEE",
         stroke: "#E2E8F0",
-        gray: "#EFF4FB",
         graydark: "#333A48",
         "gray-2": "#F7F9FC",
         "gray-3": "#FAFAFA",
@@ -91,7 +137,6 @@ const config = {
         "meta-8": "#F0950C",
         "meta-9": "#E5E7EB",
         "meta-10": "#0FADCF",
-        success: "#219653",
         danger: "#D34053",
         warning: "#FFA70B",
         Green: "rgb(16, 138, 0)",
@@ -298,10 +343,11 @@ const config = {
         "21/9": "21 / 9",
       },
       backgroundImage: {
+        "bank-gradient": "linear-gradient(90deg, #0179FE 0%, #4893FF 100%)",
+        "gradient-mesh": "url('/icons/gradient-mesh.svg')",
+        "bank-green-gradient":
+          "linear-gradient(90deg, #01797A 0%, #489399 100%)",
         video: "url('../images/video/video.png')",
-      },
-      content: {
-        "icon-copy": 'url("../images/icon/icon-copy-alt.svg")',
       },
       transitionProperty: { width: "width", stroke: "stroke" },
       borderWidth: {
@@ -310,6 +356,12 @@ const config = {
         12: "12px",
       },
       boxShadow: {
+            form: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
+        chart:
+          "0px 1px 3px 0px rgba(16, 24, 40, 0.10), 0px 1px 2px 0px rgba(16, 24, 40, 0.06)",
+        profile:
+          "0px 12px 16px -4px rgba(16, 24, 40, 0.08), 0px 4px 6px -2px rgba(16, 24, 40, 0.03)",
+        creditCard: "8px 10px 16px 0px rgba(0, 0, 0, 0.05)",
         default: "0px 8px 13px -3px rgba(0, 0, 0, 0.07)",
         card: "0px 1px 3px rgba(0, 0, 0, 0.12)",
         "card-2": "0px 1px 2px rgba(0, 0, 0, 0.05)",

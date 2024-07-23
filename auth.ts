@@ -55,8 +55,9 @@ export const {
 
     async session(params) {
       const { session, token} = params as any;
-      // console.log({ sessionToken: token });
-      if (token.sub && session.user) {
+      // console.log({ sessionToken: token }); 
+      try {
+         if (token.sub && session.user) {
         session.user.id = token.sub;
       }
 
@@ -75,8 +76,16 @@ export const {
         session.user.isOAuth = token.isOAuth as boolean;
       }
       return session;
+      } catch (error) {
+         console.error("Error setting session:", error);
+        return session;
+      }
+     
     },
     async jwt({ token }) {
+      try {
+        token.exp = Math.floor(Date.now() / 1000) + (60 * 60 * 24) 
+
       if (!token.sub) return token;
       const existingUser = await getUserById(token.sub);
 
@@ -91,6 +100,11 @@ export const {
 
       //console.log({token}fan)
       return token;
+      } catch (error) {
+        console.error("Error updating JWT token:", error);
+        return token;
+      }
+      
     },
   },
 

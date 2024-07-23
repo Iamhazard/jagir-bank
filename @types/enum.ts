@@ -282,3 +282,5 @@ export type FormDataType = {
   educationfile?: string;
   imageInput?: string;
 };
+
+//for wallet
