@@ -4,7 +4,6 @@ import HeaderBox from '@/Components/wallet/HeaderBox';
 import { Pagination } from '@/Components/wallet/Pagination';
 import TransactionsTable from '@/Components/wallet/TransactionTable';
 import { getAccount, getAccounts } from '@/lib/actions/bank.actions';
-import { getLoggedInUser } from '@/lib/actions/user.actions';
 import { formatAmount } from '@/lib/utils';
 import React from 'react'
 
