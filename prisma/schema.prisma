@@ -105,6 +105,18 @@ model FundingSourceUrl {
   createdAt         DateTime @default(now())
 }
 
+//for bank account
+
+model BankAccount {
+  id               String @id @default(auto()) @map("_id") @db.ObjectId
+  userId           String @db.ObjectId
+  bankId           String
+  accessToken      String
+  accountId        String
+  fundingSourceUrl String
+  shareableId      String
+}
+
 model VerificationToken {
   id      String   @id @default(auto()) @map("_id") @db.ObjectId
   email   String

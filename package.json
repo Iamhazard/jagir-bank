@@ -57,6 +57,7 @@
     "date-fns": "^3.2.0",
     "discord.js": "^14.15.3",
     "dotenv": "^16.3.1",
+    "dwolla-v2": "^3.4.0",
     "eventsource-parser": "^1.1.1",
     "flatpickr": "^4.6.13",
     "framer-motion": "^11.0.3",

@@ -114,19 +114,19 @@ declare type Receiver = {
   lastName: string;
 };
 
-declare type TransferParams = {
+export declare type TransferParams = {
   sourceFundingSourceUrl: string;
   destinationFundingSourceUrl: string;
   amount: string;
 };
 
-declare type AddFundingSourceParams = {
+export declare type AddFundingSourceParams = {
   dwollaCustomerId: string;
   processorToken: string;
   bankName: string;
 };
 
-declare type NewDwollaCustomerParams = {
+export declare type NewDwollaCustomerParams = {
   firstName: string;
   lastName: string;
   email: string;
@@ -275,7 +275,7 @@ declare interface getTransactionsProps {
   accessToken: string;
 }
 
-declare interface CreateFundingSourceOptions {
+export declare interface CreateFundingSourceOptions {
   customerId: string; // Dwolla Customer ID
   fundingSourceName: string; // Dwolla Funding Source Name
   plaidToken: string; // Plaid Account Processor Token
@@ -305,12 +305,12 @@ declare interface getUserInfoProps {
   userId: string;
 }
 
-declare interface exchangePublicTokenProps {
+export declare interface exchangePublicTokenProps {
   publicToken: string;
   user: User;
 }
 
-declare interface createBankAccountProps {
+export declare interface createBankAccountProps {
   accessToken: string;
   userId: string;
   accountId: string;

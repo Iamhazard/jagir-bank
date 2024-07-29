@@ -1,6 +1,7 @@
 import { SearchParamProps } from '@/@types';
 import getCurrentUser from '@/actions/getCurrentUser';
 import HeaderBox from '@/Components/wallet/HeaderBox'
+import PlaidLink from '@/Components/wallet/PlaidLink';
 import RightSidebar from '@/Components/wallet/RightSideBar';
 import TotalBalanceBox from '@/Components/wallet/TotalBalanceBox';
 import React from 'react'
@@ -35,6 +36,7 @@ const HomeLayout = async ({ searchParams: { id, page } }: SearchParamProps) => {
                     />
 
                 </header>
+
 
             </div>
             <RightSidebar
