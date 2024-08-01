@@ -26,6 +26,7 @@ model User {
   updatedAt             DateTime               @updatedAt
   role                  UserRole               @default(Freelancer)
   accounts              Account[]
+  bank                  BankAccount[]
   isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
   profile               FreelancerProfile[]
@@ -41,6 +42,17 @@ model User {
   adminProfile          AdminProfile[]
   session               Session[]
   Profile               Profile[]
+  Dwolla                Dwolla[]
+}
+
+model Dwolla {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String   @db.ObjectId
+  user              User     @relation(fields: [userId], references: [id])
+  dwollaCustomerId  String
+  dwollaCustomerUrl String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now())
 }
 
 model AdminProfile {
@@ -110,6 +122,7 @@ model FundingSourceUrl {
 model BankAccount {
   id               String @id @default(auto()) @map("_id") @db.ObjectId
   userId           String @db.ObjectId
+  user             User   @relation(fields: [userId], references: [id])
   bankId           String
   accessToken      String
   accountId        String

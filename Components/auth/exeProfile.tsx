@@ -16,9 +16,12 @@ import { EmploymentAlert } from "./Dialog/Employment";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { HourlyAlert } from "./Dialog/HourlyRate";
+import PlaidLink from "../wallet/PlaidLink";
+import getCurrentUser from "@/actions/getCurrentUser";
 
 export default function Example() {
     const pathname = usePathname();
+    const loggedIn = getCurrentUser();
     const [userName, setUserName] = useState<string>("User Name");
     const [hours, setHours] = useState<string>("12");
     const [language, setLanguges] = useState<string>("Nepali");
@@ -126,6 +129,9 @@ export default function Example() {
                             <p className="mt-1 text-sm leading-6 text-gray-500">Addresss.</p>
 
                         </div>
+                    </div>
+                    <div className="flex flex-col gap-4 max-w-[200px] py-2">
+                        <PlaidLink user={loggedIn} variant="primary" />
                     </div>
 
                     <div className="mt-6 border-t border-gray-100">

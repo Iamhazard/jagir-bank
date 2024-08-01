@@ -1,15 +1,19 @@
 import { db } from "@/lib/db";
+import { createDwollaCustomer } from "@/lib/dwolla.actions";
+import { extractCustomerIdFromUrl } from "@/lib/utils";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   if (req.method === "POST") {
     try {
-      const { userId, title, Skills, Role, Description, photos } = await req.json();
+      const ProfileData=await req.json();
+      const { userId, title, Skills, Role, Description, photos } = ProfileData();
 
       if (!userId) {
         return new NextResponse("Unauthorized", { status: 401 });
       }
 
+      let newProfileAccount;
 
     // Check if profile already exists for this user
     const existingProfile = await db.profile.findUnique({
@@ -31,7 +35,29 @@ export async function POST(req: NextRequest) {
         }
       });
 
-      return new NextResponse(JSON.stringify(newPortfolio), {
+      if(!newProfileAccount) 
+        return new NextResponse("Error creating user")
+
+      const dwollaCustomerUrl=await createDwollaCustomer({
+        ...ProfileData,
+        type:'personal'
+      })
+
+      if(!dwollaCustomerUrl) throw new Error("Error creating Dwolla customer")
+
+        const dwollaCustomerId=extractCustomerIdFromUrl(dwollaCustomerUrl)
+
+        const dwollaRecord = await db.dwolla.create({
+        data: {
+          userId,
+          dwollaCustomerId,
+          dwollaCustomerUrl
+        }
+      });
+     return new NextResponse(JSON.stringify({
+        portfolio: newPortfolio,
+        dwolla: dwollaRecord
+      }), {
         status: 201,
         headers: { 'Content-Type': 'application/json' }
       });

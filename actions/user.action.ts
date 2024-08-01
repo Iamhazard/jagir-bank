@@ -24,6 +24,8 @@ export const createLinkToken = async (user: User) => {
     console.log(error);
   }
 }
+
+
 export const createBankAccount = async ({
   userId,
   bankId,
@@ -37,7 +39,7 @@ export const createBankAccount = async ({
 
     const bankAccount = await db.bankAccount.create({
         data: {
-            userId,
+        userId,
         bankId,
         accountId,
         accessToken,

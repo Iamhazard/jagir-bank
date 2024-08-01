@@ -5,11 +5,8 @@ import Link from 'next/link'
 import React from 'react'
 import { Card } from '@/Components/ui/card'
 import { cn } from '@/lib/utils'
-import PlaidLink from '@/Components/wallet/PlaidLink'
-import getCurrentUser from '@/actions/getCurrentUser'
 
 const FreeLancerCard = () => {
-    const loggedIn = getCurrentUser();
     return (
         <>
             <div className="py-10 px-6 flex flex-col sm:flex-row justify-between items-center">
@@ -38,9 +35,7 @@ const FreeLancerCard = () => {
                 <p>Earnings available now:
                     $0.00
                 </p>
-                <div className="flex flex-col gap-4 max-w-[200px] py-2">
-                    <PlaidLink user={loggedIn} variant="primary" />
-                </div>
+
 
             </Card>
             <div className="px-6 py-5">
