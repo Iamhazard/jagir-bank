@@ -23,6 +23,7 @@ const buttonVariants = cva(
           "bg-Green px-4 py-2 text-white transition-all hover:bg-black",
         btn_blue:
           "w-full max-w-3xl font-bold shadow-sm rounded-3xl py-2 bg-blue-600 text-white flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline",
+        btn_primary: "plaidlink-primary"
       },
       size: {
         default: " rounded-full h-10 px-4 py-2",

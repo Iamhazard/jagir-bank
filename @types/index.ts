@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
 
-import { User } from "@prisma/client";
 import { UseFormSetValue } from "react-hook-form";
 
 export declare type SearchParamProps = {
@@ -11,16 +10,15 @@ export declare type SearchParamProps = {
 // ========================================
 
 declare type SignUpParams = {
-  firstName: string;
-  lastName: string;
-  address1: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  dateOfBirth: string;
-  ssn: string;
-  email: string;
-  password: string;
+ id: string;
+  name: string | null;
+  lastName: string | null;
+  email: string | null;
+  emailVerified: Date | null;
+  image: string | null;
+  dwollaCustomerId: string | null;
+  password: string | null;
+  seenMessageIds: string[];
 };
 
 declare type LoginUser = {
@@ -28,22 +26,37 @@ declare type LoginUser = {
   password: string;
 };
 
-// declare type User = {
-//   $id: string;
-//   email: string | null;
-//   userId: string;
-//   dwollaCustomerUrl: string;
-//   dwollaCustomerId: string;
-//   firstName: string;
-//   lastName: string;
-//   name: string;
-//   address1: string;
-//   city: string;
-//   state: string;
-//   postalCode: string;
-//   dateOfBirth: string;
-//   ssn: string;
-// };
+export type Profile={
+  id: string;
+  userId: string;
+  userName: string | null;
+  userImage: string | null;
+  userBio: string | null;
+  userSkills: string | null;
+  Education: string;
+  Language: string;
+   dwollaCustomerUrl: string;
+
+  dwollaCustomerId: string;
+
+}
+declare type User = {
+  id: string;
+  $id: string;
+  email: string | null;
+  userId: string;
+  dwollaCustomerUrl: string;
+  dwollaCustomerId: string;
+  firstName: string;
+  lastName: string;
+  name: string;
+  address1: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  dateOfBirth: string;
+  ssn: string;
+};
 
 declare type NewUserParams = {
   userId: string;
@@ -174,12 +187,16 @@ export declare interface PaginationProps {
   page: number;
   totalPages: number;
 }
-
 export declare interface PlaidLinkProps {
   user: User;
   variant?: "primary" | "ghost";
   dwollaCustomerId?: string;
 }
+// // export declare interface PlaidLinkProps {
+//   profile: Profile;
+//   variant?: "primary" | "ghost";
+//   dwollaCustomerId?: string;
+// }
 
 // declare type User = sdk.Models.Document & {
 //   accountId: string;

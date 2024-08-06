@@ -5,6 +5,25 @@ import { encryptId, parseStringify } from "@/lib/utils";
 import { User } from "@prisma/client";
 import { CountryCode, ProcessorTokenCreateRequest, ProcessorTokenCreateRequestProcessorEnum, Products } from "plaid";
 import { db } from "@/lib/db";
+import { addFundingSource } from "@/lib/dwolla.actions";
+
+
+
+// export const getProfileInfo=async(userId: string |undefined) => {
+//   try {
+//     const profile = await db.profile.findUnique({
+//       where: {
+//         userId: userId
+//       },
+//     });
+    
+//     return profile;
+//   } catch (error) {
+//     console.error('Error fetching profile:', error);
+//     throw new Error('Could not fetch profile');
+//   }
+// };
+
 export const createLinkToken = async (user: User) => {
   try {
     const tokenParams = {
@@ -18,13 +37,12 @@ export const createLinkToken = async (user: User) => {
     }
 
     const response = await plaidClient.linkTokenCreate(tokenParams);
-
-    return parseStringify({ linkToken: response.data.link_token })
+    return { linkToken: response.data.link_token };
   } catch (error) {
-    console.log(error);
+    console.error("Error creating link token:", error);
+    throw new Error("Failed to create link token");
   }
 }
-
 
 export const createBankAccount = async ({
   userId,
@@ -35,22 +53,21 @@ export const createBankAccount = async ({
   shareableId,
 }: createBankAccountProps) => {
   try {
-    
-
     const bankAccount = await db.bankAccount.create({
-        data: {
+      data: {
         userId,
         bankId,
         accountId,
         accessToken,
         fundingSourceUrl,
         shareableId,
-        }
-    })
+      }
+    });
 
-    return parseStringify(bankAccount);
+    return bankAccount;
   } catch (error) {
-    console.log(error);
+    console.error("Error creating bank account:", error);
+    throw new Error("Failed to create bank account");
   }
 }
 
@@ -59,42 +76,38 @@ export const exchangePublicToken = async ({
   user,
 }: exchangePublicTokenProps) => {
   try {
-    // Exchange public token for access token and item ID
-    const response = await plaidClient.itemPublicTokenExchange({
+    const exchangeResponse = await plaidClient.itemPublicTokenExchange({
       public_token: publicToken,
     });
 
-    const accessToken = response.data.access_token;
-    const itemId = response.data.item_id;
-    
-    // Get account information from Plaid using the access token
+    const accessToken = exchangeResponse.data.access_token;
+    const itemId = exchangeResponse.data.item_id;
+
     const accountsResponse = await plaidClient.accountsGet({
       access_token: accessToken,
     });
 
     const accountData = accountsResponse.data.accounts[0];
 
-    // Create a processor token for Dwolla using the access token and account ID
-    const request: ProcessorTokenCreateRequest = {
+    const processorTokenRequest: ProcessorTokenCreateRequest = {
       access_token: accessToken,
       account_id: accountData.account_id,
-      processor: "dwolla" as ProcessorTokenCreateRequestProcessorEnum,
+      processor: ProcessorTokenCreateRequestProcessorEnum.Dwolla,
     };
 
-    const processorTokenResponse = await plaidClient.processorTokenCreate(request);
+    const processorTokenResponse = await plaidClient.processorTokenCreate(processorTokenRequest);
     const processorToken = processorTokenResponse.data.processor_token;
 
-     // Create a funding source URL for the account using the Dwolla customer ID, processor token, and bank name
-     const fundingSourceUrl = await addFundingSource({
+    const fundingSourceUrl = await addFundingSource({
       dwollaCustomerId: user.dwollaCustomerId,
       processorToken,
       bankName: accountData.name,
     });
-    
-    // If the funding source URL is not created, throw an error
-    if (!fundingSourceUrl) throw Error;
 
-    // Create a bank account using the user ID, item ID, account ID, access token, funding source URL, and shareableId ID
+    if (!fundingSourceUrl) {
+      throw new Error("Failed to create funding source URL");
+    }
+
     await createBankAccount({
       userId: user.id,
       bankId: itemId,
@@ -104,14 +117,11 @@ export const exchangePublicToken = async ({
       shareableId: encryptId(accountData.account_id),
     });
 
-    // Revalidate the path to reflect the changes
     revalidatePath("/");
 
-    // Return a success message
-    return parseStringify({
-      publicTokenExchange: "complete",
-    });
+    return { publicTokenExchange: "complete" };
   } catch (error) {
-    console.error("An error occurred while creating exchanging token:", error);
+    console.error("Error exchanging public token:", error);
+    throw new Error("Failed to exchange public token");
   }
 }

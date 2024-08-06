@@ -8,6 +8,7 @@ import { Card } from "@/Components/ui/card";
 import { cn } from "@/lib/utils";
 
 const Clientdata = () => {
+
     return (
         <>
             <div className="py-10 px-6 flex flex-col sm:flex-row justify-between items-center">
@@ -44,9 +45,7 @@ const Clientdata = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Card className={cn("py-3")}>
                         <small>Require to hire</small>
-                        <div>
-                            <Button variant="link">Add a billing method</Button>
-                        </div>
+
                     </Card>
                     <Card className={cn("py-3")}>
                         <small>Require to hire</small>

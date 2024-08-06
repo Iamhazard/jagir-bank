@@ -26,7 +26,7 @@ model User {
   updatedAt             DateTime               @updatedAt
   role                  UserRole               @default(Freelancer)
   accounts              Account[]
-  bank                  BankAccount[]
+  bank                  BankUser[]
   isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
   profile               FreelancerProfile[]
@@ -43,6 +43,7 @@ model User {
   session               Session[]
   Profile               Profile[]
   Dwolla                Dwolla[]
+  BankAccount           BankAccount[]
 }
 
 model Dwolla {
@@ -73,6 +74,21 @@ model Session {
   userId       String   @db.ObjectId
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model BankUser {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String @db.ObjectId
+  user        User   @relation(fields: [userId], references: [id])
+  firstName   String
+  lastName    String
+  address1    String
+  city        String
+  state       String
+  postalCode  String
+  dateOfBirth String
+  email       String
+  password    String
 }
 
 model Account {

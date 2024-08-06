@@ -11,7 +11,7 @@ const TransactionHistory = async ({ searchParams: { id, page } }: SearchParamPro
     const currentPage = Number(page as string) || 1;
     const loggedIn = await getLoggedInUser();
     const accounts = await getAccounts({
-        userId: loggedIn.$id
+        userId: loggedIn.id
     })
 
     if (!accounts) return;
@@ -74,3 +74,7 @@ const TransactionHistory = async ({ searchParams: { id, page } }: SearchParamPro
 }
 
 export default TransactionHistory
+
+function getLoggedInUser() {
+    throw new Error('Function not implemented.');
+}

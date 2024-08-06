@@ -433,7 +433,7 @@ body,
   }
 
   .form-message {
-    @apply text-12 text-red-500;
+    @apply text-12 text-red;
   }
 
   .form-btn {

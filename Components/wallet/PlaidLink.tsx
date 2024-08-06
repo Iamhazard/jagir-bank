@@ -5,7 +5,7 @@ import { PlaidLinkOnSuccess, PlaidLinkOptions, usePlaidLink } from 'react-plaid-
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { PlaidLinkProps } from '@/@types';
-import { createLinkToken } from '@/actions/user.action';
+import { createLinkToken, exchangePublicToken } from '@/actions/user.action';
 
 const PlaidLink = ({ user, variant }: PlaidLinkProps) => {
     const router = useRouter();
@@ -56,7 +56,7 @@ const PlaidLink = ({ user, variant }: PlaidLinkProps) => {
                         width={24}
                         height={24}
                     />
-                    <p className='hiddenl text-[16px] font-semibold text-black-2 xl:block'>Connect bank</p>
+                    <p className='hiddenl text-[16px] font-semibold text-black-2 xl:block'>Connect Wallet</p>
                 </Button>
             ) : (
                 <Button onClick={() => open()} className="plaidlink-default">
@@ -66,7 +66,7 @@ const PlaidLink = ({ user, variant }: PlaidLinkProps) => {
                         width={24}
                         height={24}
                     />
-                    <p className='text-[16px] font-semibold text-black-2'>Connect bank</p>
+                    <p className='text-[16px] font-semibold text-black-2'>Connect wallet</p>
                 </Button>
             )}
         </>

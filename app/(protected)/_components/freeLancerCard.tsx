@@ -2,11 +2,18 @@
 import { Button } from '@/Components/ui/button'
 import { Separator } from '@/Components/ui/separator'
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
 import { Card } from '@/Components/ui/card'
 import { cn } from '@/lib/utils'
+import PlaidLink from '@/Components/wallet/PlaidLink'
+import { useSession } from 'next-auth/react'
+import getCurrentUser from '@/actions/getCurrentUser'
+
 
 const FreeLancerCard = () => {
+    const { data: session } = useSession()
+    const user = getCurrentUser()
+
     return (
         <>
             <div className="py-10 px-6 flex flex-col sm:flex-row justify-between items-center">
@@ -35,6 +42,14 @@ const FreeLancerCard = () => {
                 <p>Earnings available now:
                     $0.00
                 </p>
+                <div className='max-w-[150px]'>
+                    <div className="flex flex-col gap-4">
+                        <Link href='/wallet'> <Button variant="btn_primary">
+                            Wallet
+                        </Button></Link>
+
+                    </div>
+                </div>
 
 
             </Card>
@@ -44,6 +59,7 @@ const FreeLancerCard = () => {
                     <Card className={cn("w-[550px] py-3 justify-center items-center bg-emerald-100")}>
 
                         <div className='px-4 gap-4 space-y-4 items-center'>
+
                             <h1>There are no active contracts.</h1>
                             <p>Contracts you’re actively working on will appear here.</p>
                             <Button variant="outline" >Search  for  new jobs</Button>

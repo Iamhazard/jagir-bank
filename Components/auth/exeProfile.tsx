@@ -14,10 +14,10 @@ import { UsernameAlert, UserNameAlert } from "./Dialog/UsernameAlert";
 import { Label } from "../ui/label";
 import { EmploymentAlert } from "./Dialog/Employment";
 import { Button } from "../ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HourlyAlert } from "./Dialog/HourlyRate";
-import PlaidLink from "../wallet/PlaidLink";
 import getCurrentUser from "@/actions/getCurrentUser";
+import { useSession } from 'next-auth/react'
 
 export default function Example() {
     const pathname = usePathname();
@@ -34,6 +34,39 @@ export default function Example() {
     const [errors, setErrors] = useState<UsernameAlert>({});
     const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
     const [imageUrl, setImageUrl] = useState<string | null>(null);
+
+    const [profile, setProfile] = useState(null);
+    const [error, setError] = useState(null);
+    const { data: session } = useSession()
+    const userId = session?.user.id
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const response = await fetch(`/api/profile/getProfile/${userId}`);
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.statusText}`);
+                }
+                const data = await response.json();
+                setProfile(data);
+            } catch (error: any) {
+                setError(error.message);
+            }
+        };
+
+        if (userId) {
+            fetchProfile();
+        }
+    }, [userId]);
+
+
+    console.log("profile", profile)
+    console.log("profile user id", userId)
+
+
+
+
+
 
     const handleUpload = (result: any) => {
 
@@ -130,9 +163,7 @@ export default function Example() {
 
                         </div>
                     </div>
-                    <div className="flex flex-col gap-4 max-w-[200px] py-2">
-                        <PlaidLink user={loggedIn} variant="primary" />
-                    </div>
+
 
                     <div className="mt-6 border-t border-gray-100">
                         <dl className="divide-y divide-gray-100">
