@@ -9,6 +9,7 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Button } from "@/Components/ui/button"
+
 import {
     Form,
     FormControl,
@@ -18,19 +19,20 @@ import {
     FormLabel,
     FormMessage,
 } from "@/Components/ui/form"
-import { Input } from "@/Components/ui/input"
-
-import { authFormSchema } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import PlaidLink from '@/Components/wallet/PlaidLink';
 import CustomInput from './CustomInput';
+import { useSession } from 'next-auth/react';
+import { Label } from '@/Components/ui/label';
+import { getLoggedInUser, signIn, signUp } from '@/actions/bankUseractions';
+import { authFormSchema } from '@/lib/utils';
+
 
 const AuthForm = ({ type }: { type: string }) => {
     const router = useRouter();
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-
     const formSchema = authFormSchema(type);
 
     // 1. Define your form.
@@ -42,12 +44,14 @@ const AuthForm = ({ type }: { type: string }) => {
         },
     })
 
+    const { data: session } = useSession();
+    const userID = session?.user.id
     // 2. Define a submit handler.
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
+
         setIsLoading(true);
 
         try {
-            // Sign up with Appwrite & create plaid token
 
             if (type === 'sign-up') {
                 const userData = {
@@ -63,7 +67,8 @@ const AuthForm = ({ type }: { type: string }) => {
                     password: data.password
                 }
 
-                const newUser = await register(userData);
+                const newUser = await signUp(userData);
+                console.log(userData)
 
                 setUser(newUser);
             }
@@ -74,7 +79,7 @@ const AuthForm = ({ type }: { type: string }) => {
                     password: data.password,
                 })
 
-                if (response) router.push('/')
+                if (response) router.push('/wallet')
             }
         } catch (error) {
             console.log(error);
@@ -93,7 +98,7 @@ const AuthForm = ({ type }: { type: string }) => {
                         height={34}
                         alt=" logo"
                     />
-                    <h1 className="text-26 font-ibm-plex-serif font-bold text-black-1">Wallet</h1>
+                    <h1 className="text-26 font-ibm-plex-serif font-bold text-black-1">JagirBank Wallet</h1>
                 </Link>
 
                 <div className="flex flex-col gap-1 md:gap-3">
@@ -101,8 +106,8 @@ const AuthForm = ({ type }: { type: string }) => {
                         {user
                             ? 'Link Account'
                             : type === 'sign-in'
-                                ? 'Sign In'
-                                : 'Sign Up'
+                                ? 'Login to your Wallet'
+                                : 'Create a  Wallet Account'
                         }
                         <p className="text-16 font-normal text-gray-600">
                             {user
@@ -131,7 +136,7 @@ const AuthForm = ({ type }: { type: string }) => {
                                     <CustomInput control={form.control} name='city' label="City" placeholder='Enter your city' />
                                     <div className="flex gap-4">
                                         <CustomInput control={form.control} name='state' label="State" placeholder='Example: NY' />
-                                        <CustomInput control={form.control} name='postalCode' label="Postal Code" placeholder='Example: 11101' />
+                                        <CustomInput control={form.control} name='postalCode' label="Postal Code" placeholder='Example: 66700' />
                                     </div>
                                     <div className="flex gap-4">
                                         <CustomInput control={form.control} name='dateOfBirth' label="Date of Birth" placeholder='YYYY-MM-DD' />
@@ -139,9 +144,8 @@ const AuthForm = ({ type }: { type: string }) => {
                                     </div>
                                 </>
                             )}
-
+                            {/* <Input type="email" className='input-class aria-disabled read-only:bg-gray-100 read-only:cursor-default' /> */}
                             <CustomInput control={form.control} name='email' label="Email" placeholder='Enter your email' />
-
                             <CustomInput control={form.control} name='password' label="Password" placeholder='Enter your password' />
 
                             <div className="flex flex-col gap-4">
@@ -152,7 +156,7 @@ const AuthForm = ({ type }: { type: string }) => {
                                             Loading...
                                         </>
                                     ) : type === 'sign-in'
-                                        ? 'Sign In' : 'Sign Up'}
+                                        ? 'Sign In' : 'Create'}
                                 </Button>
                             </div>
                         </form>
@@ -164,8 +168,8 @@ const AuthForm = ({ type }: { type: string }) => {
                                 ? "Don't have an account?"
                                 : "Already have an account?"}
                         </p>
-                        <Link href={type === 'sign-in' ? '/wallet/auth/signup' : '/sign-in'} className="form-link">
-                            {type === 'sign-in' ? 'Sign up' : 'Sign in'}
+                        <Link href={type === 'sign-in' ? '/wallet/auth/sign-up' : 'wallet/auth/sign-in'} className="form-link">
+                            {type === 'sign-in' ? 'Create' : 'Sign in'}
                         </Link>
                     </footer>
                 </>

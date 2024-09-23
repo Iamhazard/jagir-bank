@@ -31,7 +31,12 @@ const FreeLancerCard = () => {
                         <Button variant="link" className="text-Green">My Proposal</Button>
                     </Link>
                 </div>
-                <Button variant='btn_green' className="mt-4 sm:mt-0">Find a job</Button>
+
+                <Link href={'/jobs/bestmatches'}>
+                    <Button variant='btn_green' className="mt-4 sm:mt-0">Find a job</Button>
+
+                </Link>
+
             </div>
 
             <Card className="border-t border-slate-400 bg-emerald-200 px-6 py-2 mx-auto">

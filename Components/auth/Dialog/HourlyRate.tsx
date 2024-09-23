@@ -17,8 +17,8 @@ import { Input } from "@/Components/ui/input";
 import React, { ChangeEvent, FormEvent, useState } from "react";
 
 export type HourlyAlert = {
-    userName?: string
-}
+    hours?: string;
+};
 
 interface PropPass {
     hours: string;
@@ -26,8 +26,6 @@ interface PropPass {
 }
 
 export const HourlyAlert: React.FC<PropPass> = ({ hours, setHours }) => {
-    //const [userName, setUserName] = useState<string>("");
-    //console.log(userName, "userName")
     const [errors, setErrors] = useState<HourlyAlert>({});
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -37,19 +35,18 @@ export const HourlyAlert: React.FC<PropPass> = ({ hours, setHours }) => {
     const validate = (): boolean => {
         const newErrors: HourlyAlert = {};
         if (hours.trim() === '') {
-            newErrors.userName = 'User Name is required';
+            newErrors.hours = 'Hourly rate is required';
+        } else if (isNaN(Number(hours))) {
+            newErrors.hours = 'Hourly rate must be a number';
         }
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
-
-
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         if (validate()) {
-
-            //console.log('Form submitted', { userName });
+            console.log('Form submitted', { hours });
         }
     };
 
@@ -62,28 +59,29 @@ export const HourlyAlert: React.FC<PropPass> = ({ hours, setHours }) => {
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>User Name</DialogTitle>
+                    <DialogTitle>Hourly Rate</DialogTitle>
                     <DialogDescription>
-                        This action cannot be undone. This will permanently delete your
-                        account and remove your data from our servers.
+                        Enter your new hourly rate. This will update your profile information.
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="flex items-center space-x-2">
                     <div className="grid flex-1 gap-2">
                         <div className="grid w-full gap-1.5">
-                            <Label htmlFor="userName">Your New User Name</Label>
+                            <Label htmlFor="hours">Hourly Rate</Label>
                             <Input
-                                id="userName"
+                                id="hours"
                                 value={hours}
                                 onChange={handleChange}
+                                placeholder="Enter your hourly rate"
+                                type="text"  // or "number" if you only want numeric input
                             />
-                            {errors.userName && (
-                                <span className="text-red-500 text-sm">{errors.userName}</span>
+                            {errors.hours && (
+                                <span className="text-red-500 text-sm">{errors.hours}</span>
                             )}
                         </div>
                     </div>
                     <DialogFooter className="sm:justify-start">
-                        <Button type="button" variant="default">
+                        <Button type="submit" variant="default">
                             Save
                         </Button>
                         <DialogClose asChild>
@@ -96,4 +94,4 @@ export const HourlyAlert: React.FC<PropPass> = ({ hours, setHours }) => {
             </DialogContent>
         </Dialog>
     );
-}
+};

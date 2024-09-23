@@ -12,29 +12,29 @@ const BestmatchesPage = () => {
   const [jobs, setJob] = useState<JobSheetProps[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-  //   const fetchJobs = async () => {
-  //     try {
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
 
-  //       const response = await fetch(`/api/job`);
-  //       if (!response.ok) {
-  //         throw new Error('Failed to fetch jobs');
-  //       }
-  //       const data = await response.json();
-  //       setJob(data);
-  //       setLoading(false);
-  //     } catch (error) {
-  //       console.log(error)
-  //       setLoading(false);
-  //     }
-  //   };
-
-
-  //   fetchJobs();
-  // }, []);
+        const response = await fetch(`/api/job`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch jobs');
+        }
+        const data = await response.json();
+        setJob(data);
+        setLoading(false);
+      } catch (error) {
+        console.log(error)
+        setLoading(false);
+      }
+    };
 
 
-  //const [alljobs, setAllJobs] = useState<Job>()
+    fetchJobs();
+  }, []);
+
+
+  const [alljobs, setAllJobs] = useState<Job>()
   const dispatch: AppDispatch = useDispatch()
 
   useEffect(() => {
@@ -52,8 +52,8 @@ const BestmatchesPage = () => {
 
   }, [dispatch])
 
-  // console.log("all jobs", jobs)
-  //console.log("jib0", { jobs })
+  console.log("all jobs", jobs)
+  console.log("jib0", { jobs })
   return (
     <div>
 

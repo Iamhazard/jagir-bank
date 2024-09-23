@@ -17,6 +17,7 @@ import { AppDispatch } from "@/Redux/store";
 import { viewProfessions } from "@/Redux/Features/admin/professionSlice";
 import { viewSkills } from "@/Redux/Features/admin/skillsSlice";
 import { viewCountry } from "@/Redux/Features/admin/countrySlice";
+import { useRouter } from "next/navigation";
 
 type Inputs = z.infer<typeof FreeLancerSchema>;
 
@@ -106,7 +107,7 @@ export default function Form() {
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [countries, setCountries] = useState<Countries[]>([])
   const [districts, setDistricts] = useState<Countries[]>([])
-
+  const router = useRouter()
   //console.log(districts, "districtts")
   //console.log(countries, "country")
   const {
@@ -272,7 +273,8 @@ export default function Form() {
         imageInput: imageUrl,
         userId: userid as string
       }
-      console.log(formdata, "formdataobj")
+      //console.log(userid)
+      //console.log(formdata, "formdataobj")
 
       const response = await fetch("api/freelancerprofile/new", {
         method: "POST",
@@ -284,9 +286,10 @@ export default function Form() {
 
       if (response.ok) {
         const profiledata = await response.json();
-        console.log("profile data", profiledata);
+        //console.log("profile data", profiledata);
         setProfileData(profiledata);
         setSuccess("Profile created successfully");
+        router.push("/jobs/bestmatches")
       } else {
         const errorData = await response.json();
         setError(errorData.message || "An error occurred");

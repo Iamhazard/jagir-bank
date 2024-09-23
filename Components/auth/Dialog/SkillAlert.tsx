@@ -72,7 +72,7 @@ export const SkillAlert = ({ skills, setSkills }: SkillAlertProps) => {
                                     <Input
                                         id="skills"
                                         {...field}
-                                        readOnly
+
                                     />
                                 )}
                             />
@@ -80,8 +80,8 @@ export const SkillAlert = ({ skills, setSkills }: SkillAlertProps) => {
                         </div>
                     </div>
                     <DialogFooter className="sm:justify-start">
-                        <Button type="submit" variant="secondary">
-                            Submit
+                        <Button type="submit" variant="default">
+                            Save
                         </Button>
                         <DialogClose asChild>
                             <Button type="button" variant="secondary">

@@ -13,7 +13,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { LogoutButton } from "./logout-button";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import Link from "next/link";
-import { SettingsIcon } from "lucide-react";
+import { SettingsIcon, UserX2Icon } from "lucide-react";
 import { IconDropdown } from "react-day-picker";
 import { GrDashboard } from "react-icons/gr";
 import { useRouter } from "next/navigation";
@@ -48,6 +48,10 @@ export const UserButton = () => {
         <DropdownMenuItem>
           <IconDropdown className="h-4 w-4 mr-2" />
           {user?.role || 'Client' || 'Freelancer || "Admin'} profile
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <UserX2Icon className="h-4 w-4 mr-2" />
+          {`${user?.name} ${user?.lastName}`}
         </DropdownMenuItem>
 
         <DropdownMenuItem>

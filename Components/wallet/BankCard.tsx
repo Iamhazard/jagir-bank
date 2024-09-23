@@ -8,6 +8,7 @@ import { CreditCardProps } from '@/@types'
 const BankCard = ({ account, userName, showBalance = true }: CreditCardProps) => {
 
     console.log(account);
+    console.log(account.sharaebleId)
     return (
         <div className="flex flex-col">
             <Link href={`/transaction-history/?id=${account.appwriteItemId}`} className="bank-card">

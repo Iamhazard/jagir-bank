@@ -27,7 +27,8 @@ export const BioAlert = ({ bio, setBio }: BioAlertProps) => {
     });
 
     const onSubmit = (data: BioAlertProps) => {
-        console.log(data);
+        setBio(data.bio);  // Update the bio with the form data
+        console.log("Updated bio:", data.bio);
     };
 
     return (
@@ -39,8 +40,7 @@ export const BioAlert = ({ bio, setBio }: BioAlertProps) => {
                 <DialogHeader>
                     <DialogTitle>Bio</DialogTitle>
                     <DialogDescription>
-                        This action cannot be undone. This will permanently delete your
-                        account and remove your data from our servers.
+                        You can update your bio here.
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -54,7 +54,7 @@ export const BioAlert = ({ bio, setBio }: BioAlertProps) => {
                                     render={({ field }) => (
                                         <Textarea
                                             id="bio"
-                                            placeholder="Type your message here."
+                                            placeholder="Type your bio here."
                                             {...field}
                                         />
                                     )}
@@ -65,7 +65,7 @@ export const BioAlert = ({ bio, setBio }: BioAlertProps) => {
                     </div>
                     <DialogFooter className="sm:justify-start">
                         <Button type="submit" variant="secondary">
-                            Submit
+                            save
                         </Button>
                         <DialogClose asChild>
                             <Button type="button" variant="secondary">

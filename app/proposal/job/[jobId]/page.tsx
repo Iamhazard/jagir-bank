@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 interface IParams {
     jobId?: string;
@@ -33,12 +34,24 @@ const ProposalForm = ({ params }: { params: IParams }) => {
     const routes = useRouter()
     const [loading, setLoading] = useState(true);
     const jobId = params.jobId;
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm();
     const watchHourlyRate = watch("hourlyRate", 0);
     const [imageUrl, setImageUrl] = useState<string | null>(null);
-    const servicesFee = 0.05;
+    const servicesFee = 0.10;
+    const { data: session } = useSession();
     const estimatedAmount = watchHourlyRate * (1 - servicesFee);
     //console.log(estimatedAmount)
+    const calculatedFee = watchHourlyRate * servicesFee;
+    useEffect(() => {
+        if (!isNaN(calculatedFee)) {
+            setValue("serviceFee", calculatedFee);
+        } else {
+            console.log("Invalid calculated fee:", calculatedFee);
+        }
+    }, [calculatedFee, setValue]);
+
+
+
 
     useEffect(() => {
         if (!jobId) {
@@ -68,14 +81,6 @@ const ProposalForm = ({ params }: { params: IParams }) => {
         }
     }, [jobId,])
 
-
-
-
-    //console.log({ job })
-    const clientProfileId = job?.clientProfileId
-    //console.log(clientProfileId)
-
-
     const handleUpload = (result: any) => {
 
         try {
@@ -102,14 +107,31 @@ const ProposalForm = ({ params }: { params: IParams }) => {
     };
 
     const onSubmit = (data: any) => {
-        data.estimatedAmount = estimatedAmount.toFixed(2);
-        data.jobId = jobId;
-        data.clientProfileId = clientProfileId;
+        console.log(data.serviceFee?.toString(), "service fee data")
 
-
-        if (imageUrl) {
-            data.imageUrl = imageUrl;
+        const proposalData = {
+            duration: data.duration,
+            Coverletter: data.message,
+            hourlyRate: data.hourlyRate,
+            estimatedAmount: estimatedAmount?.toString() || '0',
+            userId: session?.user.id,
+            serviceFee: data.serviceFee?.toString() || '0',
+            imageUrl: imageUrl,
+            ...(data.jobId && { jobId: data.jobId }),
+            clientProfileId: job?.clientProfileId
         }
+        Object.keys(proposalData).forEach(key => proposalData[key] === undefined && delete proposalData[key]);
+
+
+        console.log(proposalData, "data form proposal")
+        // data.estimatedAmount = estimatedAmount.toFixed(2);
+        // data.jobId = jobId;
+
+
+
+        // if (imageUrl) {
+        //     data.imageUrl = imageUrl;
+        // }
 
         console.log("Data to be submitted:", data);
 
@@ -120,7 +142,7 @@ const ProposalForm = ({ params }: { params: IParams }) => {
                         method: "POST",
                         headers: {
                         },
-                        body: JSON.stringify(data),
+                        body: JSON.stringify(proposalData),
                     })
 
                     if (!response.ok) {
@@ -262,11 +284,12 @@ const ProposalForm = ({ params }: { params: IParams }) => {
                                 </div>
                                 <div className="mt-2 flex gap-0.5 items-center">
                                     <input
+
                                         type="text"
-                                        id="  readOnly-input"
+                                        id="serviceFee"
                                         aria-label="  readOnly input"
                                         className="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        placeholder={`$${(watchHourlyRate * servicesFee).toFixed(2)}`}
+                                        placeholder={`$${(calculatedFee ?? 0).toFixed(2)}`}
                                         readOnly
                                     />
                                     <span className="text-gray-500">/hr</span>

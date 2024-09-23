@@ -8,25 +8,37 @@ export declare type SearchParamProps = {
 };
 
 // ========================================
-
-declare type SignUpParams = {
- id: string;
-  name: string | null;
-  lastName: string | null;
-  email: string | null;
-  emailVerified: Date | null;
-  image: string | null;
-  dwollaCustomerId: string | null;
-  password: string | null;
-  seenMessageIds: string[];
+export declare type SignUpParams = {
+  firstName: string;
+  lastName: string;
+  address1: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  dateOfBirth: string;
+  ssn: string;
+  email: string;
+  password: string;
 };
+
+
+// export declare type SignUpParams = {
+//   userId?: string;
+//   address1: string;
+//   city: string;
+//   state: string;
+//   postalCode: string;
+//   dateOfBirth: string;
+//   ssn: string;
+//   password: string;
+// };
 
 declare type LoginUser = {
   email: string;
   password: string;
 };
 
-export type Profile={
+export type Profile = {
   id: string;
   userId: string;
   userName: string | null;
@@ -35,12 +47,12 @@ export type Profile={
   userSkills: string | null;
   Education: string;
   Language: string;
-   dwollaCustomerUrl: string;
+  dwollaCustomerUrl: string;
 
   dwollaCustomerId: string;
 
 }
-declare type User = {
+export declare type User = {
   id: string;
   $id: string;
   email: string | null;
@@ -76,7 +88,7 @@ export declare type Account = {
   type: string;
   subtype: string;
   appwriteItemId: string;
-  shareableId: string;
+  sharaebleId: string;
 };
 
 export declare type Transaction = {
@@ -97,7 +109,7 @@ export declare type Transaction = {
   receiverBankId: string;
 };
 
-declare type Bank = {
+export declare type Bank = {
   $id: string;
   accountId: string;
   bankId: string;
@@ -158,7 +170,7 @@ export declare interface CreditCardProps {
   showBalance?: boolean;
 }
 
-declare interface BankInfoProps {
+export declare interface BankInfoProps {
   account: Account;
   appwriteItemId?: string;
   type: "full" | "card";
@@ -217,7 +229,7 @@ export declare interface BankDropdownProps {
   otherStyles?: string;
 }
 
-declare interface BankTabItemProps {
+export declare interface BankTabItemProps {
   account: Account;
   appwriteItemId?: string;
 }
@@ -243,7 +255,7 @@ export declare interface SiderbarProps {
   user: User;
 }
 
-declare interface RecentTransactionsProps {
+export declare interface RecentTransactionsProps {
   accounts: Account[];
   transactions: Transaction[];
   appwriteItemId: string;
@@ -276,19 +288,19 @@ export declare interface PaymentTransferFormProps {
 }
 
 // Actions
-declare interface getAccountsProps {
+export declare interface getAccountsProps {
   userId: string;
 }
 
-declare interface getAccountProps {
+export declare interface getAccountProps {
   appwriteItemId: string;
 }
 
-declare interface getInstitutionProps {
+export declare interface getInstitutionProps {
   institutionId: string;
 }
 
-declare interface getTransactionsProps {
+export declare interface getTransactionsProps {
   accessToken: string;
 }
 
@@ -299,7 +311,7 @@ export declare interface CreateFundingSourceOptions {
   _links: object; // Dwolla On Demand Authorization Link
 }
 
-declare interface CreateTransactionProps {
+export declare interface CreateTransactionProps {
   name: string;
   amount: string;
   senderId: string;
@@ -309,16 +321,16 @@ declare interface CreateTransactionProps {
   email: string;
 }
 
-declare interface getTransactionsByBankIdProps {
+export declare interface getTransactionsByBankIdProps {
   bankId: string;
 }
 
-declare interface signInProps {
+export declare interface signInProps {
   email: string;
   password: string;
 }
 
-declare interface getUserInfoProps {
+export declare interface getUserInfoProps {
   userId: string;
 }
 
@@ -336,14 +348,14 @@ export declare interface createBankAccountProps {
   shareableId: string;
 }
 
-declare interface getBanksProps {
+export declare interface getBanksProps {
   userId: string;
 }
 
-declare interface getBankProps {
+export declare interface getBankProps {
   documentId: string;
 }
 
-declare interface getBankByAccountIdProps {
+export declare interface getBankByAccountIdProps {
   accountId: string;
 }

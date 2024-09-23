@@ -29,7 +29,7 @@ export const BankDropdown = ({
 
         setSeclected(account);
         const newUrl = formUrlQuery({
-            params: searchParams?.toString(),
+            params: searchParams?.toString() || "",
             key: "id",
             value: id,
         });
@@ -49,7 +49,7 @@ export const BankDropdown = ({
                 className={`flex w-full bg-white gap-3 md:w-[300px] ${otherStyles}`}
             >
                 <Image
-                    src="icons/credit-card.svg"
+                    src="/icons/credit-card.svg"
                     width={20}
                     height={20}
                     alt="account"

@@ -1,8 +1,10 @@
-'
+
+import { Account } from '@/@types';
+import { getAccounts } from '@/actions/bank.actions';
+import { getLoggedInUser } from '@/actions/bankUseractions';
 import BankCard from '@/Components/wallet/BankCard';
 import HeaderBox from '@/Components/wallet/HeaderBox';
-import { getAccounts } from '@/lib/actions/bank.actions';
-import { getLoggedInUser } from '@/lib/actions/user.actions';
+
 import React from 'react'
 
 const MyBanks = async () => {

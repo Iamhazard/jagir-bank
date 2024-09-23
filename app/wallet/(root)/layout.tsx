@@ -1,9 +1,8 @@
+import { getLoggedInUser } from "@/actions/bankUseractions";
 import getCurrentUser from "@/actions/getCurrentUser";
 import MobileNav from "@/Components/wallet/WalletMobileNavbar";
 
-import WalletSidebar from "@/Components/wallet/WSideBar";
-import dynamic from 'next/dynamic'
-//import { getLoggedInUser } from "@/lib/actions/user.actions";
+import WalletSidebar from "@/Components/wallet/WSideBar"
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
@@ -12,7 +11,7 @@ export default async function WalletRootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const loggedIn = await getCurrentUser();
+    const loggedIn = await getLoggedInUser();
 
     if (!loggedIn) redirect('/sign-in')
 

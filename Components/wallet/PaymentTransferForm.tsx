@@ -7,9 +7,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { createTransfer } from "@/lib/actions/dwolla.actions";
-import { createTransaction } from "@/lib/actions/transaction.actions";
-import { getBank, getBankByAccountId } from "@/lib/actions/user.actions";
+// import { createTransfer } from "@/lib/actions/dwolla.actions";
+// import { createTransaction } from "@/lib/actions/transaction.actions";;
 import { decryptId } from "@/lib/utils";
 
 
@@ -27,6 +26,9 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { PaymentTransferFormProps } from "@/@types";
 import { BankDropdown } from "./BankDropDown";
+import { getBank, getBankByAccountId } from "@/actions/bankUseractions";
+import { createTransfer } from "@/actions/dwolla.actions";
+import { createTransaction } from "@/actions/transaction.actions";
 
 const formSchema = z.object({
     email: z.string().email("Invalid email address"),
@@ -85,7 +87,7 @@ const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
 
                 if (newTransaction) {
                     form.reset();
-                    router.push("/");
+                    router.push("/wallet");
                 }
             }
         } catch (error) {
@@ -178,7 +180,7 @@ const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
                                 <div className="flex w-full flex-col">
                                     <FormControl>
                                         <Input
-                                            placeholder="ex: johndoe@gmail.com"
+                                            placeholder="ex: aa@gmail.com"
                                             className="input-class"
                                             {...field}
                                         />
@@ -226,7 +228,7 @@ const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
                                 <div className="flex w-full flex-col">
                                     <FormControl>
                                         <Input
-                                            placeholder="ex: 5.00"
+                                            placeholder="ex: 5000.00"
                                             className="input-class"
                                             {...field}
                                         />

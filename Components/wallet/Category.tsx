@@ -27,7 +27,7 @@ const Category = ({ category }: CategoryProps) => {
                     <h3 className={cn("font-normal", count)}>{category.count}</h3>
                 </div>
                 <Progress
-                    value={(category.count / category.totalCount) * 100}
+                    value={(category.totalCount ? (category.count / category.totalCount) * 100 : 0)}
                     className={cn("h-2 w-full", progressBg)}
                     indicatorClassName={cn("h-2 w-full", indicator)}
                 />

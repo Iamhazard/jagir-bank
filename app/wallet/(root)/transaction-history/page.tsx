@@ -1,26 +1,37 @@
 
 import { SearchParamProps } from '@/@types';
+import { getAccount, getAccounts } from '@/actions/bank.actions';
+import { getLoggedInUser } from '@/actions/bankUseractions';
 import HeaderBox from '@/Components/wallet/HeaderBox';
 import { Pagination } from '@/Components/wallet/Pagination';
 import TransactionsTable from '@/Components/wallet/TransactionTable';
-import { getAccount, getAccounts } from '@/lib/actions/bank.actions';
 import { formatAmount } from '@/lib/utils';
 import React from 'react'
 
 const TransactionHistory = async ({ searchParams: { id, page } }: SearchParamProps) => {
     const currentPage = Number(page as string) || 1;
     const loggedIn = await getLoggedInUser();
-    const accounts = await getAccounts({
-        userId: loggedIn.id
-    })
+    console.log("Logged in user ID:", loggedIn.id);
+    if (!loggedIn) {
+        return <p>Error: Unable to get logged-in user.</p>;
+    }
 
-    if (!accounts) return;
+    const accounts = await getAccounts({
+        userId: loggedIn.$id
+    })
+    if (!accounts || !accounts.data || accounts.data.length === 0) {
+        return <p>Error: No accounts found for the user.</p>;
+    }
+
 
     const accountsData = accounts?.data;
     const appwriteItemId = (id as string) || accountsData[0]?.appwriteItemId;
 
     const account = await getAccount({ appwriteItemId })
-
+    if (!account || !account.data) {
+        return <p>Error: Unable to fetch account details.</p>;
+    }
+    console.log(account?.appwriteItemId);
 
     const rowsPerPage = 10;
     const totalPages = Math.ceil(account?.transactions.length / rowsPerPage);
@@ -75,6 +86,3 @@ const TransactionHistory = async ({ searchParams: { id, page } }: SearchParamPro
 
 export default TransactionHistory
 
-function getLoggedInUser() {
-    throw new Error('Function not implemented.');
-}
