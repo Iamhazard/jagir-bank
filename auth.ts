@@ -54,57 +54,59 @@ export const {
     },
 
     async session(params) {
-      const { session, token} = params as any;
+      const { session, token } = params as any;
       // console.log({ sessionToken: token }); 
       try {
-         if (token.sub && session.user) {
-        session.user.id = token.sub;
-      }
+        if (token.sub && session.user) {
+          session.user.id = token.sub;
+        }
 
-      if (token.role && session.user) {
-        session.user.role = token.role as UserRole;
-      }
-      if (session.user) {
-        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
-      }
+        if (token.role && session.user) {
+          session.user.role = token.role as UserRole;
+        }
+        if (session.user) {
+          session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
+        }
 
-      if (session.user) {
-        session.user.name = token.name;
-        session.user.lastName=token.lastName;
-        session.user.email = token.email;
-        session.user.role = token.role;
-        session.user.isOAuth = token.isOAuth as boolean;
-      }
-      return session;
+        if (session.user) {
+          session.user.name = token.name;
+          session.user.lastName = token.lastName;
+          session.user.email = token.email;
+          session.user.role = token.role;
+          session.user.createdAt = token.createdAt;
+          session.user.isOAuth = token.isOAuth as boolean;
+        }
+        return session;
       } catch (error) {
-         console.error("Error setting session:", error);
+        console.error("Error setting session:", error);
         return session;
       }
-     
+
     },
     async jwt({ token }) {
       try {
-        token.exp = Math.floor(Date.now() / 1000) + (60 * 60 * 24) 
+        token.exp = Math.floor(Date.now() / 1000) + (60 * 60 * 24)
 
-      if (!token.sub) return token;
-      const existingUser = await getUserById(token.sub);
+        if (!token.sub) return token;
+        const existingUser = await getUserById(token.sub);
 
-      if (!existingUser) return token;
-      const existingAccount = await getAccountByUserId(existingUser.id);
-      token.isOAuth = !!existingAccount;
-      token.name = existingUser.name;
-      token.lastName = existingUser.lastName;
-      token.email = existingUser.email;
-      token.role = existingUser.role;
-      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
+        if (!existingUser) return token;
+        const existingAccount = await getAccountByUserId(existingUser.id);
+        token.isOAuth = !!existingAccount;
+        token.name = existingUser.name;
+        token.lastName = existingUser.lastName;
+        token.email = existingUser.email;
+        token.createdAt = existingUser.createdAt;
+        token.role = existingUser.role;
+        token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
 
-      //console.log({token}fan)
-      return token;
+        //console.log({token}fan)
+        return token;
       } catch (error) {
         console.error("Error updating JWT token:", error);
         return token;
       }
-      
+
     },
   },
 

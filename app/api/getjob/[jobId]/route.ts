@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 
 interface IParams {
-  userId?: string;
+  jobId?: string;
 }
 
 export async function GET(
@@ -13,35 +13,31 @@ export async function GET(
   { params }: { params: IParams }
 ) {
   try {
-    const { userId } = params;
-    if (!userId) {
-      return new Response('user ID is missing', { status: 400 });
+    const {jobId}=params;
+if (!jobId) {
+      return new Response('Client ID is missing', { status: 400 });
     }
-    const clientJobs = await db.job.findMany({
-      where: {
-        clientProfile: {
-          userId: userId,
-        }
-      },
-      include: {
+    const clientJobs = await db.job.findUnique({
+   where: {
+        id:jobId
+        },
+     include: {
         SkillsOnJobs: {
           include: {
             skill: true,
           },
         },
       },
-
+      
     });
-    if (!clientJobs || clientJobs.length === 0) {
-      return new Response('Client jobs not found', { status: 404 });
-    }
-
+   
+    
     return NextResponse.json(clientJobs)
   } catch (error) {
     console.log(error)
     return new Response("Method Not Allowed", { status: 500 });
-
+    
   }
 
-
+  
 }

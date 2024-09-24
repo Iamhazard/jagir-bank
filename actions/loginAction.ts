@@ -19,7 +19,7 @@ import * as z from "zod";
 export const login = async (
   values: z.infer<typeof LoginSchema>,
   callbackUrl?: string | null,
-  role?:UserRole
+  role?: UserRole
 ) => {
   try {
     const validatedFields = LoginSchema.safeParse(values);
@@ -27,12 +27,12 @@ export const login = async (
     if (!validatedFields.success) {
       return { error: "Invalid fields!" };
     }
-   
+
 
     const { email, password, code } = validatedFields.data;
 
-    const existingRole= await getUserRoleByEmail(email)
-     if (!existingRole) {
+    const existingRole = await getUserRoleByEmail(email)
+    if (!existingRole) {
       return { error: "role does not exist!" };
     }
     const existingUser = await getUserByEmail(email);
@@ -107,7 +107,7 @@ export const login = async (
     try {
       await signIn("credentials", {
         email,
-        role:existingRole,
+        role: existingRole,
         password,
         redirectTo: callbackUrl || getRedirectUrl(existingRole) || DEFAULT_LOGIN_REDIRECT,
       });
@@ -129,13 +129,13 @@ export const login = async (
 };
 const getRedirectUrl = (role: UserRole): string | undefined => {
   switch (role) {
-     case "ADMIN":
-      return "/dashboard/users"; 
+    case "ADMIN":
+      return "/admin/dashbaord";
     case "Client":
-      return "/clientdashboard"; 
+      return "/clientdashboard";
     case "Freelancer":
       return "/freelancerdashoard";
     default:
-      return undefined; 
+      return undefined;
   }
 };

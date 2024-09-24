@@ -53,7 +53,6 @@ const BestmatchesPage = () => {
   }, [dispatch])
 
   console.log("all jobs", jobs)
-  console.log("jib0", { jobs })
   return (
     <div>
 
@@ -61,7 +60,7 @@ const BestmatchesPage = () => {
       <div className="mt-4">
         {jobs.map((job, inx) => (
           <div key={inx} className="">
-            <JobSheet id={job?.id || ""} title={job?.post || ""} jobdescription={job?.jobDescription || ""} duration={job?.duration || ""} expertise={job?.expertise || ""} projectSize={job?.projectSize || ""} fixed={job?.fixed || ""} Place={""} from={job?.from || ""} to={job?.to || ""} skills={job.skills} post={""} jobDescription={""} createdAt={job?.createdAt} country={""} />
+            <JobSheet id={job?.id || ""} title={job?.post || ""} jobdescription={job?.jobDescription || ""} duration={job?.duration || ""} expertise={job?.expertise || ""} projectSize={job?.projectSize || ""} fixed={job?.fixed || ""} Place={""} from={job?.from || ""} to={job?.to || ""} skills={job.skills} post={""} jobDescription={""} createdAt={job?.createdAt} country={job?.clientProfile?.country || "No country Info"} userId={job?.clientProfile?.userId || ""} clientProfileId={job?.clientProfileId || ""} />
           </div>
         ))}
 

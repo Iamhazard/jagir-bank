@@ -20,13 +20,14 @@ import getCurrentUser from "@/actions/getCurrentUser";
 import { useSession } from 'next-auth/react'
 import { StringifyOptions } from "querystring";
 
-interface Freelancer {
+export interface Freelancer {
     messsage: string;
     imageInput: string | null;
     userName: string;
     profession: string[];
     hourlyRate: string;
     country: string;
+    userId: string;
     state: string;
     language: string;
     jobs: Job[];
@@ -83,7 +84,7 @@ export default function Example() {
     useEffect(() => {
         const fetchFreelancerProfile = async () => {
             try {
-                const response = await fetch(`/api/freelancerprofile/getProfile/66efcfa6fed7636f23cda95b`);
+                const response = await fetch(`/api/freelancerprofile/getProfile/userId`);
                 if (!response.ok) {
                     throw new Error(`Error: ${response.statusText}`);
                 }

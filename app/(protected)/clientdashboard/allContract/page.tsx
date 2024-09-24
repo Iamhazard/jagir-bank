@@ -7,6 +7,7 @@ import Link from 'next/link'
 //import { Proposalprops } from '../../freelancerdashoard/proposal/page'
 import axios from 'axios'
 import { Button } from '@/Components/ui/button'
+import { useSession } from 'next-auth/react'
 
 interface ProposalProps {
     clientProfileId: string;
@@ -54,11 +55,12 @@ export interface Contractprops {
 
 const AllContracts = () => {
     const [getproposals, setProposals] = useState<Contractprops[]>([]);
-
+    const { data: session } = useSession()
+    const userId = session?.user.id
     useEffect(() => {
         const fetchProposals = async () => {
             try {
-                const response = await axios.get('/api/job/client');
+                const response = await axios.get(`/api/job/${userId}`);
                 const data = response.data;
                 setProposals(data);
             } catch (error) {
@@ -66,7 +68,7 @@ const AllContracts = () => {
             }
         };
         fetchProposals();
-    }, []);
+    }, [userId]);
 
     console.log("from client dashboard", getproposals)
     return (

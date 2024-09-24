@@ -5,6 +5,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { FiMapPin } from "react-icons/fi";
 import { MdOutlineCheckCircle } from "react-icons/md";
+import Rating from "./Rating";
 
 export interface jobsProps {
   id: string | undefined;
@@ -14,8 +15,10 @@ export interface jobsProps {
   to: string,
   jobsdescription: string,
   duration: string,
+  userId: string,
   expertise: string,
   projectSize: string,
+  clientProfileId: string,
   fixed: string,
   Place: string,
   createdAt: string
@@ -24,11 +27,11 @@ export interface jobsProps {
 }
 
 
-const Jobs = ({ title, id, from, to, jobsdescription, Place, duration, expertise, projectSize, fixed, skills, createdAt, country }: jobsProps) => {
+const Jobs = ({ title, id, from, to, jobsdescription, Place, duration, expertise, projectSize, fixed, skills, userId, createdAt, country }: jobsProps) => {
   const [showMore, setShowMore] = useState(false);
   const [skill, setSkills] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  console.log(country, "country from job")
 
   useEffect(() => {
     const fetchSkills = async () => {
@@ -98,9 +101,13 @@ const Jobs = ({ title, id, from, to, jobsdescription, Place, duration, expertise
           </span>
           <p>$2k + spent</p>
           <span className="flex items-center gap-2">
-            <FiMapPin /> {Place}
+            <FiMapPin /> {country}
           </span>
         </div>
+        <div>
+          <Rating />
+        </div>
+
         <div className="flex flex-wrap mt-4 gap-2">
           <p>Proposals: 50+</p>
           <p>Connects to apply: 12 Connects</p>

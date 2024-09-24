@@ -21,6 +21,8 @@ import Jobs from "./Jobs";
 import { Separator } from "../ui/separator";
 import { format } from "date-fns";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { Freelancer } from "../auth/exeProfile";
 
 
 
@@ -30,6 +32,7 @@ export interface JobSheetProps {
     id: string,
     title: string,
     country: string,
+    userId: string,
     jobdescription?: string;
     jobsbudget?: string;
     duration: string,
@@ -38,9 +41,17 @@ export interface JobSheetProps {
     fixed: string,
     Place: string,
     from: string,
+    clientProfileId: string,
     to: string,
     post: string,
     jobDescription: string,
+    clientProfile?: {
+        country: string;
+        id: string;
+        createdAt: string;
+        updatedAt: string;
+        userId: string;
+    };
     createdAt: string,
     skills: Array<{ title: string }>;
 
@@ -48,15 +59,43 @@ export interface JobSheetProps {
 
 
 
-const JobSheet: React.FC<JobSheetProps> = ({ title, jobdescription, from, to, Place, fixed, duration, expertise, projectSize, id, skills, createdAt, country }: JobSheetProps) => {
+const JobSheet: React.FC<JobSheetProps> = ({ title, jobdescription, from, to, Place, fixed, duration, expertise, projectSize, id, skills, createdAt, country, clientProfileId, userId, clientProfile }: JobSheetProps) => {
     const [showMore, setShowMore] = useState(false);
+    const { data: session } = useSession()
+    const formattedTime = format(createdAt, 'HH:mm:ss');
+    const [error, setError] = useState(null);
+    const [freelancer, setFreelancer] = useState<Freelancer[] | null>(null)
+    const [getcountry, setCountry] = useState("")
+    console.log(Jobs, "form jobs sheet")
+
+    useEffect(() => {
+        const fetchFreelancerProfile = async () => {
+            try {
+                const response = await fetch(`/api/client/getProfile/66050cc05cefa668dee8dbce`);
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.statusText}`);
+                }
+                const data = await response.json();
+                setFreelancer(data);
+            } catch (error: any) {
+                setError(error.message);
+            }
+        };
+
+        if (userId) {
+            fetchFreelancerProfile();
+        }
+    }, [userId]);
+
+
+
 
     return (
         <div className="">
             <Sheet>
                 <SheetTrigger asChild>
                     <div className="">
-                        <Jobs id={id} title={title} to={to} from={from} jobsdescription={jobdescription || ""} Place={Place} duration={duration || ""} expertise={expertise} projectSize={projectSize} fixed={fixed} skills={skills} createdAt={createdAt} country={country} />
+                        <Jobs id={id} title={title} to={to} from={from} jobsdescription={jobdescription || ""} Place={Place} duration={duration || ""} expertise={expertise} projectSize={projectSize} fixed={fixed} skills={skills} createdAt={createdAt} country={country} userId={userId} clientProfileId={clientProfileId} />
                     </div>
                 </SheetTrigger>
                 <SheetContent >
@@ -203,7 +242,11 @@ const JobSheet: React.FC<JobSheetProps> = ({ title, jobdescription, from, to, Pl
                                 </p>
 
                                 <div className="py-4 ">
-                                    <h1 className="text-xl font-medium">About the Client</h1>
+                                    <h1 className="text-sm font-medium">About the Client</h1>
+                                    <Link href='/' className="hover:underline font-bold  text-gray-800 py-1 px-2">
+                                        <p className="text-sm">{`${session?.user.name} ${session?.user.lastName}`}</p>
+
+                                    </Link>
                                     <div className="py-2 space-y-3">
                                         <span className="flex gap-2">
                                             <MdOutlineCheckCircle size={18} color="green" />
@@ -231,9 +274,14 @@ const JobSheet: React.FC<JobSheetProps> = ({ title, jobdescription, from, to, Pl
                                             /hr avg hourly rate paid
                                         </small>
                                         <small className="text-gray-600">Large company</small>
+                                        {""}
                                         <small className="text-gray-600">
-                                            Member since January 2022
+                                            Member since {new Date(createdAt).getFullYear()}
+                                            <p>
+                                                {formattedTime}
+                                            </p>
                                         </small>
+
                                     </div>
                                 </div>
                             </div>
@@ -246,7 +294,5 @@ const JobSheet: React.FC<JobSheetProps> = ({ title, jobdescription, from, to, Pl
 };
 
 export default JobSheet;
-function getClientDetails(arg0: string | null) {
-    throw new Error("Function not implemented.");
-}
+
 
