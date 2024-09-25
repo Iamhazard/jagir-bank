@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 
 interface IParams {
-  userId?: string;
+  clientId?: string;
 }
 
 export async function GET(
@@ -13,15 +13,13 @@ export async function GET(
   { params }: { params: IParams }
 ) {
   try {
-    const { userId } = params;
-    if (!userId) {
+    const { clientId } = params;
+    if (!clientId) {
       return new Response('user ID is missing', { status: 400 });
     }
     const clientJobs = await db.job.findMany({
       where: {
-        clientProfile: {
-          userId: userId,
-        }
+        clientProfileId: clientId,
       },
       include: {
         SkillsOnJobs: {

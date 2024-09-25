@@ -29,6 +29,7 @@ import { Freelancer } from "../auth/exeProfile";
 
 
 export interface JobSheetProps {
+    proposals: Proposal[]
     id: string,
     title: string,
     country: string,
@@ -56,6 +57,23 @@ export interface JobSheetProps {
     skills: Array<{ title: string }>;
 
 }
+
+type Proposal = {
+    id: string;
+    duration: string | null;
+    Coverletter: string | null;
+    hourlyRate: string | null;
+    estimatedAmount: string | null;
+    serviceFee: number;
+    image: string;
+    status: 'PENDING' | 'APPROVED' | 'REJECTED';
+    jobId: string;
+    userId: string;
+    createdAt: string;
+    updatedAt: string;
+    clientProfileId: string;
+};
+
 
 
 

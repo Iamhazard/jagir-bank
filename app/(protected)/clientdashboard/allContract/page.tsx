@@ -54,23 +54,43 @@ export interface Contractprops {
 }
 
 const AllContracts = () => {
+    const [getJobs, setJobs] = useState<Contractprops[]>([]);
     const [getproposals, setProposals] = useState<Contractprops[]>([]);
     const { data: session } = useSession()
     const userId = session?.user.id
     useEffect(() => {
-        const fetchProposals = async () => {
+        const fetchJobs = async () => {
             try {
-                const response = await axios.get(`/api/job/${userId}`);
+                const response = await axios.get(`/api/job/client/${userId}`);
+                const data = response.data;
+                setJobs(data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchJobs();
+    }, [userId]);
+
+    useEffect(() => {
+        const fetchJobs = async () => {
+            try {
+                const response = await axios.get(`/api/job`);
                 const data = response.data;
                 setProposals(data);
             } catch (error) {
                 console.log(error);
             }
         };
-        fetchProposals();
+        fetchJobs();
     }, [userId]);
 
-    console.log("from client dashboard", getproposals)
+
+    // console.log("from client dashboard", getJobs)
+    // console.log("from client dashboard client", getproposals)
+
+
+
+
     return (
         <>
             <h1 className='text-xl my-2 px-4 mx-auto text-Green font-semibold'>My Job Proposal</h1>
@@ -98,24 +118,26 @@ const AllContracts = () => {
                                 </div>
                                 <div className='flex-col'>
                                     <div>
-                                        <Link href={`/freelancerdashoard/proposal/${proposal.id}`} className=''>
+                                        <Link href={`/jobs/bestmatches`} className=''>
                                             <h1 className=" sm:text-2xl font-medium inline-block border-b border-transparent hover:border-green-500 text-gray-700 hover:text-Green">
-                                                {proposal.job.post}
+                                                {proposal.post}
                                             </h1>
                                         </Link>
                                     </div>
                                     <div>
 
                                         <small className='block sm:inline-block px-2'>
-                                            Job Id: {proposal.jobId}
+                                            Job Id: {proposal.id}
                                         </small>
                                         <small className='px-2 text-gray-600'>UserId:{proposal.userId}</small>
                                     </div>
 
                                 </div>
                                 <div className='flex gap-2' >
-                                    <Button variant='outline' size='sm' className='text-gray-600 '>Interview</Button>
-                                    <Button variant='outline' size='sm' className=' text-gray-600'>Reject</Button>
+                                    <Link href={`/conversations/${proposal.userId}`}>
+                                        <Button variant='outline' size='sm' className='text-gray-600 '>View Jobs</Button></Link>
+
+
                                 </div>
 
 

@@ -1,14 +1,14 @@
 import { FieldElement, UseFormRegister } from "react-hook-form";
 
-import {  Account, ClientProfile, Conversation, FreelancerProfile, JobStatus, Message, Proposal, SkillsOnJobs, User, UserRole } from "@prisma/client";
+import { ClientProfile, Conversation, FreelancerProfile, JobStatus, Message, Proposal, SkillsOnJobs, User, UserRole } from "@prisma/client";
 
 export type FullMessageType = Message & {
-  sender: User, 
+  sender: User,
   seen: User[]
 };
 
-export type FullConversationType = Conversation & { 
-  users: User[]; 
+export type FullConversationType = Conversation & {
+  users: User[];
   messages: FullMessageType[]
 };
 
@@ -22,35 +22,35 @@ export type SideNavItem = {
 
 
 export type FormData = {
-    skills:{
-      skills1:string,
-      skills2:string,
-      skills3:string,
+  skills: {
+    skills1: string,
+    skills2: string,
+    skills3: string,
 
-    }
-  
-  };
+  }
 
-  export type ScopeData  = {
-    Scope: string;
-  
-  };
+};
 
-  export type FormFieldProps = {
-    type: string;
-    placeholder: string;
-     message:string;
-    name: ValidFieldNames;
-    register: UseFormRegister<FormData>;
-    error: FieldElement | undefined;
-    valueAsNumber?: boolean;
-  };
+export type ScopeData = {
+  Scope: string;
 
-  export type ValidFieldNames =
+};
+
+export type FormFieldProps = {
+  type: string;
+  placeholder: string;
+  message: string;
+  name: ValidFieldNames;
+  register: UseFormRegister<FormData>;
+  error: FieldElement | undefined;
+  valueAsNumber?: boolean;
+};
+
+export type ValidFieldNames =
   | "skill"
- 
 
-  export type LoginResponse = {
+
+export type LoginResponse = {
   success?: string;
   error?: string;
   twoFactor?: boolean;
@@ -59,65 +59,64 @@ export type FormData = {
 
 
 export interface Users {
-  user:User[]
+  user: User[]
   id: string;
   name?: string;
   lastName?: string;
   email?: string;
- emailVerified?: Date;
+  emailVerified?: Date;
   image?: string;
-  password?: string ;
+  password?: string;
   createdAt: Date;
   updatedAt: Date;
   role: UserRole;
-  accounts?: Account[];
   isTwoFactorEnabled: boolean;
-  twoFactorConfirmation?: boolean ;
+  twoFactorConfirmation?: boolean;
   profile?: FreelancerProfile[];
   clientProfile?: ClientProfile[];
   conversationIds?: string[];
   conversations?: Conversation[];
- seenMessageIds?: string[];
+  seenMessageIds?: string[];
   seenMessages?: Message[];
   messages?: Message[];
 }
 
-  export type ProposalForms={
-    id: string,
-    title: string,
-    country: string,
-    clientProfileId: string,
-    jobdescription?: string;
-    jobsbudget?: string;
-    duration: string,
-    expertise: string,
-    projectSize: string,
-    fixed: string,
-    Place: string,
-    from: string,
-    to: string,
-    post: string,
-    jobDescription: string,
-    createdAt: string,
-    skills: Array<{ title: string }>;
+export type ProposalForms = {
+  id: string,
+  title: string,
+  country: string,
+  clientProfileId: string,
+  jobdescription?: string;
+  jobsbudget?: string;
+  duration: string,
+  expertise: string,
+  projectSize: string,
+  fixed: string,
+  Place: string,
+  from: string,
+  to: string,
+  post: string,
+  jobDescription: string,
+  createdAt: string,
+  skills: Array<{ title: string }>;
 
 }
 
-  
+
 
 
 export interface AuthState {
-    user: User | null; 
-    status: 'idle' | 'loading' | 'succeeded' | 'failed';
-    error: string | null;
-    sessionToken: string | null;
-    isLoggedIn: boolean;
-    isAdmin: boolean;
-    success: string | null;
-    users: User[];
+  user: User | null;
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  error: string | null;
+  sessionToken: string | null;
+  isLoggedIn: boolean;
+  isAdmin: boolean;
+  success: string | null;
+  users: User[];
 }
 
-export interface Job{
+export interface Job {
   id: string;
   post?: string;
   projectSize?: string;
@@ -136,65 +135,65 @@ export interface Job{
   proposals: Proposal[];
 }
 export interface CategoryState {
-   id: string;
+  id: string;
   title: string;
   createdAt: string;
   updatedAt: string;
 }
 export interface jobtype {
-   id: string;
+  id: string;
   type: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface CategoryPageProps {
-    category: CategoryState| null;
-    status: 'idle' | 'loading' | 'succeeded' | 'failed';
-    error: string | null;
-    success: string | null;
+  category: CategoryState | null;
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  error: string | null;
+  success: string | null;
 
 }
 export interface JobtypeProps {
-    job: jobtype| null;
-    status: 'idle' | 'loading' | 'succeeded' | 'failed';
-    error: string | null;
-    success: string | null;
+  job: jobtype | null;
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  error: string | null;
+  success: string | null;
 
 }
 export interface CountryPageProps {
-    country: CountryState| null;
-    status: 'idle' | 'loading' | 'succeeded' | 'failed';
-    error: string | null;
-    success: string | null;
+  country: CountryState | null;
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  error: string | null;
+  success: string | null;
 
 }
 export interface ProfessionState {
-   id: string;
+  id: string;
   profession: string;
   createdAt: string;
   updatedAt: string;
 }
 export interface SkillState {
-   id: string;
+  id: string;
   title: string;
   createdAt: string;
   updatedAt: string;
 }
 export interface ProfessionPageProps {
-    category: ProfessionState| null;
-    status: 'idle' | 'loading' | 'succeeded' | 'failed';
-    error: string | null;
-    success: string | null;
+  category: ProfessionState | null;
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  error: string | null;
+  success: string | null;
 
 }
 export interface DeleteButtonPros {
-    label:string, 
-    onDelete: ()=>{}
+  label: string,
+  onDelete: () => {}
 }
 
 export interface EducationState {
-   id: string;
+  id: string;
   name: string;
   createdAt: string;
   updatedAt: string;
@@ -203,7 +202,7 @@ export interface EducationState {
 
 
 export interface SkillState {
-   id: string;
+  id: string;
   skill: string;
   createdAt: string;
   updatedAt: string;
@@ -212,7 +211,7 @@ export interface SkillState {
 
 
 export interface OrganizationState {
-   id: string;
+  id: string;
   organization: string;
   createdAt: string;
   updatedAt: string;
@@ -220,32 +219,32 @@ export interface OrganizationState {
 
 
 export interface SkillPageProps {
-    skill: SkillState| null;
-    status: 'idle' | 'loading' | 'succeeded' | 'failed';
-    error: string | null;
-    success: string | null;
+  skill: SkillState | null;
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  error: string | null;
+  success: string | null;
 
 }
 
 export interface SalaryState {
-   id: string;
+  id: string;
   salary: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface DistrictState {
-   id: string;
+  id: string;
   district: string;
 }
 export interface CityState {
-   id: string;
+  id: string;
   name: string;
 }
 
 
 export interface CountryState {
-   id: string;
+  id: string;
   name: string;
 }
 export interface Country {
@@ -258,7 +257,7 @@ export interface Country {
 }
 
 export interface Skill {
-  id: string; 
+  id: string;
   skill: string;
 }
 

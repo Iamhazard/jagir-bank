@@ -69,11 +69,7 @@ export async function POST(request: Request, { params }: { params: IParams }) {
           },
 
         },
-        ClientProfile: {
-          connect: {
-            id: clientProfileId || "",
-          },
-        },
+
 
 
       }

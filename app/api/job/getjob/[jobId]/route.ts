@@ -13,31 +13,34 @@ export async function GET(
   { params }: { params: IParams }
 ) {
   try {
-    const {jobId}=params;
-if (!jobId) {
-      return new Response('Client ID is missing', { status: 400 });
+    const { jobId } = params;
+    if (!jobId) {
+      return new Response('Job ID is missing', { status: 400 });
     }
     const clientJobs = await db.job.findUnique({
-   where: {
-        id:jobId
-        },
-     include: {
+      where: {
+        id: jobId
+      },
+      include: {
+        proposals: true,
         SkillsOnJobs: {
           include: {
             skill: true,
+
           },
         },
+
       },
-      
+
     });
-   
-    
+
+
     return NextResponse.json(clientJobs)
   } catch (error) {
     console.log(error)
     return new Response("Method Not Allowed", { status: 500 });
-    
+
   }
 
-  
+
 }
