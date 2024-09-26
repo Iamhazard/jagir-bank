@@ -55,38 +55,52 @@ export interface Contractprops {
 
 const AllContracts = () => {
     const [getJobs, setJobs] = useState<Contractprops[]>([]);
-    const [getproposals, setProposals] = useState<Contractprops[]>([]);
+    const [proposal, setProposals] = useState<Contractprops[]>([]);
     const { data: session } = useSession()
     const userId = session?.user.id
+
+    const jobId = getJobs[0]?.jobId;
+
+    console.log(jobId)
     useEffect(() => {
-        const fetchJobs = async () => {
+        const clientdata = async () => {
             try {
-                const response = await axios.get(`/api/job/client/${userId}`);
-                const data = response.data;
-                setJobs(data);
+                const response = await fetch(`/api/profile/clientProfile/${userId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch search results');
+                }
+                const data = await response.json();
+                setJobs(data)
             } catch (error) {
-                console.log(error);
+                console.log(error)
             }
-        };
-        fetchJobs();
-    }, [userId]);
+        }
+        clientdata()
+
+
+    }, [userId])
 
     useEffect(() => {
-        const fetchJobs = async () => {
+        const fetchJobDetails = async () => {
             try {
-                const response = await axios.get(`/api/job`);
-                const data = response.data;
-                setProposals(data);
+                const response = await fetch(`/api/job/getjob/${jobId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch search results');
+                }
+                const data = await response.json();
+                setProposals(data)
             } catch (error) {
-                console.log(error);
+                console.log(error)
             }
-        };
-        fetchJobs();
-    }, [userId]);
+        }
+        fetchJobDetails()
 
 
-    // console.log("from client dashboard", getJobs)
-    // console.log("from client dashboard client", getproposals)
+    }, [jobId])
+
+
+    console.log("from client dashboard", getJobs)
+    console.log("from client dashboard client", proposal)
 
 
 
@@ -105,10 +119,10 @@ const AllContracts = () => {
                     <h1 className='py-2 px-2 text-xl font-semibold '>Active proposals  (0)</h1>
                 </Card>
                 <Card className='mt-3'>
-                    <h1 className='py-2 px-2 text-xl font-semibold '>Offers Received  ({getproposals?.length})</h1>
+                    <h1 className='py-2 px-2 text-xl font-semibold '>Offers Received  ({setProposals?.length})</h1>
 
                     <>
-                        {getproposals.map((proposal, index) => (
+                        {proposal.map((proposal, index) => (
                             <div key={index} className='flex  flex-col sm:flex-row justify-between items-center pt-5  py-3'>
                                 <div>
 

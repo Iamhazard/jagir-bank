@@ -11,16 +11,18 @@ import MaxWidthWrapper from '../../_components/maxwidthWrappers'
 import axios from 'axios'
 
 const AllPost = () => {
-    const [clientData, setClientData] = useState<JobSheetProps>()
+    const [clientData, setClientData] = useState<JobSheetProps[] | null>()
     const { data: session } = useSession();
     const userId = session?.user?.id;
     const [getJobs, setJobs] = useState<JobSheetProps[]>([]);
-    const clientId = clientData?.clientProfileId
-    console.log(clientId)
+
+    const clientId: string | undefined = clientData?.[0]?.clientProfileId;
+
+    console.log('Client ID:', clientId);
     useEffect(() => {
         const fetchJobs = async () => {
             try {
-                const response = await axios.get(`/api/job/client/${clientData?.clientProfileId}`);
+                const response = await axios.get(`/api/job/client/${clientId}`);
                 const data = response.data;
                 setJobs(data);
             } catch (error) {
@@ -28,7 +30,7 @@ const AllPost = () => {
             }
         };
         fetchJobs();
-    }, [clientData?.clientProfileId, clientId, userId]);
+    }, [clientId, userId]);
 
     useEffect(() => {
         const clientdata = async () => {
@@ -47,7 +49,8 @@ const AllPost = () => {
 
 
     }, [userId])
-    console.log({ getJobs })
+    // console.log({ getJobs })
+    //console.log({ clientData })
 
 
     return (
@@ -55,8 +58,8 @@ const AllPost = () => {
             <h1 className='text-2xl font-mono text-Green py-2 px-2'>All job post</h1>
             <div className='py-2'>
 
-                {Array.isArray(clientData) && clientData.length > 0 ? (
-                    clientData.map((client, index) => (
+                {Array.isArray(getJobs) && getJobs.length > 0 ? (
+                    getJobs.map((client, index) => (
                         <div
                             key={index}
                             className={`max-w-[950px] max-h-[500px]   p-6 bg-[#ffffff] hover:bg-[#F2F7F2] border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700  "expanded" : ""
@@ -90,31 +93,21 @@ const AllPost = () => {
                             >
                             </p>
                             <div className="flex gap-4 mt-4">
-                                {clientData.map((skill, i) => (
+                                {client.SkillsOnJobs.map((skill, i) => (
                                     <button
                                         key={i}
                                         className="bg-gray-400 max-h-10 rounded-3xl border-[1px] p-2 items-center">
-                                        {skill.title}
+                                        {skill.skill.title}
 
                                     </button>
                                 ))}
                             </div>
-                            <div className="flex gap-4 mt-6">
-                                <span className="flex gap-2">
-                                    <MdOutlineCircle size={18} color="green" />
-                                    <small className="text-gray-600">Payment verified</small>
-                                </span>
-                                <p>$2k + spent</p>
-
-                                <span className="flex gap-2">
-                                    <FiMapPin /> {client.Place}
-                                </span>
-                            </div>
                             <div className="flex flex-1 mt-4 gap-4">
-                                { }
-                                <p>Proposals: 50+</p>
-                                <p>Connects to apply: 12 Connects</p>
+
+                                <p>Proposals Invitiation:{`${client.proposals?.length}`}</p>
+
                             </div>
+
                         </div>
                     )
                     )) : (

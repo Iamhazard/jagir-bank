@@ -18,11 +18,12 @@ export async function POST(request: Request, { params }: { params: IParams }) {
     const jobId = params.jobId
 
     const body = await request.json();
-
+    if (!userId) {
+      return new NextResponse('Unauthorized', { status: 401 });
+    }
     const existingApplication = await db.proposal.findFirst({
       where: {
         jobId: jobId,
-
         userId: userId,
 
       }

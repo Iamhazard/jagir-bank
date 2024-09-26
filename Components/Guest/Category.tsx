@@ -1,11 +1,11 @@
 "use client";
 /* eslint-disable react/jsx-key */
 /* eslint-disable @next/next/no-img-element */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../../styles/main.module.css";
 import Link from "next/link";
-import { Links } from "../../lib/MainLinks";
 import clsx from "clsx";
+import axios from "axios";
 
 interface ImageLink {
   href: string;
@@ -13,27 +13,30 @@ interface ImageLink {
   label: string;
   btn: string;
 }
+
+interface Skill {
+  id: string;
+  title: string;
+}
+
+interface Profession {
+  id: string;
+  profession: string;
+  categoryId: string;
+  skills: Skill[];
+}
+
+interface Category {
+  id: string;
+  title: string;
+  description: string;
+  professions: Profession[];
+}
+interface CategoryWithSkills extends Category {
+  totalSkills: number;
+}
 const Category = () => {
-  const [skills] = useState<string[]>([
-    "JavaScript  Developer",
-    "Logo Designer",
-    "Data Entry Specialists",
-    "Video Editors",
-    "Python Developer",
-    "Graphic Designer",
-    "Data Analyst",
-    "Shopify Developer",
-    "Ruby on Rails Developer",
-    "Android Developer",
-    "UI Designer",
-    "Content Writer",
-    "Copywriter",
-    "Database Administrator",
-    "Data Scientist",
-    "Front-End Developer",
-    "Wordpress Developer",
-    "iOS Developer",
-  ]);
+
   const imageLink: ImageLink[] = [
     {
       href: "/jobs/bestmatches",
@@ -54,6 +57,45 @@ const Category = () => {
       btn: "Consolations",
     },
   ];
+  const [categories, setCategories] = useState<CategoryWithSkills[]>([]);
+  const [topSkills, setTopSkills] = useState<Skill[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get("/api/category/getcategory");
+        const categoriesData = response.data;
+
+        // Sort categories by total number of skills and limit to 6 categories
+        const sortedCategories = categoriesData
+          .map((category: Category) => ({
+            ...category,
+            totalSkills: category.professions.reduce(
+              (acc, profession) => acc + profession.skills.length,
+              0
+            ),
+          }))
+          .sort((a: { totalSkills: number; }, b: { totalSkills: number; }) => b.totalSkills - a.totalSkills)
+          .slice(0, 6);
+
+        setCategories(sortedCategories);
+
+        // Aggregate and limit to 20 skills from the top 6 categories
+        const aggregatedSkills = sortedCategories
+          .flatMap((category: { professions: { skills: any; }[]; }) =>
+            category.professions.flatMap((profession: { skills: any; }) => profession.skills)
+          )
+          .slice(0, 20);
+
+        setTopSkills(aggregatedSkills);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  console.log(categories)
 
   return (
     <section className="mt-12 max-w-[1400px]  mx-auto px-3">
@@ -67,14 +109,14 @@ const Category = () => {
         </p>
         {/*Types */}
         <div className="flex flex-wrap justify-center">
-          {Links.map((index, i) => (
+          {categories.map((category, i) => (
             <div
               key={i}
               className="w-full sm:w-full md:w-1/2 lg:w-1/3 xl:w-1/3 px-4 mb-8">
               <div className={`${styles.card} hover:bg-slate-500`}>
                 <div className={styles.card_details}>
-                  <h1 className={styles.left_text_title}>{index.label}</h1>
-                  <p className={styles.text_body}>118 skills</p>
+                  <h1 className={styles.left_text_title}>{category.title}</h1>
+                  <p className={styles.text_body}> {category.totalSkills} skills</p>
                 </div>
                 <button className={styles.card_button}>More info</button>
               </div>
@@ -108,11 +150,11 @@ const Category = () => {
             Top skills
           </h5>
           <div className="skills flex flex-wrap space-x-3 items-center justify-center ">
-            {skills.map((skill, s) => (
+            {topSkills.map((skill, s) => (
               <span
-                key={s}
+                key={skill.id}
                 className="px-2 py-1 mb-2 border border-complementary text-complementary rounded-full hover:bg-complementary hover:text-green-800 cursor-pointer">
-                {skill}
+                {skill.title}
               </span>
             ))}
             <button className="text-primary font-bold pb-2">See more</button>

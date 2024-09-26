@@ -11,6 +11,7 @@ export interface Proposalprops {
     duration: string;
     estimatedAmount: string;
     hourlyRate: string;
+    interviewLink: string;
     id: string;
     image: string;
     createdAt: string;
@@ -51,6 +52,7 @@ const Page = () => {
         fetchProposals();
     }, []);
     console.log(proposals)
+
     return (
         <>
             <h1 className='text-xl my-2 px-4 mx-auto text-Green font-semibold'>My Proposal</h1>
@@ -75,11 +77,21 @@ const Page = () => {
                                 </small>
                             </div>
                             <Link href={`/freelancerdashoard/proposal/${proposal.id}`} className=''>
-                                <h1 className="text-xl sm:text-2xl font-medium inline-block border-b border-transparent hover:border-green-500 text-gray-700 hover:text-Green">
+                                <h1 className="text-xl sm:text-2xl md:text-sm font-medium inline-block border-b border-transparent hover:border-green-500 text-gray-700 hover:text-Green">
                                     {proposal.job?.post}
                                 </h1>
                             </Link>
                             <small className='px-2 text-gray-600'>Frontend Devs</small>
+                            <div className='md:size-min'>
+                                {proposal.interviewLink ? (
+                                    <Link className='text-gray-900 hover:underline hover:text-blue-700' href={proposal.interviewLink}>
+                                        Interview
+                                    </Link>
+                                ) : (
+                                    <span className='hover:underline hover:text-rose-500'>Waiting..</span>
+                                )}
+                            </div>
+
                         </div>
                     ))}
                 </Card>

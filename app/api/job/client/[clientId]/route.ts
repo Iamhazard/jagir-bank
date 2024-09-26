@@ -22,10 +22,13 @@ export async function GET(
         clientProfileId: clientId,
       },
       include: {
+        proposals: true,
         SkillsOnJobs: {
           include: {
             skill: true,
+
           },
+
         },
       },
 

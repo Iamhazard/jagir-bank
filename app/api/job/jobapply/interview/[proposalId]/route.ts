@@ -8,7 +8,7 @@ interface IParams {
 export async function PATCH(request: Request, { params }: { params: IParams }) {
     try {
         const { proposalId } = params;
-        const { interviewLink } = await request.json();
+        const { status, interviewLink } = await request.json();
 
 
         const proposal = await db.proposal.findUnique({
@@ -22,7 +22,7 @@ export async function PATCH(request: Request, { params }: { params: IParams }) {
         const updatedProposal = await db.proposal.update({
             where: { id: proposalId },
             data: {
-                status: 'INTERVIEW',
+                status: status || 'INTERVIEW',
                 interviewLink: interviewLink,
             },
         });

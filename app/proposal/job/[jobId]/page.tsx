@@ -111,7 +111,7 @@ const ProposalForm = ({ params }: { params: IParams }) => {
 
         const proposalData = {
             duration: data.duration,
-            Coverletter: data.message,
+            message: data.message,
             hourlyRate: data.hourlyRate,
             estimatedAmount: estimatedAmount?.toString() || '0',
             userId: session?.user.id,

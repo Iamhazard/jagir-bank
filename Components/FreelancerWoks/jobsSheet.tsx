@@ -26,7 +26,21 @@ import { Freelancer } from "../auth/exeProfile";
 
 
 
-
+interface Skill {
+    id: string;
+    title: string;
+    createdAt: string;
+    updatedAt: string;
+}
+interface SkillsOnJobs {
+    title: string;
+    id: string;
+    jobId: string;
+    skillId: string;
+    createdAt: string;
+    updatedAt: string;
+    skill: Skill;
+}
 
 export interface JobSheetProps {
     proposals: Proposal[]
@@ -46,6 +60,7 @@ export interface JobSheetProps {
     to: string,
     post: string,
     jobDescription: string,
+    SkillsOnJobs: SkillsOnJobs[];
     clientProfile?: {
         country: string;
         id: string;

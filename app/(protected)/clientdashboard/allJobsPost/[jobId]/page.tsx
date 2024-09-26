@@ -22,14 +22,17 @@ const JobsDetails = ({ params }: JobsDetailsProps) => {
     const [jobs, setJobs] = useState<JobSheetProps>()
     const { data: session } = useSession();
     const router = useRouter();
-    const [loading, setLoading] = useState(false);
+    const [interviewLoading, setInterviewLoading] = useState(false);
+    const [acceptLoading, setAcceptLoading] = useState(false);
     const [interviewLink, setInterviewLink] = useState("");
 
     const jobId = params?.jobId
-
+    const proposalId = jobs?.proposals?.[0]?.id;
+    console.log(proposalId)
     const userId = session?.user?.id;
+
     useEffect(() => {
-        const JobsDetails = async () => {
+        const fetchJobDetails = async () => {
             try {
                 const response = await fetch(`/api/job/getjob/${jobId}`);
                 if (!response.ok) {
@@ -41,25 +44,25 @@ const JobsDetails = ({ params }: JobsDetailsProps) => {
                 console.log(error)
             }
         }
-        JobsDetails()
+        fetchJobDetails()
 
 
     }, [jobId])
 
-
+    console.log({ jobs })
     const client = jobs;
 
-    const handleAcceptAndInvite = async (proposal: any) => {
-        setLoading(true);
+    const handleInterviewAndInvite = async (proposalId: string) => {
+        setInterviewLoading(true);
 
         try {
             if (!interviewLink) {
                 alert('Please provide a valid interview link.');
-                setLoading(false);
+                setInterviewLoading(false);
                 return;
             }
 
-            const res = await fetch(`/api/proposals/${proposal.id}`, {
+            const res = await fetch(`/api/job/jobapply/interview/${proposalId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -72,17 +75,46 @@ const JobsDetails = ({ params }: JobsDetailsProps) => {
 
             if (res.ok) {
                 const updatedProposal = await res.json();
-                console.log("Proposal status updated:", updatedProposal);
-                router.push(`/conversations/${proposal.userId}`);
+                console.log('Proposal status updated:', updatedProposal);
+                router.push(`/conversations/${updatedProposal.userId}`);
             } else {
-                console.error("Failed to update proposal status");
+                console.error('Failed to update proposal status');
             }
         } catch (error) {
             console.error("Error:", error);
         } finally {
-            setLoading(false);
+            setInterviewLoading(false);
         }
     };
+    const handleAcceptAndInvite = async (proposalId: string) => {
+        setAcceptLoading(true);
+
+        try {
+            const res = await fetch(`/api/job/jobapply/interview/${proposalId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    status: 'ACCEPTED',
+                }),
+            });
+
+            if (res.ok) {
+                const updatedProposal = await res.json();
+                console.log('Proposal status updated:', updatedProposal);
+                router.push(`/conversations/${updatedProposal.userId}`);
+            } else {
+                console.error('Failed to update proposal status');
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        } finally {
+            setAcceptLoading(false);
+        }
+    };
+
+
     return (
         <MaxWidthWrapper>
             <h1 className='text-2xl font-mono text-Green py-2 px-2'>All job post</h1>
@@ -144,12 +176,28 @@ const JobsDetails = ({ params }: JobsDetailsProps) => {
                                             className="border p-2 rounded mt-1 w-full"
                                         />
                                     </div>
-                                    <Link href={`/conversations/${proposal.userId}`}>
-                                    </Link>
 
-                                    <Button onClick={handleAcceptAndInvite} disabled={loading}>
-                                        {loading ? "Sending..." : "Interview"}
-                                    </Button>
+                                    <div className='flex items-center justify-center gap-2'>
+                                        <Button
+                                            onClick={() => {
+                                                handleInterviewAndInvite(proposal.id).catch((error) => console.error(error));
+                                            }}
+                                            disabled={interviewLoading}
+                                        >
+                                            {interviewLoading ? "Sending..." : "Interview"}
+                                        </Button>
+
+                                        <Button
+                                            onClick={() => {
+                                                handleAcceptAndInvite(proposal.id).catch((error) => console.error(error));
+                                            }}
+                                            disabled={acceptLoading}
+                                        >
+                                            {acceptLoading ? "Contract..." : "Accept"}
+                                        </Button>
+                                    </div>
+
+
 
                                 </div>
 

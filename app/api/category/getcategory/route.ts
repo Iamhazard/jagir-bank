@@ -5,11 +5,16 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
   try {
     const fetchJobViews = await db.category.findMany({
       include: {
-        professions:true,
-        jobs:true,
-        visitor:true,
+        professions: {
+          include: {
+            skills: true
+          }
         },
+
+        jobs: true,
+        visitor: true,
       },
+    },
     )
 
     return new Response(JSON.stringify(fetchJobViews), { status: 200 });
