@@ -9,6 +9,25 @@ import axios from 'axios'
 import { Button } from '@/Components/ui/button'
 import { useSession } from 'next-auth/react'
 
+
+interface Job {
+    user?: User
+    clientProfileId: string;
+    createdAt: string;
+    duration: string;
+    expertise: string;
+    fixed: string;
+    from: string;
+    id: string;
+    jobDescription: string;
+    post: string;
+    projectSize: string;
+    status: string;
+    to: string;
+    updatedAt: string;
+    proposals?: ProposalProps[]
+}
+
 interface ProposalProps {
     clientProfileId: string;
     coverLetter: string;
@@ -21,57 +40,53 @@ interface ProposalProps {
     updatedAt: string;
     status: string;
     userId: string;
+    user: User;
 }
-
-
-export interface Contractprops {
-    createdAt: string,
-    id: any
-    status: string,
-    post: string,
-    country: string,
+export interface ContractProps {
+    createdAt: string;
+    id: string;
+    status: string;
+    post: string;
+    country: string;
     userId: string;
-    updatedAt: string
-    jobId: string,
-
-    Proposals: ProposalProps[];
-    job: {
-        clientProfileId: string;
-        createdAt: string;
-        duration: string;
-        expertise: string;
-        fixed: string;
-        from: string;
-        id: string;
-        jobDescription: string;
-        post: string;
-        projectSize: string;
-        status: string;
-        to: string;
-        updatedAt: string;
-
-    }
+    updatedAt: string;
+    jobId: string;
+    proposals?: ProposalProps[];
+    job: Job;
 }
+interface User {
+    id: string;
+    name: string;
+    lastName: string;
+    email: string;
+}
+
+
+
 
 const AllContracts = () => {
-    const [getJobs, setJobs] = useState<Contractprops[]>([]);
-    const [proposal, setProposals] = useState<Contractprops[]>([]);
+    const [contracts, setContracts] = useState<ContractProps[]>([]);
     const { data: session } = useSession()
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const userId = session?.user.id
-
-    const jobId = getJobs[0]?.jobId;
-
-    console.log(jobId)
     useEffect(() => {
+        if (!userId) return;
+
+        setIsLoading(true);
+        setError(null);
         const clientdata = async () => {
             try {
                 const response = await fetch(`/api/profile/clientProfile/${userId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch search results');
                 }
-                const data = await response.json();
-                setJobs(data)
-            } catch (error) {
+                const data: ContractProps[] = await response.json();
+                setContracts(data)
+
+
+            }
+            catch (error) {
                 console.log(error)
             }
         }
@@ -80,31 +95,32 @@ const AllContracts = () => {
 
     }, [userId])
 
-    useEffect(() => {
-        const fetchJobDetails = async () => {
-            try {
-                const response = await fetch(`/api/job/getjob/${jobId}`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch search results');
-                }
-                const data = await response.json();
-                setProposals(data)
-            } catch (error) {
-                console.log(error)
-            }
-        }
-        fetchJobDetails()
+    // if (isLoading) {
+    //     return <div className="text-center py-10">Loading...</div>;
+    // }
+
+    if (error) {
+        return <div className="text-center py-10 text-red-500">{error}</div>;
+    }
+
+    console.log("from client dashboard", contracts)
+
+    const proposalDetails = contracts.flatMap((job) =>
+        job?.proposals?.map((proposal) => ({
+            proposalId: proposal.id,
+            post: job.post,
+            userName: proposal.user.name,
+            userEmail: proposal.user.email,
+            hourlyRate: proposal.hourlyRate,
+            status: proposal.status,
+            createdAt: proposal.createdAt,
+            userId: proposal.userId,
+            jobId: proposal.id,
+        }))
+    );
 
 
-    }, [jobId])
-
-
-    console.log("from client dashboard", getJobs)
-    console.log("from client dashboard client", proposal)
-
-
-
-
+    console.log(proposalDetails);
     return (
         <>
             <h1 className='text-xl my-2 px-4 mx-auto text-Green font-semibold'>My Job Proposal</h1>
@@ -119,37 +135,37 @@ const AllContracts = () => {
                     <h1 className='py-2 px-2 text-xl font-semibold '>Active proposals  (0)</h1>
                 </Card>
                 <Card className='mt-3'>
-                    <h1 className='py-2 px-2 text-xl font-semibold '>Offers Received  ({setProposals?.length})</h1>
+                    <h1 className='py-2 px-2 text-xl font-semibold '>Offers Received  ({contracts.reduce((acc, contract) => acc + (contract.proposals?.length || 0), 0)})</h1>
 
                     <>
-                        {proposal.map((proposal, index) => (
-                            <div key={index} className='flex  flex-col sm:flex-row justify-between items-center pt-5  py-3'>
-                                <div>
+                        {proposalDetails?.map((detail, index) => (
 
+                            <div key={`${index}`} className='flex  flex-col sm:flex-row justify-between items-center pt-5  py-3'>
+                                <div>
                                     <small className='block sm:inline-block px-2'>
-                                        Initiated: {format(new Date(proposal.createdAt), "MMM d, yyyy")}
+                                        Initiated: {detail?.createdAt ? format(new Date(detail?.createdAt), "MMM d, yyyy") : 'N/A'}
                                     </small>
                                 </div>
                                 <div className='flex-col'>
                                     <div>
                                         <Link href={`/jobs/bestmatches`} className=''>
                                             <h1 className=" sm:text-2xl font-medium inline-block border-b border-transparent hover:border-green-500 text-gray-700 hover:text-Green">
-                                                {proposal.post}
+                                                {detail?.post}
                                             </h1>
                                         </Link>
                                     </div>
                                     <div>
 
                                         <small className='block sm:inline-block px-2'>
-                                            Job Id: {proposal.id}
+                                            Job Id: {detail?.jobId}
                                         </small>
-                                        <small className='px-2 text-gray-600'>UserId:{proposal.userId}</small>
+                                        <small className='px-2 text-gray-600'>Applied name:{`${detail?.userName}`}</small>
                                     </div>
 
                                 </div>
                                 <div className='flex gap-2' >
-                                    <Link href={`/conversations/${proposal.userId}`}>
-                                        <Button variant='outline' size='sm' className='text-gray-600 '>View Jobs</Button></Link>
+                                    <Link href={`/clientdashboard/allContract/contract/${detail?.proposalId}`}>
+                                        <Button variant='outline' size='sm' className='text-gray-600 '>Creat contract</Button></Link>
 
 
                                 </div>
@@ -157,7 +173,9 @@ const AllContracts = () => {
 
 
                             </div>
-                        ))}
+                        ))
+
+                        }
                     </>
 
 

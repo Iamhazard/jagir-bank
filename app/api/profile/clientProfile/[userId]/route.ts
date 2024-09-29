@@ -21,7 +21,15 @@ export async function GET(
     const allclient = await db.clientProfile.findUnique({
       where: { userId: userId },
       include: {
-        Jobs: true,
+        Jobs: {
+          include: {
+            proposals: {
+              include: {
+                user: true
+              }
+            }
+          }
+        },
 
 
 
