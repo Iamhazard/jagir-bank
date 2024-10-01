@@ -78,11 +78,14 @@ const AuthForm = ({ type }: { type: string }) => {
                     email: data.email,
                     password: data.password,
                 })
-
+                if (response.ok) {
+                    alert("LOgin successful")
+                }
                 if (response) router.push('/wallet')
             }
         } catch (error) {
             console.log(error);
+            alert(error)
         } finally {
             setIsLoading(false);
         }

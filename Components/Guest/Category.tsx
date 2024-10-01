@@ -6,6 +6,7 @@ import styles from "../../styles/main.module.css";
 import Link from "next/link";
 import clsx from "clsx";
 import axios from "axios";
+import Rating from "../FreelancerWoks/Rating";
 
 interface ImageLink {
   href: string;
@@ -115,10 +116,13 @@ const Category = () => {
               className="w-full sm:w-full md:w-1/2 lg:w-1/3 xl:w-1/3 px-4 mb-8">
               <div className={`${styles.card} hover:bg-slate-500`}>
                 <div className={styles.card_details}>
+
+
                   <h1 className={styles.left_text_title}>{category.title}</h1>
                   <p className={styles.text_body}> {category.totalSkills} skills</p>
                 </div>
-                <button className={styles.card_button}>More info</button>
+                <Link href='/jobs/bestmatches'> <button className={styles.card_button}>More info</button></Link>
+
               </div>
             </div>
           ))}
@@ -151,11 +155,16 @@ const Category = () => {
           </h5>
           <div className="skills flex flex-wrap space-x-3 items-center justify-center ">
             {topSkills.map((skill, s) => (
-              <span
-                key={skill.id}
-                className="px-2 py-1 mb-2 border border-complementary text-complementary rounded-full hover:bg-complementary hover:text-green-800 cursor-pointer">
-                {skill.title}
-              </span>
+              <>
+                <span
+                  key={skill.id}
+                  className="px-2 py-1 mb-2 border border-complementary text-complementary rounded-full hover:bg-complementary hover:text-green-800 cursor-pointer">
+                  {skill.title}
+                </span>
+                <Rating />
+              </>
+
+
             ))}
             <button className="text-primary font-bold pb-2">See more</button>
           </div>

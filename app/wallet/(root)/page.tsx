@@ -13,7 +13,7 @@ const HomeLayout = async ({ searchParams: { id, page } }: SearchParamProps) => {
     const loggedIn = await getLoggedInUser();
     console.log(loggedIn)
     const accounts = await getAccounts({
-        userId: loggedIn.$id
+        userId: loggedIn?.$id
     })
 
     if (!accounts) return;

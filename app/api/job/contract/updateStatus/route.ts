@@ -1,31 +1,34 @@
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
-export interface IParams {
-    proposalId?: string;
-}
+// export interface IParams {
+//     contractId?: string;
+// }
 
-export async function GET(
+export async function PATCH(
     request: Request,
-    { params }: { params: IParams }
 ) {
-    if (request.method !== "GET") {
+    if (request.method !== "PATCH") {
         return new Response("Method Not Allowed", { status: 405 });
     }
+    const body = await request.json();
 
-    const { proposalId } = params;
-    console.log("Proposal ID:", proposalId);
+    const { contractId, status } = body;
+    //console.log("Proposal ID:", proposalId);
 
 
-    if (!proposalId) {
+    if (!contractId) {
         return new Response('Proposal ID is missing', { status: 400 });
     }
 
     try {
 
-        const contract = await db.contact.findFirst({
+        const contract = await db.contact.update({
             where: {
-                proposalId: proposalId,
+                id: contractId,
+            },
+            data: {
+                status: status,
             },
         });
 

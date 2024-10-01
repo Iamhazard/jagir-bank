@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
-export const POST = async (req: NextRequest) => {
+export const POST = async (req: NextRequest, res: NextResponse) => {
     if (req.method !== "POST") {
         return new NextResponse("Method Not Allowed", { status: 405 });
     }
@@ -9,7 +9,7 @@ export const POST = async (req: NextRequest) => {
     try {
         const { userId, Amount, proposalId, jobId, servicesFee, deadlines } = await req.json();
 
-        // Validate required fields
+
         if (!userId || !proposalId || !Amount || !jobId || !deadlines) {
             return new NextResponse("Bad Request: Missing required fields", { status: 400 });
         }

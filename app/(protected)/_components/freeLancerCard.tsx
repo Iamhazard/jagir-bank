@@ -2,7 +2,7 @@
 import { Button } from '@/Components/ui/button'
 import { Separator } from '@/Components/ui/separator'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card } from '@/Components/ui/card'
 import { cn } from '@/lib/utils'
 import PlaidLink from '@/Components/wallet/PlaidLink'
@@ -13,7 +13,29 @@ import getCurrentUser from '@/actions/getCurrentUser'
 const FreeLancerCard = () => {
     const { data: session } = useSession()
     const user = getCurrentUser()
-
+    const userId = session?.user.id;
+    const [earnings, setEarnings] = useState('0.00');
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+    useEffect(() => {
+        async function fetchEarnings() {
+            setIsLoading(true);
+            try {
+                const response = await fetch(`/api/job/contract/${userId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch earnings');
+                }
+                const data = await response.json();
+                setEarnings(data.totalEarnings);
+            } catch (err: any) {
+                setError(err.message);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+        fetchEarnings();
+    }, [user, userId]);
+    //console.log(earnings)
     return (
         <>
             <div className="py-10 px-6 flex flex-col sm:flex-row justify-between items-center">
@@ -23,7 +45,7 @@ const FreeLancerCard = () => {
                         <Button variant='link' className="text-Green">My Reports</Button>
                     </Link>
                     <Separator orientation="vertical" />
-                    <Link href='/freelancerdashoard/reports'>
+                    <Link href='/freelancerdashoard/status'>
                         <Button variant="link" className="text-Green">My Status</Button>
                     </Link>
                     <Separator orientation="vertical" />
@@ -45,7 +67,7 @@ const FreeLancerCard = () => {
                     My Jobs
                 </h1>
                 <p>Earnings available now:
-                    $0.00
+                    ${earnings}
                 </p>
                 <div className='max-w-[150px]'>
                     <div className="flex flex-col gap-4">

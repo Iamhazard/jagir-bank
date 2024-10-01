@@ -3,6 +3,7 @@
 import { Button } from '@/Components/ui/button';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface UserData {
     id: string;
@@ -58,7 +59,7 @@ const ContractPage = ({ params }: JobsDetailsProps) => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const userId = session?.user.id;
-
+    const router = useRouter();
     useEffect(() => {
         if (!userId) return;
 
@@ -71,8 +72,6 @@ const ContractPage = ({ params }: JobsDetailsProps) => {
                     throw new Error('Failed to fetch proposal data');
                 }
                 const data: ProposalData = await response.json();
-                // For demonstration purposes, we're setting a mock deadline
-                // In a real scenario, this should come from your API
                 data.deadline = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 days from now
                 setProposal(data);
             } catch (error) {
@@ -106,7 +105,7 @@ const ContractPage = ({ params }: JobsDetailsProps) => {
         if (!proposal) return;
 
         try {
-            const response = await fetch('/api/job/contract/getContract', {
+            const response = await fetch('/api/job/contract', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -117,7 +116,7 @@ const ContractPage = ({ params }: JobsDetailsProps) => {
                     jobId: proposal.job.id,
                     Amount: proposal.estimatedAmount,
                     servicesFee: proposal.serviceFee,
-                    deadlines: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();,
+                    deadlines: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
                 }),
             });
 
@@ -128,6 +127,7 @@ const ContractPage = ({ params }: JobsDetailsProps) => {
             const result = await response.json();
             console.log('Contract sent successfully', result);
             alert('Contract sent successfully!');
+            router.push('/clientdashboard');
         } catch (error) {
             console.error('Error sending contract:', error);
             alert('Failed to send contract');
