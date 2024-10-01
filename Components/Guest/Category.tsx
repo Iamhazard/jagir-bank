@@ -60,7 +60,7 @@ const Category = () => {
   ];
   const [categories, setCategories] = useState<CategoryWithSkills[]>([]);
   const [topSkills, setTopSkills] = useState<Skill[]>([]);
-
+  const [rating, setRating] = useState<number>(0);
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -96,7 +96,7 @@ const Category = () => {
     fetchCategories();
   }, []);
 
-  console.log(categories)
+
 
   return (
     <section className="mt-12 max-w-[1400px]  mx-auto px-3">
@@ -122,7 +122,7 @@ const Category = () => {
                   <p className={styles.text_body}> {category.totalSkills} skills</p>
                 </div>
                 <Link href='/jobs/bestmatches'> <button className={styles.card_button}>More info</button></Link>
-
+                <Rating initialRating={0} />
               </div>
             </div>
           ))}
@@ -161,7 +161,7 @@ const Category = () => {
                   className="px-2 py-1 mb-2 border border-complementary text-complementary rounded-full hover:bg-complementary hover:text-green-800 cursor-pointer">
                   {skill.title}
                 </span>
-                <Rating />
+
               </>
 
 

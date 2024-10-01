@@ -105,7 +105,7 @@ const Jobs = ({ title, id, from, to, jobsdescription, Place, duration, expertise
           </span>
         </div>
         <div>
-          <Rating />
+          <Rating initialRating={2} />
         </div>
 
         <div className="flex flex-wrap mt-4 gap-2">

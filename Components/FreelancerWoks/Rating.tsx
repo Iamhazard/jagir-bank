@@ -1,7 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-const Rating = () => {
-    const [rating, setRating] = useState(0); // State to hold the current rating
+interface RatingProps {
+    initialRating: number;
+}
+
+const Rating: React.FC<RatingProps> = ({ initialRating }) => {
+    const [rating, setRating] = useState(initialRating);
 
     const handleRating = (index: number) => {
         setRating(index + 1);
